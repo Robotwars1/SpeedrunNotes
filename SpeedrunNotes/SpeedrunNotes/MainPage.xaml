@@ -5,7 +5,23 @@
              Loaded="OnMainPageLoaded"
              Appearing="OnMainPageAppearing">
 
-    <Grid>
+    <Grid Padding="10" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="250" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Next split -->
+        <StackLayout Grid.Column="1">
+            <Label x:Name="NextSplitlabel" />
+
+            <Image x:Name="NextSplitImage" />
+        </StackLayout>
 
     </Grid>
 </ContentPage>
