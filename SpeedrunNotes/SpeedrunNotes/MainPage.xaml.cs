@@ -1,24 +1,37 @@
-﻿namespace SpeedrunNotes;
+﻿using System.Net.Sockets;
+using System.Net;
+
+namespace SpeedrunNotes;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+	bool FirstAppear = true;
 
 	public MainPage()
 	{
 		InitializeComponent();
 	}
 
-	private void OnCounterClicked(object sender, EventArgs e)
+	// When loaded, open the ConnectionPage
+	void OnMainPageLoaded(object sender, EventArgs e)
 	{
-		count++;
+		Navigation.PushModalAsync(new ConnectionPage());
+	}
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
+	void OnMainPageAppearing(object sender, EventArgs e)
+	{
+		// If not first time it appears, eg when going from ConnectionPage to MainPage
+        if (!FirstAppear)
+        {
+			// Setup Socket, IP and Port
+            Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			IPAddress ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
+            IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
+            
+			// Connect to livesplit.server
+			soc.Connect(remoteEP);
+        }
 
-		SemanticScreenReader.Announce(CounterBtn.Text);
+		FirstAppear = false;
 	}
 }
-
