@@ -23,13 +23,31 @@ public partial class MainPage : ContentPage
 		// If not first time it appears, eg when going from ConnectionPage to MainPage
         if (!FirstAppear)
         {
-			// Setup Socket, IP and Port
-            Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			IPAddress ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
-            IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
-            
-			// Connect to livesplit.server
-			soc.Connect(remoteEP);
+			try
+			{
+                // Setup Socket, IP and Port
+                Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                IPAddress ip;
+
+                // If IP is localhost, input the IP for localhost, eg 127.0.0.1
+                if (Preferences.Default.Get("IP", "localhost") == "localhost")
+                {
+                    ip = IPAddress.Parse("127.0.0.1");
+                }
+                else
+                {
+                    ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
+                }
+
+                IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
+
+                // Connect to livesplit.server
+                soc.Connect(remoteEP);
+            }
+			catch
+			{
+				// Show ConnectionError, bring back to ConnectionPage
+			}
         }
 
 		FirstAppear = false;
