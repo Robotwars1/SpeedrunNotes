@@ -7,6 +7,8 @@ public partial class MainPage : ContentPage
 {
 	bool FirstAppear = true;
 
+    Socket soc;
+
 	public MainPage()
 	{
 		InitializeComponent();
@@ -26,7 +28,7 @@ public partial class MainPage : ContentPage
 			try
 			{
                 // Setup Socket, IP and Port
-                Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 IPAddress ip;
 
                 // If IP is localhost, input the IP for localhost, eg 127.0.0.1
@@ -43,6 +45,9 @@ public partial class MainPage : ContentPage
 
                 // Connect to livesplit.server
                 soc.Connect(remoteEP);
+
+                // Start the timer / scheduled function calls
+                InitTimer();
             }
 			catch
 			{
@@ -51,5 +56,26 @@ public partial class MainPage : ContentPage
         }
 
 		FirstAppear = false;
+	}
+
+    public void InitTimer()
+    {
+        System.Timers.Timer timer1 = new System.Timers.Timer(1000);
+        timer1.Elapsed += OnTimedEvent;
+        timer1.AutoReset = true;
+        timer1.Enabled = true;
+    }
+
+    // Called once per second
+    private void OnTimedEvent(object sender, EventArgs e)
+    {
+        // Send message to livesplit.server to check current split
+        byte[] message = System.Text.Encoding.ASCII.GetBytes("getsplitindex\r\n");
+        soc.Send(message);
+    }
+
+    void OnReconnectBtnClicked(object sender, EventArgs e)
+	{
+		Navigation.PushModalAsync(new ConnectionPage());
 	}
 }

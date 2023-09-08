@@ -18,10 +18,23 @@
 
         <!-- Next split -->
         <StackLayout Grid.Column="1">
-            <Label x:Name="NextSplitlabel" />
+            <Label Text="Next Split:"
+                   TextColor="White" />
+
+            <Label x:Name="NextSplitLabel" />
 
             <Image x:Name="NextSplitImage" />
         </StackLayout>
+        
+        <!-- Settings -->
+        <StackLayout Grid.Column="1"
+                     Grid.Row="1" 
+                     Padding="20">
+            <Button x:Name="ReconnectBtn"
+                    Text="Reconnect"
+                    WidthRequest="200"
+                    Clicked="OnReconnectBtnClicked" />
 
+        </StackLayout>
     </Grid>
 </ContentPage>
