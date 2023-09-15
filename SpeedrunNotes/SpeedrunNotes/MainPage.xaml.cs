@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 
 namespace SpeedrunNotes;
 
@@ -10,10 +11,18 @@ public partial class MainPage : ContentPage
 
     Socket soc;
 
-	public MainPage()
+    public class Split
+    {
+        public string SplitTitle { get; set; }
+        public string SplitImage { get; set; }
+        public string SplitInfoText { get; set; }
+        public string SplitInfoImage { get; set; }
+    }
+
+    public MainPage()
 	{
 		InitializeComponent();
-	}
+    }
 
 	// When loaded, open the ConnectionPage
 	void OnMainPageLoaded(object sender, EventArgs e)
@@ -94,8 +103,22 @@ public partial class MainPage : ContentPage
         string szReceived = Encoding.ASCII.GetString(b, 0, k);
     }
 
+    public List<Split> JSONParse(string FilePath)
+    {
+        using FileStream json = File.OpenRead(FilePath);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json);
+        return Splits;
+    }
+
     void OnReconnectBtnClicked(object sender, EventArgs e)
 	{
 		Navigation.PushModalAsync(new ConnectionPage());
 	}
+
+    async void OnLoadPresetBtnClicked(object sender, EventArgs e)
+    {
+        var File = await FilePicker.PickAsync(default);
+        string FilePath = File.FullPath;
+        List<Split> SplitsInfo = JSONParse(FilePath);
+    }
 }

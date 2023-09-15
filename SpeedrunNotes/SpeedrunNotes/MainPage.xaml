@@ -35,6 +35,11 @@
                     WidthRequest="200"
                     Clicked="OnReconnectBtnClicked" />
 
+            <Button x:Name="LoadPresetButton"
+                    Text="Load Preset"
+                    WidthRequest="200"
+                    Clicked="OnLoadPresetBtnClicked" />
+
         </StackLayout>
     </Grid>
 </ContentPage>
