@@ -19,6 +19,8 @@ public partial class MainPage : ContentPage
         public string SplitInfoImage { get; set; }
     }
 
+    List<Split> SplitsInfo;
+
     public MainPage()
 	{
 		InitializeComponent();
@@ -119,6 +121,6 @@ public partial class MainPage : ContentPage
     {
         var File = await FilePicker.PickAsync(default);
         string FilePath = File.FullPath;
-        List<Split> SplitsInfo = JSONParse(FilePath);
+        SplitsInfo = JSONParse(FilePath);
     }
 }
