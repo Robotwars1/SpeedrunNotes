@@ -2,6 +2,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace SpeedrunNotes;
 
@@ -127,8 +129,8 @@ public partial class MainPage : ContentPage
         try
         {
             // Update title and image of next split
-            NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
-            NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
+            //NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
+            //NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
         }
         catch
         {
@@ -153,5 +155,11 @@ public partial class MainPage : ContentPage
         var File = await FilePicker.PickAsync(default);
         string FilePath = File.FullPath;
         SplitsInfo = JSONParse(FilePath);
+    }
+
+    void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
+    {
+        string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
+        Process.Start("explorer.exe", ImagesPath);
     }
 }

@@ -39,6 +39,11 @@
                     WidthRequest="200"
                     Clicked="OnLoadPresetBtnClicked" />
 
+            <Button x:Name="OpenImageFolderBtn"
+                    Text="Open Image Folder"
+                    WidthRequest="200"
+                    Clicked="OnOpenImageFolderBtnClicked" />
+
         </StackLayout>
     </Grid>
 </ContentPage>
