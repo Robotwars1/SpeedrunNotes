@@ -18,10 +18,9 @@
 
         <!-- Next split -->
         <StackLayout Grid.Column="1">
-            <Label Text="Next Split:"
+            <Label x:Name="NextSplitLabel"
+                   Text="Next Split:"
                    TextColor="White" />
-
-            <Label x:Name="NextSplitLabel" />
 
             <Image x:Name="NextSplitImage" />
         </StackLayout>

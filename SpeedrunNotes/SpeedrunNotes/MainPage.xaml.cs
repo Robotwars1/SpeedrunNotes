@@ -9,6 +9,8 @@ public partial class MainPage : ContentPage
 {
 	bool FirstAppear = true;
 
+    int CurrentSplitIndex;
+
     Socket soc;
 
     public class Split
@@ -100,9 +102,38 @@ public partial class MainPage : ContentPage
         byte[] message = System.Text.Encoding.ASCII.GetBytes("getsplitindex\r\n");
         soc.Send(message);
 
+        // Recieve message and "parse" it from computer-jargon -> readable string
         byte[] b = new byte[100];
         int k = soc.Receive(b);
-        string szReceived = Encoding.ASCII.GetString(b, 0, k);
+        string DataReceived = Encoding.ASCII.GetString(b, 0, k);
+
+        // Save recieved split-index
+        // Makes sure the whole message is recieved
+        if (DataReceived.EndsWith("\r\n"))
+        {
+            // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
+            // Thanks alekz for this :)
+            string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+
+            CurrentSplitIndex = int.Parse(Temp);
+        }
+
+        // Do UI update stuff, has to be on main thread cause Maui ig
+        MainThread.BeginInvokeOnMainThread(UpdateUiElements);
+    }
+
+    void UpdateUiElements()
+    {
+        try
+        {
+            // Update title and image of next split
+            NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
+            NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
+        }
+        catch
+        {
+
+        }
     }
 
     public List<Split> JSONParse(string FilePath)
