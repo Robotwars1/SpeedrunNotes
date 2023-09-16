@@ -43,19 +43,6 @@ public partial class MainPage : ContentPage
 		// If not first time it appears, eg when going from ConnectionPage to MainPage
         if (!FirstAppear)
         {
-            // Setup Socket, IP and Port
-            soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            //IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
-            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16834);
-
-            // Connect to livesplit.server
-            soc.Connect(remoteEP);
-
-            // Start the timer / scheduled function calls
-            InitTimer();
-
-            /*
 			try
 			{
                 // Setup Socket, IP and Port
@@ -72,8 +59,7 @@ public partial class MainPage : ContentPage
                     ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
                 }
 
-                //IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
-                IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16834);
+                IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
 
                 // Connect to livesplit.server
                 soc.Connect(remoteEP);
@@ -85,7 +71,6 @@ public partial class MainPage : ContentPage
 			{
 				// Show ConnectionError, bring back to ConnectionPage
 			}
-            */
         }
 
 		FirstAppear = false;
