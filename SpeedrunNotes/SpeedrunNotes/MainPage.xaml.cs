@@ -19,8 +19,10 @@ public partial class MainPage : ContentPage
     {
         public string SplitTitle { get; set; }
         public string SplitImage { get; set; }
-        public string SplitInfoText { get; set; }
-        public string SplitInfoImage { get; set; }
+        public string SplitInfoText1 { get; set; }
+        public string SplitInfoText2 { get; set; }
+        public string SplitInfoImage1 { get; set; }
+        public string SplitInfoImage2 { get; set; }
     }
 
     List<Split> SplitsInfo;
@@ -129,8 +131,14 @@ public partial class MainPage : ContentPage
         try
         {
             // Update title and image of next split
-            //NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
-            //NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
+            NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
+            NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
+
+            // Update notes for current split
+            SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+            SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+            SplitNoteImage1.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage1;
+            SplitNoteImage2.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
         }
         catch
         {

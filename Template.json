@@ -2,7 +2,9 @@
     {
         "splitTitle":"",
         "splitImage":"",
-        "splitInfoText":"",
-        "splitInfoImage":""
+        "splitInfoText1":"",
+        "splitInfoText2":"",
+        "splitInfoImage1":"",
+        "splitInfoImage2":""
     }
 ]

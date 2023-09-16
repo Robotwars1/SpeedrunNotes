@@ -16,6 +16,27 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- Split notes -->
+        <Grid Grid.RowSpan="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label x:Name="SplitNoteLabel1" />
+
+            <Label x:Name="SplitNoteLabel2" />
+
+            <Image x:Name="SplitNoteImage1" />
+
+            <Image x:Name="SplitNoteImage2" />
+        </Grid>
+        
         <!-- Next split -->
         <StackLayout Grid.Column="1">
             <Label x:Name="NextSplitLabel"
