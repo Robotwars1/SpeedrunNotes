@@ -32,7 +32,8 @@
 
         <Entry x:Name="IPEntry"
                Grid.Row="3"
-               Grid.Column="1" />
+               Grid.Column="1"
+               TextChanged="OnIpChanged" />
 
         <Label Grid.Row="4"
                Grid.Column="1"
@@ -42,7 +43,8 @@
 
         <Entry x:Name="PortEntry"
                Grid.Row="5"
-               Grid.Column="1" />
+               Grid.Column="1"
+               TextChanged="OnPortChanged" />
 
         <Button Grid.Row="7"
                 Grid.Column="1"

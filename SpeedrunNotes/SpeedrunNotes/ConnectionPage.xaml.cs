@@ -27,9 +27,19 @@ public partial class ConnectionPage : ContentPage
         }
 	}
 
+	void OnIpChanged(object sender, EventArgs e)
+	{
+		Preferences.Default.Set("IP", IPEntry.Text);
+	}
+
+	void OnPortChanged(object sender, EventArgs e)
+	{
+		Preferences.Default.Set("Port", int.Parse(PortEntry.Text));
+	}
+
     // Go back to MainPage
     void OnConnectButtonClicked(object sender, EventArgs e)
 	{
 		Navigation.PopModalAsync();
-	}
+    }
 }
