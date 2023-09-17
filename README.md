@@ -20,14 +20,14 @@ Below is an example of how these .json files are structured
 ```
 And a chart of what type each variable is
 
-| Type   | Var Name        |
-| -------| --------------- |
-| String | splitTitle      |
-| String | splitImage      |
-| String | splitInfoText1  |
-| String | splitInfoText2  |
-| String | splitInfoImage1 |
-| String | splitInfoImage2 |
+| Variable        | Type   | Property  |
+| --------------- | ------ | --------- |
+| splitTitle      | String | Title     |
+| splitImage      | String | Image URL |
+| splitInfoText1  | String | Text      |
+| splitInfoText2  | String | Text      |
+| splitInfoImage1 | String | Image URL |
+| splitInfoImage2 | String | Image URL |
 
 # Template Creation
 As it currently stands, if you want to make a new preset everything has to be done by editing a pure .json file. To do this, base it of the Template.json and add a new instance of the block ( {} - brackets included ).
