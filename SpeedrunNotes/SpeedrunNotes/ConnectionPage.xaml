@@ -2,11 +2,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpeedrunNotes.ConnectionPage"
-             Title="ConnectionPage">
+             Title="ConnectionPage"
+             Appearing="OnConnectionPageAppearing" >
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="40" />
             <RowDefinition Height="50" />
             <RowDefinition Height="40" />
@@ -22,32 +24,47 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="1"
+        <Label Grid.Row="2"
                Grid.Column="1"
                VerticalOptions="End"
                Text="Local IP" 
                FontSize="20" />
 
         <Entry x:Name="IPEntry"
-               Grid.Row="2"
+               Grid.Row="3"
                Grid.Column="1" />
 
-        <Label Grid.Row="3"
+        <Label Grid.Row="4"
                Grid.Column="1"
                VerticalOptions="End"
                Text="Port"
                FontSize="20" />
 
         <Entry x:Name="PortEntry"
-               Grid.Row="4"
+               Grid.Row="5"
                Grid.Column="1" />
 
-        <Button Grid.Row="6"
+        <Button Grid.Row="7"
                 Grid.Column="1"
                 WidthRequest="150"
                 Text="Connect"
                 FontSize="20" 
                 Clicked="OnConnectButtonClicked" />
+        
+        <!-- Elements to show ConnectionError -->
+        <BoxView x:Name="ConnectionErrorBackground"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Color="#d9be11" />
+
+        <Label x:Name="ConnectionErrorLabel"
+               Grid.Row="1"
+               Grid.Column="1"
+               TextColor="Black"
+               Text="ConnectionError"
+               FontSize="20"
+               VerticalOptions="Center"
+               HorizontalOptions="Center" />
 
     </Grid>
 </ContentPage>

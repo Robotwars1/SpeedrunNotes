@@ -69,8 +69,12 @@ public partial class MainPage : ContentPage
             }
 			catch
 			{
-				// Show ConnectionError, bring back to ConnectionPage
-			}
+                // Update variable to show "ConnectionError" on ConnectionPage
+                Preferences.Default.Set("ConnectionError", true);
+
+                // Bring back to ConnectionPage
+                Navigation.PushModalAsync(new ConnectionPage());
+            }
         }
 
 		FirstAppear = false;

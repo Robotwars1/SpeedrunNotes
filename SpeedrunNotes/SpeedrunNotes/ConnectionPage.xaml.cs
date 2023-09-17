@@ -11,8 +11,24 @@ public partial class ConnectionPage : ContentPage
         PortEntry.Text = Preferences.Default.Get("Port", 16834).ToString();
     }
 
-	// Go back to MainPage
-	void OnConnectButtonClicked(object sender, EventArgs e)
+	void OnConnectionPageAppearing(object sender, EventArgs e)
+	{
+		if (Preferences.Default.Get("ConnectionError", false) == true)
+		{
+			// Show ConnectionError
+			ConnectionErrorBackground.IsVisible = true;
+			ConnectionErrorLabel.IsVisible = true;
+		}
+		else
+		{
+            // Hide ConnectionError
+            ConnectionErrorBackground.IsVisible = false;
+            ConnectionErrorLabel.IsVisible = false;
+        }
+	}
+
+    // Go back to MainPage
+    void OnConnectButtonClicked(object sender, EventArgs e)
 	{
 		Navigation.PopModalAsync();
 	}

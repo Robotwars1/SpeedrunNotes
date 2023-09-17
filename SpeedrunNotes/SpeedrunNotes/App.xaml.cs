@@ -13,6 +13,9 @@ public partial class App : Application
         Preferences.Default.Get("IP", "localhost");
         Preferences.Default.Get("Port", 16834);
 
+        // Var to tell ConnectionPage if MainPage failed to connect to LiveSplit.Server
+        Preferences.Default.Set("ConnectionError", false);
+
         MainPage = new MainPage();
 	}
 }
