@@ -25,7 +25,9 @@ public partial class ConnectionPage : ContentPage
             ConnectionErrorBackground.IsVisible = false;
             ConnectionErrorLabel.IsVisible = false;
         }
-	}
+
+        ConnectButton.Text = "Connect";
+    }
 
 	void OnIpChanged(object sender, EventArgs e)
 	{
@@ -50,8 +52,14 @@ public partial class ConnectionPage : ContentPage
     }
 
     // Go back to MainPage
-    void OnConnectButtonClicked(object sender, EventArgs e)
+    async void OnConnectButtonClicked(object sender, EventArgs e)
 	{
-		Navigation.PopModalAsync();
+		ConnectButton.Text = "Connecting...";
+
+		// Waits 5 ms to make sure ConnectButton.Text is updated
+		// Yes, this is technicly bad and slow but offering 5 ms to make visual work is a-ok
+		await Task.Delay(5);
+
+		await Navigation.PopModalAsync();
     }
 }
