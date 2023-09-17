@@ -32,10 +32,22 @@ public partial class ConnectionPage : ContentPage
 		Preferences.Default.Set("IP", IPEntry.Text);
 	}
 
-	void OnPortChanged(object sender, EventArgs e)
+	void OnIpResetButtonClicked(object sender, EventArgs e)
+	{
+		IPEntry.Text = "localhost";
+		Preferences.Default.Set("IP", "localhost");
+	}
+
+    void OnPortChanged(object sender, EventArgs e)
 	{
 		Preferences.Default.Set("Port", int.Parse(PortEntry.Text));
 	}
+
+	void OnPortResetButtonClicked(object sender, EventArgs e)
+	{
+        PortEntry.Text = "16834";
+        Preferences.Default.Set("Port", 16834);
+    }
 
     // Go back to MainPage
     void OnConnectButtonClicked(object sender, EventArgs e)

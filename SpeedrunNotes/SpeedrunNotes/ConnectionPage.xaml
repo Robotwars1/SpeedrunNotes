@@ -20,12 +20,14 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="50" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="2"
                Grid.Column="1"
+               Grid.ColumnSpan="2"
                VerticalOptions="End"
                Text="Local IP" 
                FontSize="20" />
@@ -35,8 +37,15 @@
                Grid.Column="1"
                TextChanged="OnIpChanged" />
 
+        <ImageButton Grid.Row="3"
+                     Grid.Column="2"
+                     HorizontalOptions="End"
+                     Source="reset.png"
+                     Clicked="OnIpResetButtonClicked" />
+
         <Label Grid.Row="4"
                Grid.Column="1"
+               Grid.ColumnSpan="2"
                VerticalOptions="End"
                Text="Port"
                FontSize="20" />
@@ -46,8 +55,15 @@
                Grid.Column="1"
                TextChanged="OnPortChanged" />
 
+        <ImageButton Grid.Row="5"
+                     Grid.Column="2"
+                     HorizontalOptions="End"
+                     Source="reset.png"
+                     Clicked="OnPortResetButtonClicked" />
+
         <Button Grid.Row="7"
                 Grid.Column="1"
+               Grid.ColumnSpan="2"
                 WidthRequest="150"
                 Text="Connect"
                 FontSize="20" 
@@ -57,11 +73,13 @@
         <BoxView x:Name="ConnectionErrorBackground"
                  Grid.Row="1"
                  Grid.Column="1"
+               Grid.ColumnSpan="2"
                  Color="#d9be11" />
 
         <Label x:Name="ConnectionErrorLabel"
                Grid.Row="1"
                Grid.Column="1"
+               Grid.ColumnSpan="2"
                TextColor="Black"
                Text="ConnectionError"
                FontSize="20"
