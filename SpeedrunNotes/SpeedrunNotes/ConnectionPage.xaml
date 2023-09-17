@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpeedrunNotes.ConnectionPage"
-             Title="ConnectionPage"
              Appearing="OnConnectionPageAppearing" >
 
     <Grid>
@@ -25,6 +24,24 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!-- Elements to show ConnectionError -->
+        <BoxView x:Name="ConnectionErrorBackground"
+                 Grid.Row="1"
+                 Grid.Column="1"
+               Grid.ColumnSpan="2"
+                 Color="#d9be11" />
+
+        <Label x:Name="ConnectionErrorLabel"
+               Grid.Row="1"
+               Grid.Column="1"
+               Grid.ColumnSpan="2"
+               TextColor="Black"
+               Text="ConnectionError"
+               FontSize="20"
+               VerticalOptions="Center"
+               HorizontalOptions="Center" />
+
+        <!-- Connection Stuff -->
         <Label Grid.Row="2"
                Grid.Column="1"
                Grid.ColumnSpan="2"
@@ -69,23 +86,5 @@
                 Text="Connect"
                 FontSize="20" 
                 Clicked="OnConnectButtonClicked" />
-        
-        <!-- Elements to show ConnectionError -->
-        <BoxView x:Name="ConnectionErrorBackground"
-                 Grid.Row="1"
-                 Grid.Column="1"
-               Grid.ColumnSpan="2"
-                 Color="#d9be11" />
-
-        <Label x:Name="ConnectionErrorLabel"
-               Grid.Row="1"
-               Grid.Column="1"
-               Grid.ColumnSpan="2"
-               TextColor="Black"
-               Text="ConnectionError"
-               FontSize="20"
-               VerticalOptions="Center"
-               HorizontalOptions="Center" />
-
     </Grid>
 </ContentPage>

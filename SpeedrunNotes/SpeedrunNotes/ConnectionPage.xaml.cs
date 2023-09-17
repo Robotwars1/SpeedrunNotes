@@ -51,7 +51,6 @@ public partial class ConnectionPage : ContentPage
         Preferences.Default.Set("Port", 16834);
     }
 
-    // Go back to MainPage
     async void OnConnectButtonClicked(object sender, EventArgs e)
 	{
 		ConnectButton.Text = "Connecting...";

@@ -15,6 +15,8 @@ public partial class MainPage : ContentPage
 
     Socket soc;
 
+    List<Split> SplitsInfo;
+
     public class Split
     {
         public string SplitTitle { get; set; }
@@ -24,8 +26,6 @@ public partial class MainPage : ContentPage
         public string SplitInfoImage1 { get; set; }
         public string SplitInfoImage2 { get; set; }
     }
-
-    List<Split> SplitsInfo;
 
     public MainPage()
 	{
@@ -59,7 +59,7 @@ public partial class MainPage : ContentPage
                     ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
                 }
 
-                IPEndPoint remoteEP = new IPEndPoint(ip, (Preferences.Default.Get("Port", 16834)));
+                IPEndPoint remoteEP = new(ip, (Preferences.Default.Get("Port", 16834)));
 
                 // Connect to livesplit.server
                 soc.Connect(remoteEP);
@@ -80,19 +80,19 @@ public partial class MainPage : ContentPage
 		FirstAppear = false;
 	}
 
+    // Setup timer to send / recieve message with LiveSplit.Server every second
     public void InitTimer()
     {
-        System.Timers.Timer timer1 = new System.Timers.Timer(1000);
+        System.Timers.Timer timer1 = new(1000);
         timer1.Elapsed += OnTimedEvent;
         timer1.AutoReset = true;
         timer1.Enabled = true;
     }
 
-    // Called once per second
     private void OnTimedEvent(object sender, EventArgs e)
     {
         // Send message to livesplit.server to check current split
-        byte[] message = System.Text.Encoding.ASCII.GetBytes("getsplitindex\r\n");
+        byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
         soc.Send(message);
 
         // Recieve message and "parse" it from computer-jargon -> readable string
@@ -100,7 +100,6 @@ public partial class MainPage : ContentPage
         int k = soc.Receive(b);
         string DataReceived = Encoding.ASCII.GetString(b, 0, k);
 
-        // Save recieved split-index
         // Makes sure the whole message is recieved
         if (DataReceived.EndsWith("\r\n"))
         {
@@ -108,6 +107,7 @@ public partial class MainPage : ContentPage
             // Thanks alekz for this :)
             string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
 
+            // Save recieved split-index
             CurrentSplitIndex = int.Parse(Temp);
         }
 
