@@ -131,8 +131,8 @@ public partial class MainPage : ContentPage
         try
         {
             // Update title and image of next split
-            NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
-            NextSplitImage.Source = $"@Images/{SplitsInfo[CurrentSplitIndex + 1].SplitImage}";
+            NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+            NextSplitImage.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex + 1].SplitImage);
         }
         catch
         {

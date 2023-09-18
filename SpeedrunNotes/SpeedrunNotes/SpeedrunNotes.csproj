@@ -41,6 +41,8 @@
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
 
+    <MauiImage Include="Images\*" />
+
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
@@ -49,11 +51,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Images\.WorkPlz.txt" />
+	  <None Remove="Images\WorkPlz.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Images\.WorkPlz.txt">
+	  <Content Include="Images\workplz.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
