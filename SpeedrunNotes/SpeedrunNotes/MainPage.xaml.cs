@@ -15,6 +15,8 @@ public partial class MainPage : ContentPage
 
     int CurrentSplitIndex;
 
+    string PreviousTitle;
+
     Socket soc;
 
     List<Split> SplitsInfo;
@@ -130,9 +132,15 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            // Update title and image of next split
-            NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-            NextSplitImage.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+            // Only redraw if something changed
+            if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+            {
+                // Update title and image of next split
+                NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                NextSplitImage.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+
+                PreviousTitle = NextSplitLabel.Text;
+            }
         }
         catch
         {
