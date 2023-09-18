@@ -11,6 +11,8 @@ public partial class MainPage : ContentPage
 {
 	bool FirstAppear = true;
 
+    bool TemplateLoaded = false;
+
     int CurrentSplitIndex;
 
     Socket soc;
@@ -91,28 +93,32 @@ public partial class MainPage : ContentPage
 
     private void OnTimedEvent(object sender, EventArgs e)
     {
-        // Send message to livesplit.server to check current split
-        byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
-        soc.Send(message);
-
-        // Recieve message and "parse" it from computer-jargon -> readable string
-        byte[] b = new byte[100];
-        int k = soc.Receive(b);
-        string DataReceived = Encoding.ASCII.GetString(b, 0, k);
-
-        // Makes sure the whole message is recieved
-        if (DataReceived.EndsWith("\r\n"))
+        // So it only does update stuff if there is a TemplateLoaded
+        if (TemplateLoaded)
         {
-            // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
-            // Thanks alekz for this :)
-            string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+            // Send message to livesplit.server to check current split
+            byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
+            soc.Send(message);
 
-            // Save recieved split-index
-            CurrentSplitIndex = int.Parse(Temp);
+            // Recieve message and "parse" it from computer-jargon -> readable string
+            byte[] b = new byte[100];
+            int k = soc.Receive(b);
+            string DataReceived = Encoding.ASCII.GetString(b, 0, k);
+
+            // Makes sure the whole message is recieved
+            if (DataReceived.EndsWith("\r\n"))
+            {
+                // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
+                // Thanks alekz for this :)
+                string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+
+                // Save recieved split-index
+                CurrentSplitIndex = int.Parse(Temp);
+            }
+
+            // Do UI update stuff, has to be on main thread cause Maui ig
+            MainThread.BeginInvokeOnMainThread(UpdateUiElements);
         }
-
-        // Do UI update stuff, has to be on main thread cause Maui ig
-        MainThread.BeginInvokeOnMainThread(UpdateUiElements);
     }
 
     void UpdateUiElements()
@@ -122,7 +128,14 @@ public partial class MainPage : ContentPage
             // Update title and image of next split
             NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
             NextSplitImage.Source = $"@Images/{SplitsInfo[CurrentSplitIndex + 1].SplitImage}";
+        }
+        catch
+        {
 
+        }
+
+        try
+        {
             // Update notes for current split
             SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
             SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
@@ -152,6 +165,8 @@ public partial class MainPage : ContentPage
         var File = await FilePicker.PickAsync(default);
         string FilePath = File.FullPath;
         SplitsInfo = JSONParse(FilePath);
+
+        TemplateLoaded = true;
     }
 
     void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
