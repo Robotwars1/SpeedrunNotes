@@ -121,7 +121,7 @@ public partial class MainPage : ContentPage
         {
             // Update title and image of next split
             NextSplitLabel.Text = SplitsInfo[CurrentSplitIndex + 1].SplitTitle;
-            NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
+            NextSplitImage.Source = $"@Images/{SplitsInfo[CurrentSplitIndex + 1].SplitImage}";
 
             // Update notes for current split
             SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
