@@ -21,13 +21,18 @@ public partial class MainPage : ContentPage
 
     public class Split
     {
-        public string SplitTitle { get; set; }
-        public string SplitImage { get; set; }
-        public string SplitInfoText1 { get; set; }
-        public string SplitInfoText2 { get; set; }
-        public string SplitInfoImage1 { get; set; }
-        public string SplitInfoImage2 { get; set; }
+        public string SplitTitle { get; set; } = string.Empty;
+        public string SplitImage { get; set; } = string.Empty;
+        public string SplitInfoText1 { get; set; } = string.Empty;
+        public string SplitInfoText2 { get; set; } = string.Empty;
+        public string SplitInfoImage1 { get; set; } = string.Empty;
+        public string SplitInfoImage2 { get; set; } = string.Empty;
     }
+
+    private readonly JsonSerializerOptions _options = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public MainPage()
 	{
@@ -151,7 +156,7 @@ public partial class MainPage : ContentPage
     public List<Split> JSONParse(string FilePath)
     {
         using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _options);
         return Splits;
     }
 
