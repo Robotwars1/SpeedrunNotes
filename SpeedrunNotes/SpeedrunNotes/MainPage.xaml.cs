@@ -149,11 +149,15 @@ public partial class MainPage : ContentPage
 
         try
         {
-            // Update notes for current split
-            SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-            SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-            SplitNoteImage1.Source = $"@Images/{SplitsInfo[CurrentSplitIndex].SplitInfoImage1}";
-            SplitNoteImage2.Source = $"@Images/{SplitsInfo[CurrentSplitIndex].SplitInfoImage2}";
+            // Only do stuff if its within range of list
+            if (CurrentSplitIndex > 0)
+            {
+                // Update notes for current split
+                SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                SplitNoteImage1.Source = $"@Images/{SplitsInfo[CurrentSplitIndex].SplitInfoImage1}";
+                SplitNoteImage2.Source = $"@Images/{SplitsInfo[CurrentSplitIndex].SplitInfoImage2}";
+            }
         }
         catch
         {
