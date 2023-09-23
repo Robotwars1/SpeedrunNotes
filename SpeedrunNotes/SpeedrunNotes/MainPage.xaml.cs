@@ -44,7 +44,7 @@ public partial class MainPage : ContentPage
 	// When loaded, open the ConnectionPage
 	void OnMainPageLoaded(object sender, EventArgs e)
 	{
-		Navigation.PushModalAsync(new ConnectionPage());
+        Navigation.PushModalAsync(new ConnectionPage());
 	}
 
 	void OnMainPageAppearing(object sender, EventArgs e)
@@ -188,7 +188,8 @@ public partial class MainPage : ContentPage
 
     void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
     {
-        string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
+        // ONLY FOR RUNING WITH DEBUGGER, NOT VERIFIED FOR BUILD VERSION
+        string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\Images");
         Process.Start("explorer.exe", ImagesPath);
     }
 }
