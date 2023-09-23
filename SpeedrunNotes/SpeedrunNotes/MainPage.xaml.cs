@@ -173,8 +173,8 @@ public partial class MainPage : ContentPage
                 // Update notes for current split
                 SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
                 SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                SplitNoteImage1.Source = $"@Images/{SplitsInfo[CurrentSplitIndex].SplitInfoImage1}";
-                SplitNoteImage2.Source = $"@Images/{SplitsInfo[CurrentSplitIndex].SplitInfoImage2}";
+                SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+                SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
             }
         }
         catch
