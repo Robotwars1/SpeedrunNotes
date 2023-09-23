@@ -170,11 +170,31 @@ public partial class MainPage : ContentPage
             // Only do stuff if its within range of list
             if (CurrentSplitIndex > 0)
             {
-                // Update notes for current split
-                SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
-                SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
+                {
+                    // Update notes for current split
+                    SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                    SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+                }
+                else
+                {
+                    // Update notes for current split
+                    SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                    SplitNoteImage1.Source = "imageloadfail.png";
+                }
+
+                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2)))
+                {
+                    // Update notes for current split
+                    SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                    SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+                }
+                else
+                {
+                    // Update notes for current split
+                    SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                    SplitNoteImage2.Source = "imageloadfail.png";
+                }
             }
         }
         catch
