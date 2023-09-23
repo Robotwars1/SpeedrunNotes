@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="8in"
+   height="4.5in"
+   viewBox="0 0 203.20001 114.3"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="FailedImageLoad.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="in"
+     showgrid="false"
+     inkscape:zoom="1.7852694"
+     inkscape:cx="368.57183"
+     inkscape:cy="197.16913"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1772" />
+  <defs
+     id="defs2">
+    <rect
+       x="182.59218"
+       y="190.90983"
+       width="152.88629"
+       height="101.79217"
+       id="rect236" />
+  </defs>
+  <g
+     inkscape:label="Lager 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g487">
+      <g
+         id="g1772"
+         transform="translate(0,-12.038923)">
+        <path
+           id="path400"
+           clip-path="none"
+           style="fill:#aa0000;stroke-width:0.514693"
+           d="M 101.6,26.618523 A 32.411077,32.41108 0 0 0 69.188923,59.029598 32.411077,32.41108 0 0 0 101.6,91.440677 32.411077,32.41108 0 0 0 134.01108,59.029598 32.411077,32.41108 0 0 0 101.6,26.618523 Z m 0,3.250867 A 29.16997,29.16997 0 0 1 130.76944,59.040149 29.16997,29.16997 0 0 1 101.6,88.209593 29.16997,29.16997 0 0 1 72.430556,59.040149 29.16997,29.16997 0 0 1 101.6,29.86939 Z" />
+        <text
+           xml:space="preserve"
+           transform="matrix(2.2903844,0,0,2.2903844,-325.17944,-411.38334)"
+           id="text234"
+           style="font-size:26.6667px;font-family:Arial;-inkscape-font-specification:Arial;text-align:justify;white-space:pre;shape-inside:url(#rect236);display:inline;fill:#aa0000"><tspan
+             x="182.5918"
+             y="214.9303"
+             id="tspan9178">!</tspan></text>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:14.1111px;font-family:Arial;-inkscape-font-specification:Arial;text-align:justify;fill:#ffffff;stroke-width:0.264583"
+         x="15.448565"
+         y="96.283211"
+         id="text9100"><tspan
+           sodipodi:role="line"
+           id="tspan9098"
+           style="font-size:14.1111px;stroke-width:0.264583"
+           x="15.448565"
+           y="96.283211">Error: Failed to Load Image</tspan></text>
+    </g>
+  </g>
+</svg>

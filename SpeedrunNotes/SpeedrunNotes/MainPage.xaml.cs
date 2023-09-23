@@ -21,6 +21,9 @@ public partial class MainPage : ContentPage
 
     List<Split> SplitsInfo;
 
+    // ONLY FOR RUNING WITH DEBUGGER, NOT VERIFIED FOR BUILD VERSION
+    string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\Images");
+
     public class Split
     {
         public string SplitTitle { get; set; } = string.Empty;
@@ -132,14 +135,29 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            // Only redraw if something changed
-            if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+            if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
             {
-                // Update title and image of next split
-                NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                NextSplitImage.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+                // Only redraw if something changed
+                if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                {
+                    // Update title and image of next split
+                    NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                    NextSplitImage.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex + 1].SplitImage);
 
-                PreviousTitle = NextSplitLabel.Text;
+                    PreviousTitle = NextSplitLabel.Text;
+                }
+            }
+            else
+            {
+                // Only redraw if something changed
+                if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                {
+                    // Update title and image of next split
+                    NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                    NextSplitImage.Source = "imageloadfail.png";
+
+                    PreviousTitle = NextSplitLabel.Text;
+                }
             }
         }
         catch
@@ -188,8 +206,6 @@ public partial class MainPage : ContentPage
 
     void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
     {
-        // ONLY FOR RUNING WITH DEBUGGER, NOT VERIFIED FOR BUILD VERSION
-        string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\Images");
         Process.Start("explorer.exe", ImagesPath);
     }
 }
