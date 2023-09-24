@@ -16,6 +16,8 @@ public partial class MainPage : ContentPage
     int CurrentSplitIndex;
 
     string PreviousTitle;
+    string PreviousLabel1;
+    string PreviousLabel2;
 
     Socket soc;
 
@@ -172,28 +174,44 @@ public partial class MainPage : ContentPage
             {
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
                 {
-                    // Update notes for current split
-                    SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                    SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+                    // Only redraw if something changed
+                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
+                    {
+                        // Update notes for current split
+                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                        SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+                    }
                 }
                 else
                 {
-                    // Update notes for current split
-                    SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                    SplitNoteImage1.Source = "imageloadfail.png";
+                    // Only redraw if something changed
+                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
+                    {
+                        // Update notes for current split
+                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                        SplitNoteImage1.Source = "imageloadfail.png";
+                    }
                 }
 
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2)))
                 {
-                    // Update notes for current split
-                    SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                    SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+                    // Only redraw if something changed
+                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
+                    {
+                        // Update notes for current split
+                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                        SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+                    }
                 }
                 else
                 {
-                    // Update notes for current split
-                    SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                    SplitNoteImage2.Source = "imageloadfail.png";
+                    // Only redraw if something changed
+                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
+                    {
+                        // Update notes for current split
+                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                        SplitNoteImage2.Source = "imageloadfail.png";
+                    } 
                 }
             }
         }
