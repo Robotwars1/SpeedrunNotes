@@ -180,6 +180,8 @@ public partial class MainPage : ContentPage
                         // Update notes for current split
                         SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
                         SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+
+                        PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
                 else
@@ -190,6 +192,8 @@ public partial class MainPage : ContentPage
                         // Update notes for current split
                         SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
                         SplitNoteImage1.Source = "imageloadfail.png";
+
+                        PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
 
@@ -201,6 +205,8 @@ public partial class MainPage : ContentPage
                         // Update notes for current split
                         SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
                         SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+
+                        PreviousLabel2 = SplitNoteLabel2.Text;
                     }
                 }
                 else
@@ -211,6 +217,8 @@ public partial class MainPage : ContentPage
                         // Update notes for current split
                         SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
                         SplitNoteImage2.Source = "imageloadfail.png";
+
+                        PreviousLabel2 = SplitNoteLabel2.Text;
                     } 
                 }
             }
