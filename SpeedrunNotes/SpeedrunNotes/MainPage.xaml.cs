@@ -168,7 +168,7 @@ public partial class MainPage : ContentPage
         try
         {
             // Only do stuff if its within range of list
-            if (CurrentSplitIndex > 0)
+            if (CurrentSplitIndex > -1)
             {
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
                 {
