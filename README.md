@@ -6,6 +6,8 @@ needed for said split while also showing which split is next, providing that cru
 When starting SpeedrunNotes, you will be greeted with 2 input boxes allowing you to input the local IP and Port used to connect to LiveSplit.Server. Without changing anything these are the defaults provided by LiveSplit.Server and 
 should work but if it doesnt work make sure it matches the defaults.
 
+**Important: BEFORE** pressing the connect button, make sure you have started the server (Rightclick -> Control -> Start Server)
+
 When you have connected to LiveSplit.Server, make sure to select a .json template file corresponding to your current splits and make sure all the required images are available in the images folder (can be opened via the open image folder button).
 Otherwise the missing images will be replaced with an error image which provides 0 help.
 
