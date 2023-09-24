@@ -2,38 +2,42 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpeedrunNotes.ConnectionPage"
+             Background="#121212"
              Appearing="OnConnectionPageAppearing" >
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="50" />
             <RowDefinition Height="40" />
             <RowDefinition Height="50" />
             <RowDefinition Height="10" />
             <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="40" />
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="40" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Elements to show ConnectionError -->
         <BoxView x:Name="ConnectionErrorBackground"
                  Grid.Row="1"
-                 Grid.Column="1"
-               Grid.ColumnSpan="2"
+                 Grid.Column="2"
+                 Grid.ColumnSpan="2"
                  Color="#d9be11" />
 
         <Label x:Name="ConnectionErrorLabel"
                Grid.Row="1"
-               Grid.Column="1"
+               Grid.Column="2"
                Grid.ColumnSpan="2"
                TextColor="Black"
                Text="ConnectionError"
@@ -41,9 +45,16 @@
                VerticalOptions="Center"
                HorizontalOptions="Center" />
 
+        <!-- Background for Connection Stuff -->
+        <BoxView Grid.Row="2"
+                 Grid.RowSpan="7"
+                 Grid.Column="1"
+                 Grid.ColumnSpan="4"
+                 Color="#242424" />
+
         <!-- Connection Stuff -->
         <Label Grid.Row="2"
-               Grid.Column="1"
+               Grid.Column="2"
                Grid.ColumnSpan="2"
                VerticalOptions="End"
                Text="Local IP" 
@@ -51,17 +62,17 @@
 
         <Entry x:Name="IPEntry"
                Grid.Row="3"
-               Grid.Column="1"
+               Grid.Column="2"
                TextChanged="OnIpChanged" />
 
         <ImageButton Grid.Row="3"
-                     Grid.Column="2"
+                     Grid.Column="3"
                      HorizontalOptions="End"
                      Source="reset.png"
                      Clicked="OnIpResetButtonClicked" />
 
         <Label Grid.Row="4"
-               Grid.Column="1"
+               Grid.Column="2"
                Grid.ColumnSpan="2"
                VerticalOptions="End"
                Text="Port"
@@ -69,18 +80,18 @@
 
         <Entry x:Name="PortEntry"
                Grid.Row="5"
-               Grid.Column="1"
+               Grid.Column="2"
                TextChanged="OnPortChanged" />
 
         <ImageButton Grid.Row="5"
-                     Grid.Column="2"
+                     Grid.Column="3"
                      HorizontalOptions="End"
                      Source="reset.png"
                      Clicked="OnPortResetButtonClicked" />
 
         <Button x:Name="ConnectButton"
                 Grid.Row="7"
-                Grid.Column="1"
+                Grid.Column="2"
                 Grid.ColumnSpan="2"
                 WidthRequest="150"
                 Text="Connect"
