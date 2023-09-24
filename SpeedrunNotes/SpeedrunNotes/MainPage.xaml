@@ -28,13 +28,21 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Label x:Name="SplitNoteLabel1" />
+            <Label x:Name="SplitNoteLabel1"
+                   Grid.Row="0"
+                   Grid.Column="0" />
 
-            <Label x:Name="SplitNoteLabel2" />
+            <Label x:Name="SplitNoteLabel2"
+                   Grid.Row="1"
+                   Grid.Column="0" />
 
-            <Image x:Name="SplitNoteImage1" />
+            <Image x:Name="SplitNoteImage1"
+                   Grid.Row="0"
+                   Grid.Column="1" />
 
-            <Image x:Name="SplitNoteImage2" />
+            <Image x:Name="SplitNoteImage2"
+                   Grid.Row="1"
+                   Grid.Column="2" />
         </Grid>
         
         <!-- Next split -->
