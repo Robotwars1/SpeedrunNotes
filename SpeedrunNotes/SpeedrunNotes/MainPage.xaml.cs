@@ -244,10 +244,15 @@ public partial class MainPage : ContentPage
     async void OnLoadPresetBtnClicked(object sender, EventArgs e)
     {
         var File = await FilePicker.PickAsync(default);
-        string FilePath = File.FullPath;
-        SplitsInfo = JSONParse(FilePath);
 
-        TemplateLoaded = true;
+        // Only do stuff to File if it succesfully picks a file
+        if (File != null)
+        {
+            string FilePath = File.FullPath;
+            SplitsInfo = JSONParse(FilePath);
+
+            TemplateLoaded = true;
+        }
     }
 
     void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
