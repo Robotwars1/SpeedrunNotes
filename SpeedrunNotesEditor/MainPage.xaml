@@ -3,39 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpeedrunNotesEditor.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+        <VerticalStackLayout Grid.Column="1"
+                             VerticalOptions="Center" >
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button Text="Load Template"
+                        WidthRequest="150"
+                        Clicked="OnLoadTemplateClicked" />
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
-
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
-
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
-
+                <Button Text="Create Template"
+                        WidthRequest="150"
+                        Clicked="OnCreateTemplateClicked" />
+            </HorizontalStackLayout>
+            
+            <Button Text="Select Split"
+                    WidthRequest="150"
+                    Clicked="OnSelectSplitPresetClicked" />
         </VerticalStackLayout>
-    </ScrollView>
-
+    </Grid>
 </ContentPage>
