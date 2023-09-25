@@ -23,8 +23,7 @@ public partial class MainPage : ContentPage
 
     List<Split> SplitsInfo;
 
-    // ONLY FOR RUNING WITH DEBUGGER, NOT VERIFIED FOR BUILD VERSION
-    string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\Images");
+    string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
 
     public class Split
     {
@@ -144,7 +143,10 @@ public partial class MainPage : ContentPage
                 {
                     // Update title and image of next split
                     NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                    NextSplitImage.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+
+                    string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+
+                    NextSplitImage.Source = ImageSource.FromFile(FileLocation);
 
                     PreviousTitle = NextSplitLabel.Text;
                 }
@@ -179,7 +181,10 @@ public partial class MainPage : ContentPage
                     {
                         // Update notes for current split
                         SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                        SplitNoteImage1.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+
+                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
+
+                        SplitNoteImage1.Source = ImageSource.FromFile(FileLocation);
 
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
@@ -204,7 +209,10 @@ public partial class MainPage : ContentPage
                     {
                         // Update notes for current split
                         SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                        SplitNoteImage2.Source = ImageSource.FromFile(SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+
+                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
+
+                        SplitNoteImage2.Source = ImageSource.FromFile(FileLocation);
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
