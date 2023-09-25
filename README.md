@@ -14,6 +14,8 @@
 ### Technical Details
 ### [.JSON Template](#json-template)
 
+<br>
+
 </div>
 
 # SpeedrunNotes Overview
