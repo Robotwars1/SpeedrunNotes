@@ -23,7 +23,8 @@ SpeedrunNotes is a program written in C# and Xaml with the help of .Net Maui. By
 needed for said split while also showing which split is next, providing that crusual information for users who elect to play with splits hidden.
 
 # SpeedrunNotes Installation
-**TBD**
+To install SpeedrunNotes, head to releases and find the latest one. Press "Assets" under the latest release and then download the .zip file at the top of the list. When its finished, extract the contents of the folder
+and launch the .exe and you are set!
 
 # SpeedrunNotes Using
 When starting SpeedrunNotes, you will be greeted with 2 input boxes allowing you to input the local IP and Port used to connect to LiveSplit.Server. Without changing anything these are the defaults provided by LiveSplit.Server and 
