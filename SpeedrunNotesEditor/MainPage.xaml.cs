@@ -5,8 +5,11 @@ namespace SpeedrunNotesEditor;
 public partial class MainPage : ContentPage
 {
 	int SplitsAmount;
+	List<string> SplitNames;
 
-	public MainPage()
+    string PreviousElement;
+
+    public MainPage()
 	{
 		InitializeComponent();
 	}
@@ -34,13 +37,24 @@ public partial class MainPage : ContentPage
 	void lssParse(string FilePath)
 	{
 		XmlTextReader Reader = new XmlTextReader(FilePath);
+		
 
 		while (Reader.Read())
 		{
 			switch (Reader.NodeType)
 			{
 				case XmlNodeType.Element:
-					SplitsAmount++;
+					if (Reader.Name == "Segment")
+					{
+                        SplitsAmount++;
+                    }
+					PreviousElement = Reader.Name;
+					break;
+				case XmlNodeType.Text:
+					if (PreviousElement == "Name")
+					{
+						SplitNames.Add(Reader.Value);
+					}
 					break;
 			}
 		}
