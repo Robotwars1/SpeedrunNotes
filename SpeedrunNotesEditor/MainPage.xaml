@@ -9,7 +9,23 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <FlexLayout Grid.Row="1" 
+                    Direction="Row"
+                    JustifyContent="SpaceEvenly" >
+            <Button Text="Split Info" />
+
+            <Button Text="Split Notes 1" />
+
+            <Button Text="Split Notes 2" />
+        </FlexLayout>
+
         <VerticalStackLayout Grid.Column="1"
+                             Grid.RowSpan="2"
                              VerticalOptions="Center" >
             <HorizontalStackLayout HorizontalOptions="Center">
                 <Button Text="Load Template"
