@@ -14,6 +14,29 @@
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
+        <CollectionView x:Name="TemplateDetailsViewerCollectionView" >
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="{Binding IndexLabel}" 
+                               FontSize="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+                        <Entry Grid.Column="1" />
+
+                        <Entry Grid.Column="2" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
         <FlexLayout Grid.Row="1" 
                     Direction="Row"
                     JustifyContent="SpaceEvenly" >

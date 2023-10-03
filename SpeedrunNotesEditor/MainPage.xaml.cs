@@ -1,13 +1,25 @@
-﻿using System.Xml;
+﻿using System.Collections.ObjectModel;
+using System.Xml;
 
 namespace SpeedrunNotesEditor;
 
 public partial class MainPage : ContentPage
 {
 	int SplitsAmount;
-	List<string> SplitNames;
+	List<string> SplitNames = new List<string>();
 
     string PreviousElement;
+
+	public class DetailsViewer
+	{
+		public string IndexLabel { get; set; }
+		public string DetailsLabelText { get; set; }
+		public string DetailsImageUrl { get; set; }
+	}
+
+    // Creates Collections of each class to populate each CollectionView
+    ObservableCollection<DetailsViewer> templateDetailsViewer = new ObservableCollection<DetailsViewer>();
+    public ObservableCollection<DetailsViewer> TemplateDetailsViewer { get { return templateDetailsViewer; } }
 
     public MainPage()
 	{
@@ -31,7 +43,9 @@ public partial class MainPage : ContentPage
 		string FilePath = SplitFile.FullPath;
 
 		lssParse(FilePath);
-	}
+
+		UpdateTemplateDetailsViewer();
+    }
 
 	// Function for getting the relevant data out of the selected .lss file
 	void lssParse(string FilePath)
@@ -58,5 +72,16 @@ public partial class MainPage : ContentPage
 					break;
 			}
 		}
+	}
+
+	void UpdateTemplateDetailsViewer()
+	{
+		// Add a "line" for CollectionView, corresponding to how many splits there are
+		for (int i = 0; i < SplitsAmount; i++)
+		{
+			templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString() /*VALUES*/ } );
+		}
+
+		TemplateDetailsViewerCollectionView.ItemsSource = templateDetailsViewer;
 	}
 }
