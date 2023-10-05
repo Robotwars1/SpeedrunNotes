@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Xml;
+using Windows.ApplicationModel.Activation;
 
 namespace SpeedrunNotesEditor;
 
@@ -9,6 +10,11 @@ public partial class MainPage : ContentPage
 	List<string> SplitNames = new List<string>();
 
     string PreviousElement;
+
+	// 0 == Split Info
+	// 1 == Split Notes 1
+	// 2 == Split Notes 2
+	int ViewMode = 0;
 
 	public class DetailsViewer
 	{
@@ -76,12 +82,34 @@ public partial class MainPage : ContentPage
 
 	void UpdateTemplateDetailsViewer()
 	{
-		// Add a "line" for CollectionView, corresponding to how many splits there are
-		for (int i = 0; i < SplitsAmount; i++)
+		switch (ViewMode)
 		{
-			templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString() /*VALUES*/ } );
+            // Split Info
+            case 0:
+                // Add a "line" for CollectionView, corresponding to how many splits there are
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNames[i] /*VALUES*/ });
+                }
+                break;
+            // Split Notes 1
+            case 1:
+                // Add a "line" for CollectionView, corresponding to how many splits there are
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString() /*VALUES*/ });
+                }
+                break;
+            // Split Notes 2
+            case 2:
+                // Add a "line" for CollectionView, corresponding to how many splits there are
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString() /*VALUES*/ });
+                }
+                break;
 		}
 
-		TemplateDetailsViewerCollectionView.ItemsSource = templateDetailsViewer;
-	}
+        TemplateDetailsViewerCollectionView.ItemsSource = templateDetailsViewer;
+    }
 }

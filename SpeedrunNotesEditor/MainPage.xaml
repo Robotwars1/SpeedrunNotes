@@ -29,7 +29,8 @@
                                HorizontalOptions="Center"
                                VerticalOptions="Center" />
 
-                        <Entry Grid.Column="1" />
+                        <Entry Grid.Column="1"
+                               Text="{Binding DetailsLabelText}" />
 
                         <Entry Grid.Column="2" />
                     </Grid>
