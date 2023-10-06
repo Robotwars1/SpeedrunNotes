@@ -41,11 +41,14 @@
         <FlexLayout Grid.Row="1" 
                     Direction="Row"
                     JustifyContent="SpaceEvenly" >
-            <Button Text="Split Info" />
+            <Button Text="Split Info"
+                    Clicked="OnSplitInfoClicked" />
 
-            <Button Text="Split Notes 1" />
+            <Button Text="Split Notes 1"
+                    Clicked="OnSplitNotes1Clicked" />
 
-            <Button Text="Split Notes 2" />
+            <Button Text="Split Notes 2"
+                    Clicked="OnSplitNotes2Clicked" />
         </FlexLayout>
 
         <VerticalStackLayout Grid.Column="1"

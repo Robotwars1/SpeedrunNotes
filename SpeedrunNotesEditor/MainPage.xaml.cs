@@ -143,4 +143,25 @@ public partial class MainPage : ContentPage
 
         TemplateDetailsViewerCollectionView.ItemsSource = templateDetailsViewer;
     }
+
+	void OnSplitInfoClicked(object sender, EventArgs e)
+	{
+		ViewMode = 0;
+
+		UpdateTemplateDetailsViewer();
+	}
+
+    void OnSplitNotes1Clicked(object sender, EventArgs e)
+    {
+		ViewMode = 1;
+
+        UpdateTemplateDetailsViewer();
+    }
+
+    void OnSplitNotes2Clicked(object sender, EventArgs e)
+    {
+		ViewMode = 2;
+
+        UpdateTemplateDetailsViewer();
+    }
 }
