@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Xml;
-using Windows.ApplicationModel.Activation;
 
 namespace SpeedrunNotesEditor;
 
@@ -58,7 +57,6 @@ public partial class MainPage : ContentPage
 	{
 		XmlTextReader Reader = new XmlTextReader(FilePath);
 		
-
 		while (Reader.Read())
 		{
 			switch (Reader.NodeType)
@@ -73,8 +71,41 @@ public partial class MainPage : ContentPage
 				case XmlNodeType.Text:
 					if (PreviousElement == "Name")
 					{
-						SplitNames.Add(Reader.Value);
-					}
+						string NameText = null;
+
+						// If the first char is "-", remove it
+						if (Reader.Value.Substring(0, 1) == "-")
+						{
+							NameText = Reader.Value.Substring(1);
+						}
+                        // Remove "{texttexttext}" thing, the subsplit "chapter" name
+						else if (Reader.Value.Substring(0, 1) == "{")
+						{
+							int Chars = 0;
+
+							foreach (Char ch in Reader.Value)
+							{
+                                Chars++;
+                                if (ch == '}')
+                                {
+                                    break;
+                                }
+                            }
+
+							NameText = Reader.Value.Remove(0, Chars);
+                        }
+						// If it doesnt have any of the subsplits markers
+						else
+						{
+							NameText = Reader.Value;
+						}
+
+						// Removes every space at front and end of the actual split name
+						NameText = NameText.Trim(' ');
+
+						// Add the cleaned name to the List
+                        SplitNames.Add(NameText);
+                    }
 					break;
 			}
 		}
