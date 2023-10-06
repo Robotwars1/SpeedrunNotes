@@ -113,6 +113,8 @@ public partial class MainPage : ContentPage
 
 	void UpdateTemplateDetailsViewer()
 	{
+		templateDetailsViewer.Clear();
+
 		switch (ViewMode)
 		{
             // Split Info
