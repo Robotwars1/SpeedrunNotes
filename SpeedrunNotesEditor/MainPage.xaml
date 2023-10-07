@@ -30,9 +30,14 @@
                                VerticalOptions="Center" />
 
                         <Entry Grid.Column="1"
-                               Text="{Binding DetailsLabelText}" />
+                               ClassId="{Binding TextEntryId}"
+                               Text="{Binding DetailsLabelText}"
+                               TextChanged="UpdateDetailsText" />
 
-                        <Entry Grid.Column="2" />
+                        <Entry Grid.Column="2"
+                               ClassId="{Binding ImageEntryId}"
+                               Text="{Binding DetailsImageUrl}"
+                               TextChanged="UpdateDetailsImage" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

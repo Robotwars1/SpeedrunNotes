@@ -22,11 +22,13 @@ public partial class MainPage : ContentPage
 	// 2 == Split Notes 2
 	int ViewMode = 0;
 
-	public class DetailsViewer
+    public class DetailsViewer
 	{
 		public string IndexLabel { get; set; }
 		public string DetailsLabelText { get; set; }
+		public string TextEntryId { get; set; }
 		public string DetailsImageUrl { get; set; }
+		public string ImageEntryId { get; set; }
 	}
 
     // Creates Collections of each class to populate each CollectionView
@@ -139,7 +141,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
                 }
                 break;
             // Split Notes 1
@@ -147,7 +149,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
                 }
                 break;
             // Split Notes 2
@@ -155,7 +157,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
                 }
                 break;
 		}
@@ -182,5 +184,73 @@ public partial class MainPage : ContentPage
 		ViewMode = 2;
 
         UpdateTemplateDetailsViewer();
+    }
+
+	void UpdateDetailsText(object sender, TextChangedEventArgs e)
+	{
+        switch (ViewMode)
+        {
+            case 0:
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                    {
+                        SplitNames[i] = e.NewTextValue;
+                    }
+                }
+                break;
+            case 1:
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                    {
+                        SplitNoteText1[i] = e.NewTextValue;
+                    }
+                }
+                break;
+            case 2:
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                    {
+                        SplitNoteText2[i] = e.NewTextValue;
+                    }
+                }
+                break;
+        }
+    }
+
+    void UpdateDetailsImage(object sender, TextChangedEventArgs e)
+    {
+        switch (ViewMode)
+        {
+            case 0:
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                    {
+                        SplitImages[i] = e.NewTextValue;
+                    }
+                }
+                break;
+            case 1:
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                    {
+                        SplitNoteImage1[i] = e.NewTextValue;
+                    }
+                }
+                break;
+            case 2:
+                for (int i = 0; i < SplitsAmount; i++)
+                {
+                    if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                    {
+                        SplitNoteImage2[i] = e.NewTextValue;
+                    }
+                }
+                break;
+        }
     }
 }
