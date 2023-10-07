@@ -6,7 +6,14 @@ namespace SpeedrunNotesEditor;
 public partial class MainPage : ContentPage
 {
 	int SplitsAmount;
+
+	// Lists for keeping track of each thing that will be saved in template.json file
 	List<string> SplitNames = new List<string>();
+	List<string> SplitImages = new List<string>();
+    List<string> SplitNoteText1 = new List<string>();
+    List<string> SplitNoteImage1 = new List<string>();
+    List<string> SplitNoteText2 = new List<string>();
+    List<string> SplitNoteImage2 = new List<string>();
 
     string PreviousElement;
 
@@ -109,6 +116,16 @@ public partial class MainPage : ContentPage
 					break;
 			}
 		}
+
+		// Make sure the following Lists are populated with as many items as SplitNames
+		for (int i = 0; i < SplitNames.Count; i++)
+		{
+            SplitImages.Add(null);
+            SplitNoteText1.Add(null);
+            SplitNoteImage1.Add(null);
+            SplitNoteText2.Add(null);
+            SplitNoteImage2.Add(null);
+        }
 	}
 
 	void UpdateTemplateDetailsViewer()
@@ -122,7 +139,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNames[i] /*VALUES*/ });
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
                 }
                 break;
             // Split Notes 1
@@ -130,7 +147,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString() /*VALUES*/ });
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
                 }
                 break;
             // Split Notes 2
@@ -138,7 +155,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString() /*VALUES*/ });
+                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
                 }
                 break;
 		}
