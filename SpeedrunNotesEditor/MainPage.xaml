@@ -59,19 +59,17 @@
         <VerticalStackLayout Grid.Column="1"
                              Grid.RowSpan="2"
                              VerticalOptions="Center" >
-            <HorizontalStackLayout HorizontalOptions="Center">
-                <Button Text="Load Template"
-                        WidthRequest="150"
-                        Clicked="OnLoadTemplateClicked" />
+            <Button Text="Load Template"
+                    WidthRequest="150"
+                    Clicked="OnLoadTemplateClicked" />
 
-                <Button Text="Create Template"
-                        WidthRequest="150"
-                        Clicked="OnCreateTemplateClicked" />
-            </HorizontalStackLayout>
-            
             <Button Text="Select Split"
                     WidthRequest="150"
                     Clicked="OnSelectSplitPresetClicked" />
+
+            <Button Text="Save Template"
+                    WidthRequest="150"
+                    Clicked="OnSaveTemplateClicked" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

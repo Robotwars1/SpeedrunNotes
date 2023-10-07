@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 
 namespace SpeedrunNotesEditor;
@@ -49,9 +50,14 @@ public partial class MainPage : ContentPage
         public string SplitInfoImage2 { get; set; } = string.Empty;
     }
 
-    private readonly JsonSerializerOptions _options = new()
+    private readonly JsonSerializerOptions _readOptions = new()
     {
         PropertyNameCaseInsensitive = true
+    };
+
+    private static readonly JsonSerializerOptions _writeOptions = new() 
+    { 
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull 
     };
 
     public MainPage()
@@ -99,16 +105,33 @@ public partial class MainPage : ContentPage
     public List<Split> JSONParse(string FilePath)
     {
         using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _options);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _readOptions);
         return Splits;
     }
 
-    void OnCreateTemplateClicked(object sender, EventArgs e)
+    void OnSaveTemplateClicked(object sender, EventArgs e)
 	{
+        var TemplateVars = new List<Split>();
+        var FileName = @"w:\new-template.json";
 
+        // Make sure the List TemplateVars has all values set
+        for (int i = 0; i < SplitsAmount; i++)
+        {
+            TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
+        }
+
+        jsonWrite(TemplateVars, FileName);
 	}
 
-	async void OnSelectSplitPresetClicked(object sender, EventArgs e)
+    public static void jsonWrite(object Obj, string FileName)
+    {
+        using var FileStream = File.Create(FileName);
+        using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
+
+        JsonSerializer.Serialize(Utf8JsonWriter, Obj, _writeOptions);
+    }
+
+    async void OnSelectSplitPresetClicked(object sender, EventArgs e)
 	{
 		var SplitFile = await FilePicker.PickAsync(default);
 
