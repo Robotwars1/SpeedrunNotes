@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text.Json;
 using System.Xml;
 
 namespace SpeedrunNotesEditor;
@@ -35,17 +36,74 @@ public partial class MainPage : ContentPage
     ObservableCollection<DetailsViewer> templateDetailsViewer = new ObservableCollection<DetailsViewer>();
     public ObservableCollection<DetailsViewer> TemplateDetailsViewer { get { return templateDetailsViewer; } }
 
+    // Stuff for loading presets
+    List<Split> SplitsInfo;
+
+    public class Split
+    {
+        public string SplitTitle { get; set; } = string.Empty;
+        public string SplitImage { get; set; } = string.Empty;
+        public string SplitInfoText1 { get; set; } = string.Empty;
+        public string SplitInfoText2 { get; set; } = string.Empty;
+        public string SplitInfoImage1 { get; set; } = string.Empty;
+        public string SplitInfoImage2 { get; set; } = string.Empty;
+    }
+
+    private readonly JsonSerializerOptions _options = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public MainPage()
 	{
 		InitializeComponent();
 	}
 
-	void OnLoadTemplateClicked(object sender, EventArgs e)
+	async void OnLoadTemplateClicked(object sender, EventArgs e)
 	{
+        var File = await FilePicker.PickAsync(default);
 
-	}
+        // Only do stuff to File if it succesfully picks a file
+        if (File != null)
+        {
+            string FilePath = File.FullPath;
+            SplitsInfo = JSONParse(FilePath);
 
-	void OnCreateTemplateClicked(object sender, EventArgs e)
+            SplitsAmount = SplitsInfo.Count;
+
+            /*
+            // Clear Lists
+            SplitNames.Clear();
+            SplitImages.Clear();
+            SplitNoteText1.Clear();
+            SplitNoteImage1.Clear();
+            SplitNoteText2.Clear();
+            SplitNoteImage2.Clear();
+            */
+
+            // Update corresponding lists
+            for (int i = 0; i < SplitsInfo.Count; i++)
+            {
+                SplitNames.Add(SplitsInfo[i].SplitTitle);
+                SplitImages.Add(SplitsInfo[i].SplitImage);
+                SplitNoteText1.Add(SplitsInfo[i].SplitInfoText1);
+                SplitNoteImage1.Add(SplitsInfo[i].SplitInfoImage1);
+                SplitNoteText2.Add(SplitsInfo[i].SplitInfoText2);
+                SplitNoteImage2.Add(SplitsInfo[i].SplitInfoImage2);
+            }
+
+            UpdateTemplateDetailsViewer();
+        }
+    }
+
+    public List<Split> JSONParse(string FilePath)
+    {
+        using FileStream json = File.OpenRead(FilePath);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _options);
+        return Splits;
+    }
+
+    void OnCreateTemplateClicked(object sender, EventArgs e)
 	{
 
 	}
