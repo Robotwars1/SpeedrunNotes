@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="SpeedrunNotesEditor.SaveTemplatePopup"
+               CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <VerticalStackLayout VerticalOptions="Center"
+                         HorizontalOptions="Center" >
+        <Label Text="File Name" 
+               FontSize="20" />
+
+        <Entry x:Name="FileNameEntry"
+               TextChanged="OnFileNameChanged" />
+
+        <Label Text="File Location"
+               FontSize="20" />
+
+        <Button x:Name="FileLocationButton"
+                Text="Select Folder"
+                Clicked="OnFileLocationButtonClicked" />
+
+        <Button x:Name="SaveFileButton"
+                Text="Save File"
+                Clicked="OnSaveFileButtonClicked" />
+    </VerticalStackLayout>
+</toolkit:Popup>

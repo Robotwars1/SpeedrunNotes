@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Maui.Views;
+using System.Collections.ObjectModel;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Xml;
 
 namespace SpeedrunNotesEditor;
@@ -55,11 +55,6 @@ public partial class MainPage : ContentPage
         PropertyNameCaseInsensitive = true
     };
 
-    private static readonly JsonSerializerOptions _writeOptions = new() 
-    { 
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull 
-    };
-
     public MainPage()
 	{
 		InitializeComponent();
@@ -111,25 +106,9 @@ public partial class MainPage : ContentPage
 
     void OnSaveTemplateClicked(object sender, EventArgs e)
 	{
-        var TemplateVars = new List<Split>();
-        var FileName = @"w:\new-template.json";
-
-        // Make sure the List TemplateVars has all values set
-        for (int i = 0; i < SplitsAmount; i++)
-        {
-            TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
-        }
-
-        jsonWrite(TemplateVars, FileName);
+        // Create a popup and pass through all important vars
+        this.ShowPopup(new SaveTemplatePopup(SplitsAmount, SplitNames, SplitImages, SplitNoteText1, SplitNoteImage1, SplitNoteText2, SplitNoteImage2));
 	}
-
-    public static void jsonWrite(object Obj, string FileName)
-    {
-        using var FileStream = File.Create(FileName);
-        using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
-
-        JsonSerializer.Serialize(Utf8JsonWriter, Obj, _writeOptions);
-    }
 
     async void OnSelectSplitPresetClicked(object sender, EventArgs e)
 	{
