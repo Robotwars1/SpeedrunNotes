@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpeedrunNotesEditor.MainPage"
+             Background="#121212" >
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <CollectionView x:Name="TemplateDetailsViewerCollectionView" >
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="{Binding IndexLabel}" 
+                               FontSize="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+                        <Entry Grid.Column="1"
+                               ClassId="{Binding TextEntryId}"
+                               Text="{Binding DetailsLabelText}"
+                               TextChanged="UpdateDetailsText" />
+
+                        <Entry Grid.Column="2"
+                               ClassId="{Binding ImageEntryId}"
+                               Text="{Binding DetailsImageUrl}"
+                               TextChanged="UpdateDetailsImage" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <FlexLayout Grid.Row="1" 
+                    Direction="Row"
+                    JustifyContent="SpaceEvenly" >
+            <Button Text="Split Info"
+                    Clicked="OnSplitInfoClicked" />
+
+            <Button Text="Split Notes 1"
+                    Clicked="OnSplitNotes1Clicked" />
+
+            <Button Text="Split Notes 2"
+                    Clicked="OnSplitNotes2Clicked" />
+        </FlexLayout>
+
+        <!-- Background for Side-bar -->
+        <BoxView Grid.Column="1"
+                 Grid.RowSpan="2"
+                 Color="#242424" />
+
+        <!-- Side-bar -->
+        <VerticalStackLayout Grid.Column="1"
+                             Grid.RowSpan="2"
+                             VerticalOptions="Center" >
+            <Button Text="Load Template"
+                    WidthRequest="150"
+                    Clicked="OnLoadTemplateClicked" />
+
+            <Button Text="Select Split"
+                    WidthRequest="150"
+                    Clicked="OnSelectSplitPresetClicked" />
+
+            <Button Text="Save Template"
+                    WidthRequest="150"
+                    Clicked="OnSaveTemplateClicked" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
