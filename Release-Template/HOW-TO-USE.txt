@@ -1,0 +1,15 @@
+1. Copy this folder
+
+2. Clear the "bin" folder in each project
+
+3. Build a release version in each project
+
+4. Copy build results into the copied folder
+
+5. Create shortcuts to each .exe
+
+6. Rename folder to version
+
+7. ZIP folder
+
+8. Create new release on Github
