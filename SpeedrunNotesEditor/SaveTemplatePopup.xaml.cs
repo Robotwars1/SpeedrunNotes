@@ -89,7 +89,7 @@ public partial class SaveTemplatePopup : Popup
     async void OnSaveFileButtonClicked(object sender, EventArgs e)
     {
         var TemplateVars = new List<Split>();
-        var File = Path.Combine(FilePath, FileName); // NOT WORKING
+        var File = Path.Combine(FilePath, FileName);
 
         // Make sure the List TemplateVars has all values set
         for (int i = 0; i < SplitsAmount; i++)
@@ -97,12 +97,12 @@ public partial class SaveTemplatePopup : Popup
             TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
         }
 
-        jsonWrite(TemplateVars, File);
+        JsonWrite(TemplateVars, File);
 
         await CloseAsync();
     }
 
-    public static void jsonWrite(object Obj, string FileName)
+    public static void JsonWrite(object Obj, string FileName)
     {
         using var FileStream = File.Create(FileName);
         using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);

@@ -2,8 +2,12 @@ namespace SpeedrunNotes;
 
 public partial class ConnectionPage : ContentPage
 {
-	public ConnectionPage()
+	bool ConnectionError;
+
+	public ConnectionPage(bool connectionError)
 	{
+		ConnectionError = connectionError;
+
 		InitializeComponent();
 
 		// Set IP and Port to previously used value
@@ -13,7 +17,7 @@ public partial class ConnectionPage : ContentPage
 
 	void OnConnectionPageAppearing(object sender, EventArgs e)
 	{
-		if (Preferences.Default.Get("ConnectionError", false) == true)
+		if (ConnectionError == true)
 		{
 			// Show ConnectionError
 			ConnectionErrorBackground.IsVisible = true;

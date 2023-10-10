@@ -11,6 +11,8 @@ public partial class MainPage : ContentPage
 {
 	bool FirstAppear = true;
 
+    bool ConnectionError = false;
+
     bool TemplateLoaded = false;
 
     int CurrentSplitIndex;
@@ -23,7 +25,7 @@ public partial class MainPage : ContentPage
 
     List<Split> SplitsInfo;
 
-    string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
+    readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
 
     public class Split
     {
@@ -45,10 +47,10 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
     }
 
-	// When loaded, open the ConnectionPage
 	void OnMainPageLoaded(object sender, EventArgs e)
-	{
-        Navigation.PushModalAsync(new ConnectionPage());
+    {
+        // When loaded, open the ConnectionPage
+        Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
 	}
 
 	void OnMainPageAppearing(object sender, EventArgs e)
@@ -77,29 +79,31 @@ public partial class MainPage : ContentPage
                 // Connect to livesplit.server
                 soc.Connect(remoteEP);
 
+                ConnectionError = false;
+
                 // Start the timer / scheduled function calls
                 InitTimer();
             }
 			catch
 			{
                 // Update variable to show "ConnectionError" on ConnectionPage
-                Preferences.Default.Set("ConnectionError", true);
+                bool ConnectionError = true;
 
                 // Bring back to ConnectionPage
-                Navigation.PushModalAsync(new ConnectionPage());
+                Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
             }
         }
 
 		FirstAppear = false;
 	}
 
-    // Setup timer to send / recieve message with LiveSplit.Server every second
     public void InitTimer()
     {
-        System.Timers.Timer timer1 = new(1000);
-        timer1.Elapsed += OnTimedEvent;
-        timer1.AutoReset = true;
-        timer1.Enabled = true;
+        // Setup timer to send / recieve message with LiveSplit.Server every second
+        System.Timers.Timer Timer = new(1000);
+        Timer.Elapsed += OnTimedEvent;
+        Timer.AutoReset = true;
+        Timer.Enabled = true;
     }
 
     private void OnTimedEvent(object sender, EventArgs e)
@@ -237,7 +241,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    public List<Split> JSONParse(string FilePath)
+    public List<Split> JsonParse(string FilePath)
     {
         using FileStream json = File.OpenRead(FilePath);
         List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _options);
@@ -246,7 +250,7 @@ public partial class MainPage : ContentPage
 
     void OnReconnectBtnClicked(object sender, EventArgs e)
 	{
-		Navigation.PushModalAsync(new ConnectionPage());
+		Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
 	}
 
     async void OnLoadPresetBtnClicked(object sender, EventArgs e)
@@ -257,7 +261,7 @@ public partial class MainPage : ContentPage
         if (File != null)
         {
             string FilePath = File.FullPath;
-            SplitsInfo = JSONParse(FilePath);
+            SplitsInfo = JsonParse(FilePath);
 
             TemplateLoaded = true;
         }

@@ -4,7 +4,7 @@
              x:Class="SpeedrunNotes.MainPage"
              Background="#121212"
              Loaded="OnMainPageLoaded"
-             Appearing="OnMainPageAppearing">
+             Appearing="OnMainPageAppearing" >
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -71,18 +71,15 @@
                      Grid.Row="1" 
                      Padding="20"
                      BackgroundColor="#242424" >
-            <Button x:Name="ReconnectBtn"
-                    Text="Reconnect"
+            <Button Text="Reconnect"
                     WidthRequest="200"
                     Clicked="OnReconnectBtnClicked" />
 
-            <Button x:Name="LoadPresetButton"
-                    Text="Load Preset"
+            <Button Text="Load Preset"
                     WidthRequest="200"
                     Clicked="OnLoadPresetBtnClicked" />
 
-            <Button x:Name="OpenImageFolderBtn"
-                    Text="Open Image Folder"
+            <Button Text="Open Image Folder"
                     WidthRequest="200"
                     Clicked="OnOpenImageFolderBtnClicked" />
 
