@@ -36,7 +36,7 @@ public partial class SaveTemplatePopup : Popup
         InitializeComponent();
 
         // (width, height)
-        Size = new Size(400, 250);
+        Size = new Size(400, 300);
 
         // Make sure all vars are assigned
         SplitsAmount = splitsAmount;
