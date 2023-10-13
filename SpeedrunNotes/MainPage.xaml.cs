@@ -26,6 +26,7 @@ public partial class MainPage : ContentPage
     List<Split> SplitsInfo;
 
     readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
+    readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
 
     public class Split
     {
@@ -284,5 +285,10 @@ public partial class MainPage : ContentPage
     void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
     {
         Process.Start("explorer.exe", ImagesPath);
+    }
+
+    void OnOpenTemplateFolderBtnClicked(object sender, EventArgs e)
+    {
+        Process.Start("explorer.exe", TemplatesPath);
     }
 }
