@@ -42,6 +42,20 @@ public partial class MainPage : ContentPage
         PropertyNameCaseInsensitive = true
     };
 
+    // Custom FileType to only show .json files in FilePicker
+    static FilePickerFileType CustomFileType = new FilePickerFileType(
+                new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.WinUI, new[] { ".json"} },
+                });
+
+    // Options for .json FilePicker
+    PickOptions JsonFilepickerOptions = new()
+    {
+        PickerTitle = "Please select a comic file",
+        FileTypes = CustomFileType,
+    };
+
     public MainPage()
 	{
 		InitializeComponent();
@@ -255,7 +269,7 @@ public partial class MainPage : ContentPage
 
     async void OnLoadPresetBtnClicked(object sender, EventArgs e)
     {
-        var File = await FilePicker.PickAsync(default);
+        var File = await FilePicker.PickAsync(JsonFilepickerOptions);
 
         // Only do stuff to File if it succesfully picks a file
         if (File != null)
