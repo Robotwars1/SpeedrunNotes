@@ -10,12 +10,12 @@ public partial class MainPage : ContentPage
 	int SplitsAmount;
 
 	// Lists for keeping track of each thing that will be saved in template.json file
-	List<string> SplitNames = new List<string>();
-	List<string> SplitImages = new List<string>();
-    List<string> SplitNoteText1 = new List<string>();
-    List<string> SplitNoteImage1 = new List<string>();
-    List<string> SplitNoteText2 = new List<string>();
-    List<string> SplitNoteImage2 = new List<string>();
+	List<string> SplitNames = new();
+	List<string> SplitImages = new();
+    List<string> SplitNoteText1 = new();
+    List<string> SplitNoteImage1 = new();
+    List<string> SplitNoteText2 = new();
+    List<string> SplitNoteImage2 = new();
 
     string PreviousElement;
 
@@ -34,7 +34,7 @@ public partial class MainPage : ContentPage
 	}
 
     // Creates Collections of each class to populate each CollectionView
-    ObservableCollection<DetailsViewer> templateDetailsViewer = new ObservableCollection<DetailsViewer>();
+    ObservableCollection<DetailsViewer> templateDetailsViewer = new();
     public ObservableCollection<DetailsViewer> TemplateDetailsViewer { get { return templateDetailsViewer; } }
 
     // Stuff for loading presets
@@ -68,7 +68,7 @@ public partial class MainPage : ContentPage
         if (File != null)
         {
             string FilePath = File.FullPath;
-            SplitsInfo = JSONParse(FilePath);
+            SplitsInfo = JsonParse(FilePath);
 
             SplitsAmount = SplitsInfo.Count;
 
@@ -97,7 +97,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    public List<Split> JSONParse(string FilePath)
+    public List<Split> JsonParse(string FilePath)
     {
         using FileStream json = File.OpenRead(FilePath);
         List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _readOptions);
@@ -116,15 +116,15 @@ public partial class MainPage : ContentPage
 
 		string FilePath = SplitFile.FullPath;
 
-		lssParse(FilePath);
+		LssParse(FilePath);
 
 		UpdateTemplateDetailsViewer();
     }
 
 	// Function for getting the relevant data out of the selected .lss file
-	void lssParse(string FilePath)
+	void LssParse(string FilePath)
 	{
-		XmlTextReader Reader = new XmlTextReader(FilePath);
+		XmlTextReader Reader = new(FilePath);
 		
 		while (Reader.Read())
 		{
@@ -140,7 +140,7 @@ public partial class MainPage : ContentPage
 				case XmlNodeType.Text:
 					if (PreviousElement == "Name")
 					{
-						string NameText = null;
+						string NameText;
 
 						// If the first char is "-", remove it
 						if (Reader.Value.Substring(0, 1) == "-")

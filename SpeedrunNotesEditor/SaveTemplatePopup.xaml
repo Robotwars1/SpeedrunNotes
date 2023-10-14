@@ -4,7 +4,7 @@
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                x:Class="SpeedrunNotesEditor.SaveTemplatePopup"
                Color="#242424"
-               CanBeDismissedByTappingOutsideOfPopup="False">
+               CanBeDismissedByTappingOutsideOfPopup="False" >
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -29,8 +29,7 @@
                FontSize="20"
                VerticalOptions="End" />
 
-        <Entry x:Name="FileNameEntry"
-               Grid.Row="2"
+        <Entry Grid.Row="2"
                Grid.Column="1"
                TextChanged="OnFileNameChanged" />
 
@@ -39,14 +38,12 @@
                Text="File Location"
                FontSize="20" />
 
-        <Button x:Name="FileLocationButton"
-                Grid.Row="4"
+        <Button Grid.Row="4"
                 Grid.Column="1"
                 Text="Select Folder"
                 Clicked="OnFileLocationButtonClicked" />
 
-        <Button x:Name="SaveFileButton"
-                Grid.Row="5"
+        <Button Grid.Row="5"
                 Grid.Column="1"
                 Text="Save File"
                 Clicked="OnSaveFileButtonClicked" />
