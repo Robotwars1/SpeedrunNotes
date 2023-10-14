@@ -1,30 +1,38 @@
 
 <div align="center">
 
+### [Installation](#installation-1)
+
+<br>
+
 ### SpeedrunNotes
-### [Overview](#speedrunnotes-overview) | [Installation](#speedrunnotes-installation) | [Using](#speedrunnotes-using)
+### [Overview](#speedrunnotes-overview) | [Using](#speedrunnotes-using)
 
 <br>
 
 ### SpeedrunNotesEditor
-### [Overview](#speedrunnoteseditor-overview) | [Installation](#speedrunnoteseditor-installation) | [Using](#speedrunnoteseditor-using)
+### [Overview](#speedrunnoteseditor-overview) | [Using](#speedrunnoteseditor-using)
 
 <br>
 
 ### Technical Details
-### [.JSON Template](#json-template)
+### [.JSON Template](#json-template-1)
 
 <br>
 
 </div>
 
+# Installation
+To install SpeedrunNotes and SpeedrunNotesEditor, head to releases and find the latest one. 
+Press "Assets" under the latest release and then download the .zip file at the top of the list. 
+When its finished, extract the contents of the folder and launch the .exe and you are set!
+
+**IMPORTANT:** You need LiveSplit.Server in your split layout for this program to work.
+If you don't have it added to your layout, head over to [LiveSplit.Servers github]("https://github.com/LiveSplit/LiveSplit.Server#install") and follow the installation instructions there.
+
 # SpeedrunNotes Overview
 SpeedrunNotes is a program written in C# and Xaml with the help of .Net Maui. By communicating with [LiveSplit.Server](https://github.com/LiveSplit/LiveSplit.Server) it gets information about your current split and shows any notes
 needed for said split while also showing which split is next, providing that crusual information for users who elect to play with splits hidden.
-
-# SpeedrunNotes Installation
-To install SpeedrunNotes, head to releases and find the latest one. Press "Assets" under the latest release and then download the .zip file at the top of the list. When its finished, extract the contents of the folder
-and launch the .exe and you are set!
 
 # SpeedrunNotes Using
 When starting SpeedrunNotes, you will be greeted with 2 input boxes allowing you to input the local IP and Port used to connect to LiveSplit.Server. Without changing anything these are the defaults provided by LiveSplit.Server and 
@@ -36,14 +44,14 @@ When you have connected to LiveSplit.Server, make sure to select a .json templat
 Otherwise the missing images will be replaced with an error image which provides 0 help.
 
 # SpeedrunNotesEditor Overview
-SpeedrunNotesEditor is the working title of the planned editor that will make it easy to create .json templates by easily inputing data from livesplit. It will also let the user attach given Notes text and images + allow automatic moving
-to SpeedrunNotes folders
-
-# SpeedrunNotesEditor Installation
-**TBD**
+SpeedrunNotesEditor is a program that lets you create a templates for SpeedrunNotes. Its made to be simple to use and has the ability to automate parts of the template creating.
 
 # SpeedrunNotesEditor Using
-**TBD**
+When starting the program there are 2 primary ways to use it. Either you click "Load Template" to edit a currently existing template or "Select Split" to automaticly create a new template with split names automaticly put into the template.
+
+At the bottom of the screen there are 3 buttons which allow you to switch which part of the template you are editing. Currently these are: split preview, split notes row 1, split notes row 2.
+
+When you have finished editing these, press the "Save Template" button and you will have a template that works for your splits in SpeedrunNotes.
 
 # .JSON Template
 All split information is saved in .json files to be read and parsed for the program.
@@ -75,5 +83,3 @@ And a chart of what type each variable is
 ## Template Creation
 As it currently stands, if you want to make a new preset everything has to be done by editing a pure .json file. To do this, base it of the Template.json and add a new instance of the block ( {} - brackets included ).
 In the future, a dedicated editor program will be developed and put into this repository
-
-
