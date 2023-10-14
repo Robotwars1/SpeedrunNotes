@@ -30,6 +30,8 @@ public partial class ConnectionPage : ContentPage
             ConnectionErrorLabel.IsVisible = false;
         }
 
+        InfoStuffBorder.IsVisible = false;
+
         ConnectButton.Text = "Connect";
     }
 
@@ -64,5 +66,11 @@ public partial class ConnectionPage : ContentPage
 		await Task.Delay(5);
 
 		await Navigation.PopModalAsync();
+    }
+
+	void OnInfoToggleButtonClicked(object sender, EventArgs e)
+	{
+		// Toggle visibility by setting it to opposite of current value
+		InfoStuffBorder.IsVisible = !InfoStuffBorder.IsVisible;
     }
 }

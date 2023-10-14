@@ -8,23 +8,25 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="50" />
             <RowDefinition Height="50" />
             <RowDefinition Height="40" />
             <RowDefinition Height="50" />
             <RowDefinition Height="10" />
             <RowDefinition Height="50" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="50" />
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -51,6 +53,12 @@
                  Grid.Column="1"
                  Grid.ColumnSpan="4"
                  Color="#242424" />
+        
+        <!-- Button to toggle InfoStuff -->
+        <ImageButton Grid.Row="2"
+                     Grid.Column="4"
+                     Source="info.png" 
+                     Clicked="OnInfoToggleButtonClicked" />
 
         <!-- Connection Stuff -->
         <Label Grid.Row="2"
@@ -97,5 +105,28 @@
                 Text="Connect"
                 FontSize="20" 
                 Clicked="OnConnectButtonClicked" />
+        
+        <!-- Info Stuff -->
+        <Border x:Name="InfoStuffBorder"
+                Grid.Column="6"
+                Grid.Row="2"
+                Grid.RowSpan="7"
+                BackgroundColor="#242424"
+                Stroke="#242424">
+            <VerticalStackLayout VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Padding="10" >
+                <Label FontSize="18">
+                    <!-- Text not inset to remove the insane amount of spaces in front of text -->
+                    <Label.Text>
+Here you can enter the Local IP of your computer and the Port of LiveSplit.Server in order to connect to it
+                        
+If you haven't changed anything in LiveSplit, then the default values will work but otherwise you will have edit the Port value
+                        
+If you want to reset to defaults, press the button to the right of each entry box
+                    </Label.Text>
+                </Label>
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>
