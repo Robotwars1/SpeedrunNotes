@@ -16,7 +16,7 @@
 <br>
 
 ### Technical Details
-### [.JSON Template](#json-template-1)
+### [.JSON Template](#json-template-1) | [ReleaseBuilder.py](#releasebuilderpy)
 
 <br>
 
@@ -83,3 +83,11 @@ And a chart of what type each variable is
 ## Template Creation
 As it currently stands, if you want to make a new preset everything has to be done by editing a pure .json file. To do this, base it of the Template.json and add a new instance of the block ( {} - brackets included ).
 In the future, a dedicated editor program will be developed and put into this repository
+
+# ReleaseBuilder.py
+ReleaseBuilder is a custom-made Python script that automates the process of building each project and packing the release. Just by inputting the release name it does the rest for you, with the only exception being you have to make a .zip by yourself.
+
+**IMPORTANT:** For running it, make sure to install [Python 3.11 or later](https://www.python.org/downloads/) and run the following command in the Command Prompt.
+```
+python -m pip install --upgrade pywin32
+```
