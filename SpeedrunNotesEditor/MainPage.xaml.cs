@@ -60,7 +60,15 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 	}
 
-	async void OnLoadTemplateClicked(object sender, EventArgs e)
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        Window.MinimumWidth = 1280;
+        Window.MinimumHeight = 720;
+    }
+
+    async void OnLoadTemplateClicked(object sender, EventArgs e)
 	{
         var File = await FilePicker.PickAsync(default);
 

@@ -15,7 +15,15 @@ public partial class ConnectionPage : ContentPage
         PortEntry.Text = Preferences.Default.Get("Port", 16834).ToString();
     }
 
-	void OnConnectionPageAppearing(object sender, EventArgs e)
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        Window.MinimumWidth = 1280;
+        Window.MinimumHeight = 720;
+    }
+
+    void OnConnectionPageAppearing(object sender, EventArgs e)
 	{
 		if (ConnectionError == true)
 		{

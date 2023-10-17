@@ -62,13 +62,21 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
     }
 
-	void OnMainPageLoaded(object sender, EventArgs e)
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        Window.MinimumWidth = 1280;
+        Window.MinimumHeight = 720;
+    }
+
+    void OnMainPageLoaded(object sender, EventArgs e)
     {
         // When loaded, open the ConnectionPage
         Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
 	}
 
-	void OnMainPageAppearing(object sender, EventArgs e)
+    void OnMainPageAppearing(object sender, EventArgs e)
 	{
 		// If not first time it appears, eg when going from ConnectionPage to MainPage
         if (!FirstAppear)
