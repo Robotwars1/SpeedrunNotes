@@ -68,7 +68,7 @@ public partial class MainPage : ContentPage
         Window.MinimumHeight = 720;
     }
 
-    async void OnLoadTemplateClicked(object sender, EventArgs e)
+    async void OnCreateFromTemplateClicked(object sender, EventArgs e)
 	{
         var File = await FilePicker.PickAsync(default);
 
@@ -118,7 +118,7 @@ public partial class MainPage : ContentPage
         this.ShowPopup(new SaveTemplatePopup(SplitsAmount, SplitNames, SplitImages, SplitNoteText1, SplitNoteImage1, SplitNoteText2, SplitNoteImage2));
 	}
 
-    async void OnSelectSplitPresetClicked(object sender, EventArgs e)
+    async void OnCreateFromSplitClicked(object sender, EventArgs e)
 	{
 		var SplitFile = await FilePicker.PickAsync(default);
 

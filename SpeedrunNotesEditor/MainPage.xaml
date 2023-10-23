@@ -6,14 +6,9 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
-        </Grid.RowDefinitions>
 
         <CollectionView x:Name="TemplateDetailsViewerCollectionView" >
             <CollectionView.ItemTemplate>
@@ -44,19 +39,6 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <FlexLayout Grid.Row="1" 
-                    Direction="Row"
-                    JustifyContent="SpaceEvenly" >
-            <Button Text="Split Info"
-                    Clicked="OnSplitInfoClicked" />
-
-            <Button Text="Split Notes 1"
-                    Clicked="OnSplitNotes1Clicked" />
-
-            <Button Text="Split Notes 2"
-                    Clicked="OnSplitNotes2Clicked" />
-        </FlexLayout>
-
         <!-- Background for Side-bar -->
         <BoxView Grid.Column="1"
                  Grid.RowSpan="2"
@@ -66,17 +48,50 @@
         <VerticalStackLayout Grid.Column="1"
                              Grid.RowSpan="2"
                              VerticalOptions="Center" >
-            <Button Text="Load Template"
-                    WidthRequest="150"
-                    Clicked="OnLoadTemplateClicked" />
+            <Label Text="Create Template"
+                   FontSize="20"
+                   HorizontalOptions="Center" />
 
-            <Button Text="Select Split"
+            <Button Text="From Split"
                     WidthRequest="150"
-                    Clicked="OnSelectSplitPresetClicked" />
+                    Clicked="OnCreateFromSplitClicked" />
 
-            <Button Text="Save Template"
+            <Button Text="From Template"
+                    WidthRequest="150"
+                    Clicked="OnCreateFromTemplateClicked" />
+
+            <!-- Spacer -->
+            <Label />
+
+            <Label Text="Save Template"
+                   FontSize="20"
+                   HorizontalOptions="Center" />
+
+            <Button Text="Save"
+                    WidthRequest="150" />
+
+            <Button Text="Save As"
                     WidthRequest="150"
                     Clicked="OnSaveTemplateClicked" />
+
+            <!-- Spacer -->
+            <Label />
+
+            <Label Text="Template Editing"
+                   FontSize="20"
+                   HorizontalOptions="Center" />
+            
+            <Button Text="Split Info"
+                    WidthRequest="150"
+                    Clicked="OnSplitInfoClicked" />
+
+            <Button Text="Split Notes 1"
+                    WidthRequest="150"
+                    Clicked="OnSplitNotes1Clicked" />
+
+            <Button Text="Split Notes 2"
+                    WidthRequest="150"
+                    Clicked="OnSplitNotes2Clicked" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
