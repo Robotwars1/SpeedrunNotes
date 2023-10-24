@@ -9,22 +9,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
             <RowDefinition Height="40" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="220" />
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="350" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="*" />
@@ -33,14 +26,12 @@
         <!-- Elements to show ConnectionError -->
         <BoxView x:Name="ConnectionErrorBackground"
                  Grid.Row="1"
-                 Grid.Column="2"
-                 Grid.ColumnSpan="2"
+                 Grid.Column="1"
                  Color="#d9be11" />
 
         <Label x:Name="ConnectionErrorLabel"
                Grid.Row="1"
-               Grid.Column="2"
-               Grid.ColumnSpan="2"
+               Grid.Column="1"
                TextColor="Black"
                Text="ConnectionError"
                FontSize="20"
@@ -49,80 +40,96 @@
 
         <!-- Background for Connection Stuff -->
         <BoxView Grid.Row="2"
-                 Grid.RowSpan="7"
+                 Grid.RowSpan="3"
                  Grid.Column="1"
-                 Grid.ColumnSpan="4"
                  Color="#242424" />
         
         <!-- Button to toggle InfoStuff -->
         <ImageButton Grid.Row="2"
-                     Grid.Column="4"
+                     Grid.Column="1"
+                     HorizontalOptions="End"
                      Source="info.png" 
+                     WidthRequest="40"
+                     HeightRequest="40"
+                     BackgroundColor="#242424"
                      Clicked="OnInfoToggleButtonClicked" />
 
         <!-- Connection Stuff -->
-        <Label Grid.Row="2"
-               Grid.Column="2"
-               Grid.ColumnSpan="2"
-               VerticalOptions="End"
-               Text="Local IP" 
-               FontSize="20" />
+        <VerticalStackLayout Grid.Row="3"
+                             Grid.Column="1"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center" >
+            <Label Grid.Row="2"
+                   Grid.Column="2"
+                   Grid.ColumnSpan="2"
+                   VerticalOptions="End"
+                   Text="Local IP" 
+                   FontSize="20" />
 
-        <Entry x:Name="IPEntry"
-               Grid.Row="3"
-               Grid.Column="2"
-               TextChanged="OnIpChanged" />
+            <HorizontalStackLayout>
+                <Entry x:Name="IPEntry"
+                       Grid.Row="3"
+                       Grid.Column="2"
+                       WidthRequest="200"
+                       TextChanged="OnIpChanged" />
 
-        <ImageButton Grid.Row="3"
-                     Grid.Column="3"
-                     HorizontalOptions="End"
-                     Source="reset.png"
-                     Clicked="OnIpResetButtonClicked" />
+                <ImageButton Grid.Row="3"
+                             Grid.Column="3"
+                             HorizontalOptions="End"
+                             Source="reset.png"
+                             WidthRequest="50"
+                             Clicked="OnIpResetButtonClicked" />
+            </HorizontalStackLayout>
 
-        <Label Grid.Row="4"
-               Grid.Column="2"
-               Grid.ColumnSpan="2"
-               VerticalOptions="End"
-               Text="Port"
-               FontSize="20" />
+            <Label Grid.Row="4"
+                   Grid.Column="2"
+                   Grid.ColumnSpan="2"
+                   VerticalOptions="End"
+                   Text="Port"
+                   FontSize="20" />
 
-        <Entry x:Name="PortEntry"
-               Grid.Row="5"
-               Grid.Column="2"
-               TextChanged="OnPortChanged" />
+            <HorizontalStackLayout>
+                <Entry x:Name="PortEntry"
+                       Grid.Row="5"
+                       Grid.Column="2"
+                       WidthRequest="200"
+                       TextChanged="OnPortChanged" />
 
-        <ImageButton Grid.Row="5"
-                     Grid.Column="3"
-                     HorizontalOptions="End"
-                     Source="reset.png"
-                     Clicked="OnPortResetButtonClicked" />
-
-        <Button x:Name="ConnectButton"
-                Grid.Row="7"
-                Grid.Column="2"
-                Grid.ColumnSpan="2"
-                WidthRequest="150"
-                Text="Connect"
-                FontSize="20" 
-                Clicked="OnConnectButtonClicked" />
+                <ImageButton Grid.Row="5"
+                             Grid.Column="3"
+                             HorizontalOptions="End"
+                             Source="reset.png"
+                             WidthRequest="50"
+                             Clicked="OnPortResetButtonClicked" />
+            </HorizontalStackLayout>
+            
+            <Button x:Name="ConnectButton"
+                    Grid.Row="7"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    WidthRequest="150"
+                    Text="Connect"
+                    FontSize="20" 
+                    Clicked="OnConnectButtonClicked" />
+        </VerticalStackLayout>
         
         <!-- Info Stuff -->
         <Border x:Name="InfoStuffBorder"
-                Grid.Column="6"
+                Grid.Column="3"
                 Grid.Row="2"
-                Grid.RowSpan="7"
+                Grid.RowSpan="3"
                 BackgroundColor="#242424"
                 Stroke="#242424">
             <VerticalStackLayout VerticalOptions="Center"
                                  HorizontalOptions="Center"
                                  Padding="10" >
-                <Label FontSize="18">
+                <Label FontSize="16">
                     <!-- Text not inset to remove the insane amount of spaces in front of text -->
                     <Label.Text>
-Here you can enter the Local IP of your computer and the Port of LiveSplit.Server in order to connect to it
-                        
+Here you enter the Local IP of your computer and the Port of LiveSplit.Server in order to connect to it
+
 If you haven't changed anything in LiveSplit, then the default values will work but otherwise you will have edit the Port value
-                        
+
 If you want to reset to defaults, press the button to the right of each entry box
                     </Label.Text>
                 </Label>
