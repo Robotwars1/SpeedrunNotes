@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 
 namespace SpeedrunNotesEditor;
@@ -40,6 +41,9 @@ public partial class MainPage : ContentPage
     // Stuff for loading presets
     List<Split> SplitsInfo;
 
+    // If null, then no file has been loaded
+    string LoadedFilePath = null;
+
     public class Split
     {
         public string SplitTitle { get; set; } = string.Empty;
@@ -53,6 +57,11 @@ public partial class MainPage : ContentPage
     private readonly JsonSerializerOptions _readOptions = new()
     {
         PropertyNameCaseInsensitive = true
+    };
+
+    private static readonly JsonSerializerOptions _writeOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
     public MainPage()
@@ -75,8 +84,8 @@ public partial class MainPage : ContentPage
         // Only do stuff to File if it succesfully picks a file
         if (File != null)
         {
-            string FilePath = File.FullPath;
-            SplitsInfo = JsonParse(FilePath);
+            LoadedFilePath = File.FullPath;
+            SplitsInfo = JsonParse(LoadedFilePath);
 
             SplitsAmount = SplitsInfo.Count;
 
@@ -102,6 +111,8 @@ public partial class MainPage : ContentPage
             }
 
             UpdateTemplateDetailsViewer();
+
+            SaveTemplateButton.IsEnabled = true;
         }
     }
 
@@ -113,6 +124,29 @@ public partial class MainPage : ContentPage
     }
 
     void OnSaveTemplateClicked(object sender, EventArgs e)
+    {
+        // List to hold all the variables for writing into the json
+        var TemplateVars = new List<Split>();
+
+        // Make sure the List TemplateVars has all values set
+        for (int i = 0; i < SplitsAmount; i++)
+        {
+            TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
+        }
+
+        // Write to the loaded file
+        JsonWrite(TemplateVars, LoadedFilePath);
+    }
+
+    public static void JsonWrite(object Obj, string FileName)
+    {
+        using var FileStream = File.Create(FileName);
+        using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
+
+        JsonSerializer.Serialize(Utf8JsonWriter, Obj, _writeOptions);
+    }
+
+    void OnSaveAsTemplateClicked(object sender, EventArgs e)
 	{
         // Create a popup and pass through all important vars
         this.ShowPopup(new SaveTemplatePopup(SplitsAmount, SplitNames, SplitImages, SplitNoteText1, SplitNoteImage1, SplitNoteText2, SplitNoteImage2));

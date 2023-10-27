@@ -67,12 +67,15 @@
                    FontSize="20"
                    HorizontalOptions="Center" />
 
-            <Button Text="Save"
-                    WidthRequest="150" />
+            <Button x:Name="SaveTemplateButton"
+                    IsEnabled="False"
+                    Text="Save"
+                    WidthRequest="150"
+                    Clicked="OnSaveTemplateClicked" />
 
             <Button Text="Save As"
                     WidthRequest="150"
-                    Clicked="OnSaveTemplateClicked" />
+                    Clicked="OnSaveAsTemplateClicked" />
 
             <!-- Spacer -->
             <Label />
