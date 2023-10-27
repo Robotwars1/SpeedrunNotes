@@ -88,6 +88,8 @@ public partial class SaveTemplatePopup : Popup
         if (Folder != null)
         {
             FilePath = Folder.Folder.Path;
+
+            SaveButton.IsEnabled = true;
         }
     }
 

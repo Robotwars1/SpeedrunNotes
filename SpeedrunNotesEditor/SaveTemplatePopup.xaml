@@ -24,7 +24,9 @@
             <Button Text="Select File Location"
                     Clicked="OnFileLocationButtonClicked" />
 
-            <Button Text="Save File"
+            <Button x:Name="SaveButton"
+                    IsEnabled="False"
+                    Text="Save File"
                     Clicked="OnSaveFileButtonClicked" />
         </VerticalStackLayout>
     </Grid>
