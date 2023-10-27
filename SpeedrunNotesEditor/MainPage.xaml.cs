@@ -44,6 +44,9 @@ public partial class MainPage : ContentPage
     // If null, then no file has been loaded
     string LoadedFilePath = null;
 
+    // Bool for if currently loading template / creating template from splits to avoid dumb errors
+    bool SettingTemplate = false;
+
     public class Split
     {
         public string SplitTitle { get; set; } = string.Empty;
@@ -84,20 +87,20 @@ public partial class MainPage : ContentPage
         // Only do stuff to File if it succesfully picks a file
         if (File != null)
         {
+            SettingTemplate = true;
+
             LoadedFilePath = File.FullPath;
             SplitsInfo = JsonParse(LoadedFilePath);
 
             SplitsAmount = SplitsInfo.Count;
 
-            /*
-            // Clear Lists
+            // Clear Lists incase another template was previously loaded / created
             SplitNames.Clear();
             SplitImages.Clear();
             SplitNoteText1.Clear();
             SplitNoteImage1.Clear();
             SplitNoteText2.Clear();
             SplitNoteImage2.Clear();
-            */
 
             // Update corresponding lists
             for (int i = 0; i < SplitsInfo.Count; i++)
@@ -113,6 +116,7 @@ public partial class MainPage : ContentPage
             UpdateTemplateDetailsViewer();
 
             SaveTemplateButton.IsEnabled = true;
+            SettingTemplate = false;
         }
     }
 
@@ -156,17 +160,36 @@ public partial class MainPage : ContentPage
 	{
 		var SplitFile = await FilePicker.PickAsync(default);
 
-		string FilePath = SplitFile.FullPath;
+        // Only do stuff to File if it succesfully picks a file
+        if (SplitFile != null)
+        {
+            SettingTemplate = true;
 
-		LssParse(FilePath);
+            string FilePath = SplitFile.FullPath;
 
-		UpdateTemplateDetailsViewer();
+            // Clear Lists incase another template was previously loaded / created
+            SplitNames.Clear();
+            SplitImages.Clear();
+            SplitNoteText1.Clear();
+            SplitNoteImage1.Clear();
+            SplitNoteText2.Clear();
+            SplitNoteImage2.Clear();
+
+            LssParse(FilePath);
+
+            UpdateTemplateDetailsViewer();
+
+            SettingTemplate = false;
+        }
     }
 
 	// Function for getting the relevant data out of the selected .lss file
 	void LssParse(string FilePath)
 	{
-		XmlTextReader Reader = new(FilePath);
+        // Reset SplitsAmount before re-calculating it
+        SplitsAmount = 0;
+
+        XmlTextReader Reader = new(FilePath);
 		
 		while (Reader.Read())
 		{
@@ -290,69 +313,75 @@ public partial class MainPage : ContentPage
 
 	void UpdateDetailsText(object sender, TextChangedEventArgs e)
 	{
-        switch (ViewMode)
+        if (!SettingTemplate)
         {
-            case 0:
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+            switch (ViewMode)
+            {
+                case 0:
+                    for (int i = 0; i < SplitsAmount; i++)
                     {
-                        SplitNames[i] = e.NewTextValue;
+                        if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                        {
+                            SplitNames[i] = e.NewTextValue;
+                        }
                     }
-                }
-                break;
-            case 1:
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                    break;
+                case 1:
+                    for (int i = 0; i < SplitsAmount; i++)
                     {
-                        SplitNoteText1[i] = e.NewTextValue;
+                        if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                        {
+                            SplitNoteText1[i] = e.NewTextValue;
+                        }
                     }
-                }
-                break;
-            case 2:
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                    break;
+                case 2:
+                    for (int i = 0; i < SplitsAmount; i++)
                     {
-                        SplitNoteText2[i] = e.NewTextValue;
+                        if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                        {
+                            SplitNoteText2[i] = e.NewTextValue;
+                        }
                     }
-                }
-                break;
+                    break;
+            }
         }
     }
 
     void UpdateDetailsImage(object sender, TextChangedEventArgs e)
     {
-        switch (ViewMode)
+        if (!SettingTemplate)
         {
-            case 0:
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+            switch (ViewMode)
+            {
+                case 0:
+                    for (int i = 0; i < SplitsAmount; i++)
                     {
-                        SplitImages[i] = e.NewTextValue;
+                        if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                        {
+                            SplitImages[i] = e.NewTextValue;
+                        }
                     }
-                }
-                break;
-            case 1:
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                    break;
+                case 1:
+                    for (int i = 0; i < SplitsAmount; i++)
                     {
-                        SplitNoteImage1[i] = e.NewTextValue;
+                        if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                        {
+                            SplitNoteImage1[i] = e.NewTextValue;
+                        }
                     }
-                }
-                break;
-            case 2:
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                    break;
+                case 2:
+                    for (int i = 0; i < SplitsAmount; i++)
                     {
-                        SplitNoteImage2[i] = e.NewTextValue;
+                        if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                        {
+                            SplitNoteImage2[i] = e.NewTextValue;
+                        }
                     }
-                }
-                break;
+                    break;
+            }
         }
     }
 }
