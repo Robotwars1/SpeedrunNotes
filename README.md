@@ -91,3 +91,8 @@ ReleaseBuilder is a custom-made Python script that automates the process of buil
 ```
 python -m pip install --upgrade pywin32
 ```
+
+# FileMover.py
+FileMover is a Python script that can move every image and template file from an old version to a new version to make updating less of a pain.
+
+**IMPORTANT:** For running it, make sure to install [Python 3.11 or later](https://www.python.org/downloads/)
