@@ -16,7 +16,7 @@
 <br>
 
 ### Technical Details
-### [.JSON Template](#json-template-1) | [ReleaseBuilder.py](#releasebuilderpy)
+### [.JSON Template](#json-template-1) | [Python Scripts](#python-scripts)
 
 <br>
 
@@ -81,10 +81,11 @@ And a chart of what type each variable is
 | splitInfoImage2 | String | Image URL |
 
 ## Template Creation
-As it currently stands, if you want to make a new preset everything has to be done by editing a pure .json file. To do this, base it of the Template.json and add a new instance of the block ( {} - brackets included ).
-In the future, a dedicated editor program will be developed and put into this repository
+For creating a template there are 2 primary ways, either via editing a .json file direcly through a code editor or by using SpeedrunNotesEditor. For writing a template through code, make sure to copy the template shown above. If using SpeedrunNotesEditor then follow [usage instructions](#speedrunnotes-using).
 
-# ReleaseBuilder.py
+# Python Scripts
+
+## ReleaseBuilder.py
 ReleaseBuilder is a custom-made Python script that automates the process of building each project and packing the release. Just by inputting the release name it does the rest for you, with the only exception being you have to make a .zip by yourself.
 
 **IMPORTANT:** For running it, make sure to install [Python 3.11 or later](https://www.python.org/downloads/) and run the following command in the Command Prompt.
@@ -92,7 +93,7 @@ ReleaseBuilder is a custom-made Python script that automates the process of buil
 python -m pip install --upgrade pywin32
 ```
 
-# FileMover.py
+## FileMover.py
 FileMover is a Python script that can move every image and template file from an old version to a new version to make updating less of a pain.
 
 **IMPORTANT:** For running it, make sure to install [Python 3.11 or later](https://www.python.org/downloads/)
