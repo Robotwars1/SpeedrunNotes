@@ -35,8 +35,7 @@ public partial class MainPage : ContentPage
 	}
 
     // Creates Collections of each class to populate each CollectionView
-    ObservableCollection<DetailsViewer> templateDetailsViewer = new();
-    public ObservableCollection<DetailsViewer> TemplateDetailsViewer { get { return templateDetailsViewer; } }
+    ObservableCollection<DetailsViewer> TemplateDetailsViewer = new();
 
     // Stuff for loading presets
     List<Split> SplitsInfo;
@@ -257,7 +256,7 @@ public partial class MainPage : ContentPage
 
 	void UpdateTemplateDetailsViewer()
 	{
-		templateDetailsViewer.Clear();
+        TemplateDetailsViewer.Clear();
 
 		switch (ViewMode)
 		{
@@ -266,7 +265,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
+                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
                 }
                 break;
             // Split Notes 1
@@ -274,7 +273,7 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
+                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
                 }
                 break;
             // Split Notes 2
@@ -282,12 +281,12 @@ public partial class MainPage : ContentPage
                 // Add a "line" for CollectionView, corresponding to how many splits there are
                 for (int i = 0; i < SplitsAmount; i++)
                 {
-                    templateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
+                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
                 }
                 break;
 		}
 
-        TemplateDetailsViewerCollectionView.ItemsSource = templateDetailsViewer;
+        TemplateDetailsViewerCollectionView.ItemsSource = TemplateDetailsViewer;
     }
 
 	void OnSplitInfoClicked(object sender, EventArgs e)
@@ -320,7 +319,7 @@ public partial class MainPage : ContentPage
                 case 0:
                     for (int i = 0; i < SplitsAmount; i++)
                     {
-                        if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
                         {
                             SplitNames[i] = e.NewTextValue;
                         }
@@ -329,7 +328,7 @@ public partial class MainPage : ContentPage
                 case 1:
                     for (int i = 0; i < SplitsAmount; i++)
                     {
-                        if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
                         {
                             SplitNoteText1[i] = e.NewTextValue;
                         }
@@ -338,7 +337,7 @@ public partial class MainPage : ContentPage
                 case 2:
                     for (int i = 0; i < SplitsAmount; i++)
                     {
-                        if (((Entry)sender).ClassId == templateDetailsViewer[i].TextEntryId)
+                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
                         {
                             SplitNoteText2[i] = e.NewTextValue;
                         }
@@ -357,7 +356,7 @@ public partial class MainPage : ContentPage
                 case 0:
                     for (int i = 0; i < SplitsAmount; i++)
                     {
-                        if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
                         {
                             SplitImages[i] = e.NewTextValue;
                         }
@@ -366,7 +365,7 @@ public partial class MainPage : ContentPage
                 case 1:
                     for (int i = 0; i < SplitsAmount; i++)
                     {
-                        if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
                         {
                             SplitNoteImage1[i] = e.NewTextValue;
                         }
@@ -375,7 +374,7 @@ public partial class MainPage : ContentPage
                 case 2:
                     for (int i = 0; i < SplitsAmount; i++)
                     {
-                        if (((Entry)sender).ClassId == templateDetailsViewer[i].ImageEntryId)
+                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
                         {
                             SplitNoteImage2[i] = e.NewTextValue;
                         }
@@ -383,5 +382,12 @@ public partial class MainPage : ContentPage
                     break;
             }
         }
+    }
+
+    void OnTemplateEditingInfoButtonClicked(object sender, EventArgs e)
+    {
+
+        // Create a popup and pass through all important vars
+        this.ShowPopup(new InfoPopup("template_editing_info.png"));
     }
 }

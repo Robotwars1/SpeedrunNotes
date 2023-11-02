@@ -72,12 +72,15 @@ public partial class MainPage : ContentPage
 
     void OnMainPageLoaded(object sender, EventArgs e)
     {
+        /*
         // When loaded, open the ConnectionPage
         Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+        */
 	}
 
     void OnMainPageAppearing(object sender, EventArgs e)
 	{
+        /*
 		// If not first time it appears, eg when going from ConnectionPage to MainPage
         if (!FirstAppear)
         {
@@ -118,6 +121,7 @@ public partial class MainPage : ContentPage
         }
 
 		FirstAppear = false;
+        */
 	}
 
     public void InitTimer()

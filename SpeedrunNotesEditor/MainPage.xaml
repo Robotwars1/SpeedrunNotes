@@ -80,10 +80,19 @@
             <!-- Spacer -->
             <Label />
 
-            <Label Text="Template Editing"
-                   FontSize="20"
-                   HorizontalOptions="Center" />
-            
+            <HorizontalStackLayout HorizontalOptions="Center" >
+                <Label Text="Template Editing"
+                       FontSize="20"
+                       HorizontalOptions="Center" />
+
+                <ImageButton Source="info.png"
+                             HorizontalOptions="End" 
+                             MinimumHeightRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="#242424"
+                             Clicked="OnTemplateEditingInfoButtonClicked" />
+            </HorizontalStackLayout>
+
             <Button Text="Split Info"
                     WidthRequest="150"
                     Clicked="OnSplitInfoClicked" />

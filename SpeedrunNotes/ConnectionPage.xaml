@@ -48,8 +48,8 @@
         <ImageButton Grid.Row="2"
                      Grid.Column="1"
                      HorizontalOptions="End"
-                     Source="info.png" 
-                     WidthRequest="40"
+                     Source="info.png"
+                     MinimumHeightRequest="40"
                      HeightRequest="40"
                      BackgroundColor="#242424"
                      Clicked="OnInfoToggleButtonClicked" />
