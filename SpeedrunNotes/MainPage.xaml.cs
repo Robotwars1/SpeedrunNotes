@@ -72,15 +72,12 @@ public partial class MainPage : ContentPage
 
     void OnMainPageLoaded(object sender, EventArgs e)
     {
-        /*
         // When loaded, open the ConnectionPage
         Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
-        */
 	}
 
     void OnMainPageAppearing(object sender, EventArgs e)
 	{
-        /*
 		// If not first time it appears, eg when going from ConnectionPage to MainPage
         if (!FirstAppear)
         {
@@ -121,8 +118,10 @@ public partial class MainPage : ContentPage
         }
 
 		FirstAppear = false;
-        */
-	}
+
+        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
+        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
 
     public void InitTimer()
     {
@@ -302,5 +301,61 @@ public partial class MainPage : ContentPage
     void OnOpenTemplateFolderBtnClicked(object sender, EventArgs e)
     {
         Process.Start("explorer.exe", TemplatesPath);
+    }
+
+    void SplitNotes1FontSizeIncrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel1.FontSize += 1;
+        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
+    }
+
+    void SplitNotes1FontSizeDecrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel1.FontSize -= 1;
+        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
+    }
+
+    void SplitNotes2FontSizeIncrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel2.FontSize += 1;
+        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
+
+    void SplitNotes2FontSizeDecrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel2.FontSize -= 1;
+        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
+
+    void OnSplitNotes1EntryTextChanged(object sender, EventArgs e)
+    {
+        // Make sure only numbers are entered
+        var Builder = new StringBuilder();
+        foreach (char ch in SplitNotes1Entry.Text)
+        {
+            if (Char.IsDigit(ch))
+            {
+                Builder.Append(ch);
+            }
+        }
+        SplitNotes1Entry.Text = Builder.ToString();
+
+        SplitNoteLabel1.FontSize = int.Parse(Builder.ToString());
+    }
+
+    void OnSplitNotes2EntryTextChanged(object sender, EventArgs e)
+    {
+        // Make sure only numbers are entered
+        var Builder = new StringBuilder();
+        foreach (char ch in SplitNotes2Entry.Text)
+        {
+            if (Char.IsDigit(ch))
+            {
+                Builder.Append(ch);
+            }
+        }
+        SplitNotes2Entry.Text = Builder.ToString();
+
+        SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
     }
 }
