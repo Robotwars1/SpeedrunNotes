@@ -75,7 +75,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Popouts\SplitNote2Popout.xaml.cs">
+	    <DependentUpon>SplitNote2Popout.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Popouts\SplitNote1Popout.xaml.cs">
+	    <DependentUpon>SplitNote1Popout.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="ConnectionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Popouts\SplitNote2Popout.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Popouts\SplitNote1Popout.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Popouts\NextSplitPopout.xaml">
