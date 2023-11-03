@@ -34,9 +34,34 @@
                    Grid.Row="0"
                    Grid.Column="0" />
 
+            <ImageButton x:Name="PopoutSplitNote1Button"
+                         IsEnabled="false"
+                         Source="popout.png"
+                         Margin="3"
+                         VerticalOptions="Start"
+                         HorizontalOptions="End"
+                         MinimumHeightRequest="25"
+                         MinimumWidthRequest="25"
+                         HeightRequest="25"
+                         WidthRequest="25"
+                         Clicked="OnPopoutSplitNote1ButtonClicked" />
+
             <Label x:Name="SplitNoteLabel2"
                    Grid.Row="1"
                    Grid.Column="0" />
+
+            <ImageButton x:Name="PopoutSplitNote2Button"
+                         Grid.Row="1"
+                         IsEnabled="false"
+                         Source="popout.png"
+                         Margin="3"
+                         VerticalOptions="Start"
+                         HorizontalOptions="End"
+                         MinimumHeightRequest="25"
+                         MinimumWidthRequest="25"
+                         HeightRequest="25"
+                         WidthRequest="25"
+                         Clicked="OnPopoutSplitNote2ButtonClicked" />
 
             <Image x:Name="SplitNoteImage1"
                    Grid.Row="0"

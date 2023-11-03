@@ -26,9 +26,14 @@ public partial class MainPage : ContentPage
 
     List<Split> SplitsInfo;
 
+    // Bools for tracking if a popout is active or not
     bool NextSplitPopoutActive = false;
+    bool SplitNote1PopoutActive = false;
+    bool SplitNote2PopoutActive = false;
 
     Window NextSplitPopoutWindow;
+    Window SplitNote1PopoutWindow;
+    Window SplitNote2PopoutWindow;
 
     readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
     readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
@@ -162,6 +167,7 @@ public partial class MainPage : ContentPage
                 CurrentSplitIndex = int.Parse(Temp);
             }
 
+            // Send needed variables to each active popout
             if (NextSplitPopoutActive)
             {
                 string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
@@ -169,6 +175,16 @@ public partial class MainPage : ContentPage
 
                 MessagingCenter.Send(this, "NextSplitLabel", NextSplitLabel);
                 MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
+            }
+            if (SplitNote1PopoutActive)
+            {
+                MessagingCenter.Send(this, "SplitNote1FontSize", SplitNoteLabel1.FontSize);
+                MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText1);
+            }
+            if (SplitNote1PopoutActive)
+            {
+                MessagingCenter.Send(this, "SplitNote2FontSize", SplitNoteLabel2.FontSize);
+                MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText2);
             }
 
             // Do UI update stuff, has to be on main thread cause Maui ig
@@ -178,6 +194,9 @@ public partial class MainPage : ContentPage
 
     void UpdateUiElements()
     {
+        // Get all active windows
+        IReadOnlyList<Window> Windows = Application.Current.Windows;
+
         // Only update stuff if the element isnt "Popouted"
         if (!NextSplitPopoutActive)
         {
@@ -219,21 +238,19 @@ public partial class MainPage : ContentPage
         // When NextSplitPopout is active, check if it has been disabled
         else
         {
-            IReadOnlyList<Window> Windows = Application.Current.Windows;
-
             // If it has been disabled, re-enable the button and set NextSplitPopoutActive to false
             if (!Windows.Contains(NextSplitPopoutWindow))
             {
                 PopoutNextSplitButton.IsEnabled = true;
                 NextSplitPopoutActive = false;
-                PreviousTitle = null;
+                PreviousTitle = null; // Set to null so it has to be re-drawn
             }
         }
 
-        try
+        // Only update stuff if the element isnt "Popouted"
+        if (!SplitNote1PopoutActive)
         {
-            // Only do stuff if its within range of list
-            if (CurrentSplitIndex > -1)
+            try
             {
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
                 {
@@ -262,7 +279,29 @@ public partial class MainPage : ContentPage
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
+            }
+            catch
+            {
 
+            }
+        }
+        // When SplitNote1Popout is active, check if it has been disabled
+        else
+        {
+            // If it has been disabled, re-enable the button and set SplitNote1PopoutActive to false
+            if (!Windows.Contains(NextSplitPopoutWindow))
+            {
+                PopoutSplitNote1Button.IsEnabled = true;
+                SplitNote1PopoutActive = false;
+                PreviousLabel1 = null; // Set to null so it has to be re-drawn
+            }
+        }
+
+        // Only update stuff if the element isnt "Popouted"
+        if (!SplitNote2PopoutActive)
+        {
+            try
+            {
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2)))
                 {
                     // Only redraw if something changed
@@ -288,13 +327,24 @@ public partial class MainPage : ContentPage
                         SplitNoteImage2.Source = "imageloadfail.png";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
-                    } 
+                    }
                 }
             }
-        }
-        catch
-        {
+            catch
+            {
 
+            }
+        }
+        // When SplitNote2Popout is active, check if it has been disabled
+        else
+        {
+            // If it has been disabled, re-enable the button and set SplitNote2PopoutActive to false
+            if (!Windows.Contains(NextSplitPopoutWindow))
+            {
+                PopoutSplitNote2Button.IsEnabled = true;
+                SplitNote2PopoutActive = false;
+                PreviousLabel2 = null; // Set to null so it has to be re-drawn
+            }
         }
     }
 
@@ -322,7 +372,10 @@ public partial class MainPage : ContentPage
 
             TemplateLoaded = true;
 
+            // Enable all popout buttons since a template has been loaded
             PopoutNextSplitButton.IsEnabled = true;
+            PopoutSplitNote1Button.IsEnabled = true;
+            PopoutSplitNote2Button.IsEnabled = true;
         }
     }
 
@@ -406,5 +459,35 @@ public partial class MainPage : ContentPage
         NextSplitPopoutWindow = new Window(new NextSplitPopout());
 
         Application.Current.OpenWindow(NextSplitPopoutWindow);
+    }
+
+    void OnPopoutSplitNote1ButtonClicked(object sender, EventArgs e)
+    {
+        // Disable the button so the user cant create more than one popouts
+        PopoutSplitNote1Button.IsEnabled = false;
+
+        SplitNote1PopoutActive = true;
+
+        // Set text to not show
+        SplitNoteLabel1.Text = "";
+
+        SplitNote1PopoutWindow = new Window(new SplitNote1Popout());
+
+        Application.Current.OpenWindow(SplitNote1PopoutWindow);
+    }
+
+    void OnPopoutSplitNote2ButtonClicked(object sender, EventArgs e)
+    {
+        // Disable the button so the user cant create more than one popouts
+        PopoutSplitNote2Button.IsEnabled = false;
+
+        SplitNote2PopoutActive = true;
+
+        // Set text to not show
+        SplitNoteLabel2.Text = "";
+
+        SplitNote2PopoutWindow = new Window(new SplitNote1Popout());
+
+        Application.Current.OpenWindow(SplitNote2PopoutWindow);
     }
 }
