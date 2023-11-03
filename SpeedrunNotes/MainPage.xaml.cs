@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Reflection;
+using SpeedrunNotes.Popouts;
 
 namespace SpeedrunNotes;
 
@@ -24,6 +25,10 @@ public partial class MainPage : ContentPage
     Socket soc;
 
     List<Split> SplitsInfo;
+
+    bool NextSplitPopoutActive = false;
+
+    Window NextSplitPopoutWindow;
 
     readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
     readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
@@ -118,7 +123,7 @@ public partial class MainPage : ContentPage
         }
 
 		FirstAppear = false;
-
+        
         SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
         SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
     }
@@ -157,6 +162,15 @@ public partial class MainPage : ContentPage
                 CurrentSplitIndex = int.Parse(Temp);
             }
 
+            if (NextSplitPopoutActive)
+            {
+                string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+
+                MessagingCenter.Send(this, "NextSplitLabel", NextSplitLabel);
+                MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
+            }
+
             // Do UI update stuff, has to be on main thread cause Maui ig
             MainThread.BeginInvokeOnMainThread(UpdateUiElements);
         }
@@ -164,39 +178,56 @@ public partial class MainPage : ContentPage
 
     void UpdateUiElements()
     {
-        try
+        // Only update stuff if the element isnt "Popouted"
+        if (!NextSplitPopoutActive)
         {
-            if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
+            try
             {
-                // Only redraw if something changed
-                if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
                 {
-                    // Update title and image of next split
-                    NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                    // Only redraw if something changed
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    {
+                        // Update title and image of next split
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
 
-                    string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
 
-                    NextSplitImage.Source = ImageSource.FromFile(FileLocation);
+                        NextSplitImage.Source = ImageSource.FromFile(FileLocation);
 
-                    PreviousTitle = NextSplitLabel.Text;
+                        PreviousTitle = NextSplitLabel.Text;
+                    }
+                }
+                else
+                {
+                    // Only redraw if something changed
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    {
+                        // Update title and image of next split
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                        NextSplitImage.Source = "imageloadfail.png";
+
+                        PreviousTitle = NextSplitLabel.Text;
+                    }
                 }
             }
-            else
+            catch
             {
-                // Only redraw if something changed
-                if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
-                {
-                    // Update title and image of next split
-                    NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                    NextSplitImage.Source = "imageloadfail.png";
 
-                    PreviousTitle = NextSplitLabel.Text;
-                }
             }
         }
-        catch
+        // When NextSplitPopout is active, check if it has been disabled
+        else
         {
+            IReadOnlyList<Window> Windows = Application.Current.Windows;
 
+            // If it has been disabled, re-enable the button and set NextSplitPopoutActive to false
+            if (!Windows.Contains(NextSplitPopoutWindow))
+            {
+                PopoutNextSplitButton.IsEnabled = true;
+                NextSplitPopoutActive = false;
+                PreviousTitle = null;
+            }
         }
 
         try
@@ -290,6 +321,8 @@ public partial class MainPage : ContentPage
             SplitsInfo = JsonParse(FilePath);
 
             TemplateLoaded = true;
+
+            PopoutNextSplitButton.IsEnabled = true;
         }
     }
 
@@ -333,7 +366,7 @@ public partial class MainPage : ContentPage
         var Builder = new StringBuilder();
         foreach (char ch in SplitNotes1Entry.Text)
         {
-            if (Char.IsDigit(ch))
+            if (char.IsDigit(ch))
             {
                 Builder.Append(ch);
             }
@@ -349,7 +382,7 @@ public partial class MainPage : ContentPage
         var Builder = new StringBuilder();
         foreach (char ch in SplitNotes2Entry.Text)
         {
-            if (Char.IsDigit(ch))
+            if (char.IsDigit(ch))
             {
                 Builder.Append(ch);
             }
@@ -357,5 +390,21 @@ public partial class MainPage : ContentPage
         SplitNotes2Entry.Text = Builder.ToString();
 
         SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
+    }
+
+    void OnPopoutNextSplitButtonClicked(object sender, EventArgs e)
+    {
+        // Disable the button so the user cant create more than one popouts
+        PopoutNextSplitButton.IsEnabled = false;
+
+        NextSplitPopoutActive = true;
+
+        // Set text and image to not show
+        NextSplitLabel.Text = "";
+        NextSplitImage.Source = null;
+
+        NextSplitPopoutWindow = new Window(new NextSplitPopout());
+
+        Application.Current.OpenWindow(NextSplitPopoutWindow);
     }
 }

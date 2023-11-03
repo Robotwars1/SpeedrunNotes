@@ -64,6 +64,18 @@
                    Text="Next Split:"
                    FontSize="20"
                    TextColor="White" />
+
+            <ImageButton x:Name="PopoutNextSplitButton"
+                         IsEnabled="false"
+                         Source="popout.png"
+                         Margin="3"
+                         VerticalOptions="Start"
+                         HorizontalOptions="End"
+                         MinimumHeightRequest="25"
+                         MinimumWidthRequest="25"
+                         HeightRequest="25"
+                         WidthRequest="25"
+                         Clicked="OnPopoutNextSplitButtonClicked" />
         </Grid>
         
         <!-- Settings -->
