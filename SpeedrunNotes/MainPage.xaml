@@ -30,9 +30,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Label x:Name="SplitNoteLabel1"
-                   Grid.Row="0"
-                   Grid.Column="0" />
+            <Label x:Name="SplitNoteLabel1" />
 
             <ImageButton x:Name="PopoutSplitNote1Button"
                          IsEnabled="false"
@@ -47,8 +45,7 @@
                          Clicked="OnPopoutSplitNote1ButtonClicked" />
 
             <Label x:Name="SplitNoteLabel2"
-                   Grid.Row="1"
-                   Grid.Column="0" />
+                   Grid.Row="1" />
 
             <ImageButton x:Name="PopoutSplitNote2Button"
                          Grid.Row="1"
@@ -64,7 +61,6 @@
                          Clicked="OnPopoutSplitNote2ButtonClicked" />
 
             <Image x:Name="SplitNoteImage1"
-                   Grid.Row="0"
                    Grid.Column="1" />
 
             <Image x:Name="SplitNoteImage2"
@@ -160,10 +156,11 @@
                              Clicked="SplitNotes1FontSizeDecrease" />
 
                 <Entry x:Name="SplitNotes1Entry"
+                       ClassId="1"
                        FontSize="14"
                        MinimumHeightRequest="30"
                        HeightRequest="30"
-                       TextChanged="OnSplitNotes1EntryTextChanged" />
+                       TextChanged="OnSplitNotesEntryTextChanged" />
 
                 <ImageButton Source="plus.png"
                              MinimumHeightRequest="30"
@@ -188,10 +185,11 @@
                              Clicked="SplitNotes2FontSizeDecrease" />
 
                 <Entry x:Name="SplitNotes2Entry"
+                       ClassId="2"
                        FontSize="14"
                        MinimumHeightRequest="30"
                        HeightRequest="30"
-                       TextChanged="OnSplitNotes2EntryTextChanged" />
+                       TextChanged="OnSplitNotesEntryTextChanged" />
 
                 <ImageButton Source="plus.png"
                              MinimumHeightRequest="30"

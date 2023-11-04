@@ -413,36 +413,28 @@ public partial class MainPage : ContentPage
         SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
     }
 
-    void OnSplitNotes1EntryTextChanged(object sender, EventArgs e)
+    void OnSplitNotesEntryTextChanged(object sender, EventArgs e)
     {
         // Make sure only numbers are entered
         var Builder = new StringBuilder();
-        foreach (char ch in SplitNotes1Entry.Text)
+        foreach (char ch in ((Entry)sender).Text)
         {
             if (char.IsDigit(ch))
             {
                 Builder.Append(ch);
             }
         }
-        SplitNotes1Entry.Text = Builder.ToString();
+        ((Entry)sender).Text = Builder.ToString();
 
-        SplitNoteLabel1.FontSize = int.Parse(Builder.ToString());
-    }
-
-    void OnSplitNotes2EntryTextChanged(object sender, EventArgs e)
-    {
-        // Make sure only numbers are entered
-        var Builder = new StringBuilder();
-        foreach (char ch in SplitNotes2Entry.Text)
+        // Update FontSize
+        if (((Entry)sender).ClassId == "1")
         {
-            if (char.IsDigit(ch))
-            {
-                Builder.Append(ch);
-            }
+            SplitNoteLabel1.FontSize = int.Parse(Builder.ToString());
         }
-        SplitNotes2Entry.Text = Builder.ToString();
-
-        SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
+        else
+        {
+            SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
+        }
     }
 
     void OnPopoutNextSplitButtonClicked(object sender, EventArgs e)
