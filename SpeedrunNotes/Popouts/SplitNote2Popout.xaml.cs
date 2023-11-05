@@ -24,6 +24,14 @@ public partial class SplitNote2Popout : ContentPage
         InitTimer();
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        Window.MinimumWidth = 320;
+        Window.MinimumHeight = 200;
+    }
+
     public void InitTimer()
     {
         // Setup timer to send / recieve message with LiveSplit.Server every second
