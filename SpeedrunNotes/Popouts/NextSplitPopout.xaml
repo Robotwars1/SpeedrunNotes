@@ -9,7 +9,7 @@
         <Grid Grid.Column="2"
               BackgroundColor="#242424" >
             <Image x:Name="NextSplitImage"
-                   Aspect="AspectFill" />
+                   Aspect="AspectFit" />
 
             <Label x:Name="NextSplitLabel"
                    VerticalOptions="Start"
