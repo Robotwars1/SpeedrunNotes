@@ -217,7 +217,7 @@ public partial class MainPage : ContentPage
                         PreviousTitle = NextSplitLabel.Text;
                     }
                 }
-                else
+                else if (SplitsInfo[CurrentSplitIndex + 1].SplitImage != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
@@ -267,7 +267,7 @@ public partial class MainPage : ContentPage
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
-                else
+                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage1 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
@@ -317,7 +317,7 @@ public partial class MainPage : ContentPage
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
                 }
-                else
+                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage2 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
