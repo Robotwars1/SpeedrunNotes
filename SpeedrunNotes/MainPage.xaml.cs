@@ -84,7 +84,27 @@ public partial class MainPage : ContentPage
     {
         // When loaded, open the ConnectionPage
         Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
-	}
+
+        // Attach a function to when closing the main window
+        IReadOnlyList<Window> Windows = Application.Current.Windows;
+        Windows[0].Destroying += WindowDestroying;
+    }
+
+    // When closing the MainPage window, exit application
+    void WindowDestroying(object sender, EventArgs e)
+    {
+        // Get all active windows
+        IReadOnlyList<Window> Windows = Application.Current.Windows;
+
+        // Close all windows but one
+        for (int i = 0; i < Windows.Count; i++)
+        {
+            Application.Current.CloseWindow(Windows[i]);
+        }
+
+        // Exit the application
+        Application.Current.Quit();
+    }
 
     void OnMainPageAppearing(object sender, EventArgs e)
 	{
