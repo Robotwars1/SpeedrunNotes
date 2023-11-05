@@ -176,15 +176,19 @@ public partial class MainPage : ContentPage
                 MessagingCenter.Send(this, "NextSplitLabel", NextSplitLabel);
                 MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
             }
-            if (SplitNote1PopoutActive)
+
+            if (CurrentSplitIndex > 0)
             {
-                MessagingCenter.Send(this, "SplitNote1FontSize", SplitNoteLabel1.FontSize);
-                MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText1);
-            }
-            if (SplitNote1PopoutActive)
-            {
-                MessagingCenter.Send(this, "SplitNote2FontSize", SplitNoteLabel2.FontSize);
-                MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText2);
+                if (SplitNote1PopoutActive)
+                {
+                    MessagingCenter.Send(this, "SplitNote1FontSize", SplitNoteLabel1.FontSize);
+                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText1);
+                }
+                if (SplitNote1PopoutActive)
+                {
+                    MessagingCenter.Send(this, "SplitNote2FontSize", SplitNoteLabel2.FontSize);
+                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText2);
+                }
             }
 
             // Do UI update stuff, has to be on main thread cause Maui ig
@@ -248,7 +252,7 @@ public partial class MainPage : ContentPage
         }
 
         // Only update stuff if the element isnt "Popouted"
-        if (!SplitNote1PopoutActive)
+        if (!SplitNote1PopoutActive && CurrentSplitIndex > 0)
         {
             try
             {
@@ -298,7 +302,7 @@ public partial class MainPage : ContentPage
         }
 
         // Only update stuff if the element isnt "Popouted"
-        if (!SplitNote2PopoutActive)
+        if (!SplitNote2PopoutActive && CurrentSplitIndex > 0)
         {
             try
             {

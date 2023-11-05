@@ -32,7 +32,7 @@ public static class MauiProgram
                     var appWindow = AppWindow.GetFromWindowId(windowId);
                     var presenter = appWindow.Presenter as OverlappedPresenter;
 
-                    appWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
+                    //appWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
                     presenter.IsAlwaysOnTop = true;
                 });
 
