@@ -39,6 +39,7 @@ public partial class ConnectionPage : ContentPage
         }
 
         InfoStuffBorder.IsVisible = false;
+		ConnectionErrorTroubleshootingBorder.IsVisible = false;
 
         ConnectButton.Text = "Connect";
     }
@@ -80,5 +81,11 @@ public partial class ConnectionPage : ContentPage
 	{
 		// Toggle visibility by setting it to opposite of current value
 		InfoStuffBorder.IsVisible = !InfoStuffBorder.IsVisible;
+    }
+
+	void OnConnectionErrorTroubleshootingButtonClicked(object sender, EventArgs e)
+	{
+        // Toggle visibility by setting it to opposite of current value
+        ConnectionErrorTroubleshootingBorder.IsVisible = !ConnectionErrorTroubleshootingBorder.IsVisible;
     }
 }

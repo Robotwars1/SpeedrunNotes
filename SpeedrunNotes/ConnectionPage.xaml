@@ -16,7 +16,9 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="350" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="4*" />
@@ -24,29 +26,65 @@
         </Grid.ColumnDefinitions>
 
         <!-- Elements to show ConnectionError -->
-        <BoxView x:Name="ConnectionErrorBackground"
+        <Border x:Name="ConnectionErrorBackground"
                  Grid.Row="1"
-                 Grid.Column="1"
-                 Color="#d9be11" />
+                 Grid.Column="3"
+                 BackgroundColor="#d9be11"
+                 Stroke="#d9be11" >
+            <Grid HorizontalOptions="Center"
+                  WidthRequest="350">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <ImageButton Source="info_black.png"
+                             MinimumHeightRequest="35"
+                             HeightRequest="35"
+                             Clicked="OnConnectionErrorTroubleshootingButtonClicked" />
 
-        <Label x:Name="ConnectionErrorLabel"
-               Grid.Row="1"
-               Grid.Column="1"
-               TextColor="Black"
-               Text="ConnectionError"
-               FontSize="20"
-               VerticalOptions="Center"
-               HorizontalOptions="Center" />
+                <Label x:Name="ConnectionErrorLabel"
+                       Grid.ColumnSpan="2"
+                       TextColor="Black"
+                       Text="ConnectionError"
+                       FontSize="20"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center" />
+            </Grid>
+        </Border>
+        
+        <!-- ConnectionError Troubleshooting -->
+        <Border x:Name="ConnectionErrorTroubleshootingBorder"
+                Grid.Column="1"
+                Grid.Row="2"
+                Grid.RowSpan="3"
+                BackgroundColor="#242424"
+                Stroke="#242424">
+            <VerticalStackLayout VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Padding="10" >
+                <Label FontSize="16">
+                    <!-- Text not inset to remove the insane amount of spaces in front of text -->
+                    <Label.Text>
+Make sure LiveSplit.Server is added to your layout and started (left click -> Control -> Start Server)
+
+Make sure you enter the same port as in the settings for LiveSplit.Server
+                        
+If this doesnt work, try changing "localhost" to your actual local IP. To get your local ip, open the command prompt and type ipconfig /all, and hit enter. Your local IP address will be the IPv4 address listed.
+                    </Label.Text>
+                </Label>
+            </VerticalStackLayout>
+        </Border>
 
         <!-- Background for Connection Stuff -->
         <BoxView Grid.Row="2"
                  Grid.RowSpan="3"
-                 Grid.Column="1"
+                 Grid.Column="3"
                  Color="#242424" />
         
         <!-- Button to toggle InfoStuff -->
         <ImageButton Grid.Row="2"
-                     Grid.Column="1"
+                     Grid.Column="3"
                      HorizontalOptions="End"
                      Source="info.png"
                      MinimumHeightRequest="40"
@@ -56,7 +94,7 @@
 
         <!-- Connection Stuff -->
         <VerticalStackLayout Grid.Row="3"
-                             Grid.Column="1"
+                             Grid.Column="3"
                              VerticalOptions="Center"
                              HorizontalOptions="Center" >
             <Label Grid.Row="2"
@@ -115,7 +153,7 @@
         
         <!-- Info Stuff -->
         <Border x:Name="InfoStuffBorder"
-                Grid.Column="3"
+                Grid.Column="5"
                 Grid.Row="2"
                 Grid.RowSpan="3"
                 BackgroundColor="#242424"
