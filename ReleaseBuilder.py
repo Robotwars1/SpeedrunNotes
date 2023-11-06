@@ -10,6 +10,15 @@ def SetupRelease():
     # Create a folder for the new release
     shutil.copytree('Release-Template', ReleaseFolder)
 
+def DeleteOldBuildResults():
+    print("Deleting old Build Results")
+
+    # Clear each projects /bin folder
+    for BinFolderPath in BuildBinFolderPaths:
+        # Check that folder exists
+        if os.path.isdir(BinFolderPath):
+            shutil.rmtree(BinFolderPath)
+
 def BuildProjects():
     print("Building Projects")
 
@@ -48,6 +57,8 @@ def CreateRelease():
 
     SetupRelease()
 
+    DeleteOldBuildResults()
+
     BuildProjects()
 
     MoveBuildResults()
@@ -60,7 +71,7 @@ def CreateRelease():
 
 # Write out header
 print("___________________________________")
-print("\nReleaseBuilder v1.0.0")
+print("\nReleaseBuilder v1.1.0")
 print("___________________________________")
 
 # Set all variables
@@ -71,6 +82,7 @@ ReleaseFolder = f'Releases\{ReleaseName}'
 
 ProjectsPath = [f'{ScriptPath}\SpeedrunNotes\SpeedrunNotes.csproj', f'{ScriptPath}\SpeedrunNotesEditor\SpeedrunNotesEditor.csproj']
 BuildSourcePaths = [f'{ScriptPath}/SpeedrunNotes/bin/Release/net7.0-windows10.0.19041.0/win10-x64', f'{ScriptPath}/SpeedrunNotesEditor/bin/Release/net7.0-windows10.0.19041.0/win10-x64']
+BuildBinFolderPaths = [f'{ScriptPath}/SpeedrunNotes/bin', f'{ScriptPath}/SpeedrunNotesEditor/bin']
 BuildDestinationPaths = [f'{ReleaseFolder}/SpeedrunNotes', f'{ReleaseFolder}/SpeedrunNotesEditor']
 
 ShortcutSourcePaths = [f'{BuildSourcePaths[0]}\SpeedrunNotes.exe', f'{BuildSourcePaths[1]}\SpeedrunNotesEditor.exe']
