@@ -36,7 +36,7 @@ public partial class SaveTemplatePopup : Popup
         InitializeComponent();
 
         // (width, height)
-        Size = new Size(400, 300);
+        Size = new Size(300, 225);
 
         // Make sure all vars are assigned
         SplitsAmount = splitsAmount;
@@ -46,6 +46,11 @@ public partial class SaveTemplatePopup : Popup
         SplitNoteImage1 = splitNoteImage1;
         SplitNoteText2 = splitNoteText2;
         SplitNoteImage2 = splitNoteImage2;
+    }
+
+    void OnCloseButtonClicked(object sender, EventArgs e)
+    {
+        Close();
     }
 
     private static readonly JsonSerializerOptions _writeOptions = new()
@@ -83,6 +88,8 @@ public partial class SaveTemplatePopup : Popup
         if (Folder != null)
         {
             FilePath = Folder.Folder.Path;
+
+            SaveButton.IsEnabled = true;
         }
     }
 

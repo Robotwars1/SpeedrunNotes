@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Reflection;
+using SpeedrunNotes.Popouts;
 
 namespace SpeedrunNotes;
 
@@ -24,6 +25,15 @@ public partial class MainPage : ContentPage
     Socket soc;
 
     List<Split> SplitsInfo;
+
+    // Bools for tracking if a popout is active or not
+    bool NextSplitPopoutActive = false;
+    bool SplitNote1PopoutActive = false;
+    bool SplitNote2PopoutActive = false;
+
+    Window NextSplitPopoutWindow;
+    Window SplitNote1PopoutWindow;
+    Window SplitNote2PopoutWindow;
 
     readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
     readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
@@ -62,13 +72,41 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
     }
 
-	void OnMainPageLoaded(object sender, EventArgs e)
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        Window.MinimumWidth = 1280;
+        Window.MinimumHeight = 720;
+    }
+
+    void OnMainPageLoaded(object sender, EventArgs e)
     {
         // When loaded, open the ConnectionPage
         Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
-	}
 
-	void OnMainPageAppearing(object sender, EventArgs e)
+        // Attach a function to when closing the main window
+        IReadOnlyList<Window> Windows = Application.Current.Windows;
+        Windows[0].Destroying += WindowDestroying;
+    }
+
+    // When closing the MainPage window, exit application
+    void WindowDestroying(object sender, EventArgs e)
+    {
+        // Get all active windows
+        IReadOnlyList<Window> Windows = Application.Current.Windows;
+
+        // Close all windows but one (Cant close the last one due to maui limitations)
+        for (int i = 0; i < Windows.Count; i++)
+        {
+            Application.Current.CloseWindow(Windows[i]);
+        }
+
+        // Exit the application
+        Application.Current.Quit();
+    }
+
+    void OnMainPageAppearing(object sender, EventArgs e)
 	{
 		// If not first time it appears, eg when going from ConnectionPage to MainPage
         if (!FirstAppear)
@@ -93,11 +131,6 @@ public partial class MainPage : ContentPage
 
                 // Connect to livesplit.server
                 soc.Connect(remoteEP);
-
-                ConnectionError = false;
-
-                // Start the timer / scheduled function calls
-                InitTimer();
             }
 			catch
 			{
@@ -107,10 +140,73 @@ public partial class MainPage : ContentPage
                 // Bring back to ConnectionPage
                 Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
             }
-        }
 
-		FirstAppear = false;
-	}
+            if (!ConnectionError)
+            {
+                CheckConnection();
+            }
+        }
+        else
+        {
+            FirstAppear = false;
+        }
+        
+        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
+        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
+
+    void CheckConnection()
+    {
+        try
+        {
+            // Send message to livesplit.server to check current split
+            byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
+            soc.Send(message);
+
+            // Recieve message and "parse" it from computer-jargon -> readable string
+            byte[] b = new byte[100];
+            int k = soc.Receive(b);
+            string DataReceived = Encoding.ASCII.GetString(b, 0, k);
+
+            int ReceivedMessage = 0;
+
+            // Makes sure the whole message is recieved
+            if (DataReceived.EndsWith("\r\n"))
+            {
+                // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
+                // Thanks alekz for this :)
+                string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+
+                // Save recieved split-index
+                ReceivedMessage = int.Parse(Temp);
+            }
+
+            // If the wrong message is received, return to ConnectionPage with ConnectionError
+            if (ReceivedMessage != -1)
+            {
+                // Update variable to show "ConnectionError" on ConnectionPage
+                bool ConnectionError = true;
+
+                // Bring back to ConnectionPage
+                Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+            }
+            else
+            {
+                ConnectionError = false;
+
+                // Start the timer / scheduled function calls
+                InitTimer();
+            }
+        }
+        catch
+        {
+            // Update variable to show "ConnectionError" on ConnectionPage
+            bool ConnectionError = true;
+
+            // Bring back to ConnectionPage
+            Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+        }
+    }
 
     public void InitTimer()
     {
@@ -146,6 +242,30 @@ public partial class MainPage : ContentPage
                 CurrentSplitIndex = int.Parse(Temp);
             }
 
+            // Send needed variables to each active popout
+            if (NextSplitPopoutActive)
+            {
+                string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+
+                MessagingCenter.Send(this, "NextSplitLabel", NextSplitLabel);
+                MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
+            }
+
+            if (CurrentSplitIndex > 0)
+            {
+                if (SplitNote1PopoutActive)
+                {
+                    MessagingCenter.Send(this, "SplitNote1FontSize", SplitNoteLabel1.FontSize);
+                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText1);
+                }
+                if (SplitNote1PopoutActive)
+                {
+                    MessagingCenter.Send(this, "SplitNote2FontSize", SplitNoteLabel2.FontSize);
+                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText2);
+                }
+            }
+
             // Do UI update stuff, has to be on main thread cause Maui ig
             MainThread.BeginInvokeOnMainThread(UpdateUiElements);
         }
@@ -153,45 +273,63 @@ public partial class MainPage : ContentPage
 
     void UpdateUiElements()
     {
-        try
+        // Get all active windows
+        IReadOnlyList<Window> Windows = Application.Current.Windows;
+
+        // Only update stuff if the element isnt "Popouted"
+        if (!NextSplitPopoutActive)
         {
-            if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
+            try
             {
-                // Only redraw if something changed
-                if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
                 {
-                    // Update title and image of next split
-                    NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                    // Only redraw if something changed
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    {
+                        // Update title and image of next split
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
 
-                    string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
 
-                    NextSplitImage.Source = ImageSource.FromFile(FileLocation);
+                        NextSplitImage.Source = ImageSource.FromFile(FileLocation);
 
-                    PreviousTitle = NextSplitLabel.Text;
+                        PreviousTitle = NextSplitLabel.Text;
+                    }
+                }
+                else if (SplitsInfo[CurrentSplitIndex + 1].SplitImage != "") // Only show ImageLoadError if an image is meant to show
+                {
+                    // Only redraw if something changed
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    {
+                        // Update title and image of next split
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                        NextSplitImage.Source = "imageloadfail.png";
+
+                        PreviousTitle = NextSplitLabel.Text;
+                    }
                 }
             }
-            else
+            catch
             {
-                // Only redraw if something changed
-                if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
-                {
-                    // Update title and image of next split
-                    NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                    NextSplitImage.Source = "imageloadfail.png";
 
-                    PreviousTitle = NextSplitLabel.Text;
-                }
             }
         }
-        catch
+        // When NextSplitPopout is active, check if it has been disabled
+        else
         {
-
+            // If it has been disabled, re-enable the button and set NextSplitPopoutActive to false
+            if (!Windows.Contains(NextSplitPopoutWindow))
+            {
+                PopoutNextSplitButton.IsEnabled = true;
+                NextSplitPopoutActive = false;
+                PreviousTitle = null; // Set to null so it has to be re-drawn
+            }
         }
 
-        try
+        // Only update stuff if the element isnt "Popouted"
+        if (!SplitNote1PopoutActive && CurrentSplitIndex > 0)
         {
-            // Only do stuff if its within range of list
-            if (CurrentSplitIndex > -1)
+            try
             {
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
                 {
@@ -208,7 +346,7 @@ public partial class MainPage : ContentPage
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
-                else
+                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage1 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
@@ -220,7 +358,29 @@ public partial class MainPage : ContentPage
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
+            }
+            catch
+            {
 
+            }
+        }
+        // When SplitNote1Popout is active, check if it has been disabled
+        else
+        {
+            // If it has been disabled, re-enable the button and set SplitNote1PopoutActive to false
+            if (!Windows.Contains(NextSplitPopoutWindow))
+            {
+                PopoutSplitNote1Button.IsEnabled = true;
+                SplitNote1PopoutActive = false;
+                PreviousLabel1 = null; // Set to null so it has to be re-drawn
+            }
+        }
+
+        // Only update stuff if the element isnt "Popouted"
+        if (!SplitNote2PopoutActive && CurrentSplitIndex > 0)
+        {
+            try
+            {
                 if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2)))
                 {
                     // Only redraw if something changed
@@ -236,7 +396,7 @@ public partial class MainPage : ContentPage
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
                 }
-                else
+                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage2 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
@@ -246,13 +406,24 @@ public partial class MainPage : ContentPage
                         SplitNoteImage2.Source = "imageloadfail.png";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
-                    } 
+                    }
                 }
             }
-        }
-        catch
-        {
+            catch
+            {
 
+            }
+        }
+        // When SplitNote2Popout is active, check if it has been disabled
+        else
+        {
+            // If it has been disabled, re-enable the button and set SplitNote2PopoutActive to false
+            if (!Windows.Contains(NextSplitPopoutWindow))
+            {
+                PopoutSplitNote2Button.IsEnabled = true;
+                SplitNote2PopoutActive = false;
+                PreviousLabel2 = null; // Set to null so it has to be re-drawn
+            }
         }
     }
 
@@ -279,6 +450,11 @@ public partial class MainPage : ContentPage
             SplitsInfo = JsonParse(FilePath);
 
             TemplateLoaded = true;
+
+            // Enable all popout buttons since a template has been loaded
+            PopoutNextSplitButton.IsEnabled = true;
+            PopoutSplitNote1Button.IsEnabled = true;
+            PopoutSplitNote2Button.IsEnabled = true;
         }
     }
 
@@ -290,5 +466,99 @@ public partial class MainPage : ContentPage
     void OnOpenTemplateFolderBtnClicked(object sender, EventArgs e)
     {
         Process.Start("explorer.exe", TemplatesPath);
+    }
+
+    void SplitNotes1FontSizeIncrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel1.FontSize += 1;
+        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
+    }
+
+    void SplitNotes1FontSizeDecrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel1.FontSize -= 1;
+        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
+    }
+
+    void SplitNotes2FontSizeIncrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel2.FontSize += 1;
+        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
+
+    void SplitNotes2FontSizeDecrease(object sender, EventArgs e)
+    {
+        SplitNoteLabel2.FontSize -= 1;
+        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
+
+    void OnSplitNotesEntryTextChanged(object sender, EventArgs e)
+    {
+        // Make sure only numbers are entered
+        var Builder = new StringBuilder();
+        foreach (char ch in ((Entry)sender).Text)
+        {
+            if (char.IsDigit(ch))
+            {
+                Builder.Append(ch);
+            }
+        }
+        ((Entry)sender).Text = Builder.ToString();
+
+        // Update FontSize
+        if (((Entry)sender).ClassId == "1")
+        {
+            SplitNoteLabel1.FontSize = int.Parse(Builder.ToString());
+        }
+        else
+        {
+            SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
+        }
+    }
+
+    void OnPopoutNextSplitButtonClicked(object sender, EventArgs e)
+    {
+        // Disable the button so the user cant create more than one popouts
+        PopoutNextSplitButton.IsEnabled = false;
+
+        NextSplitPopoutActive = true;
+
+        // Set text and image to not show
+        NextSplitLabel.Text = "";
+        NextSplitImage.Source = null;
+
+        NextSplitPopoutWindow = new Window(new NextSplitPopout());
+
+        Application.Current.OpenWindow(NextSplitPopoutWindow);
+    }
+
+    void OnPopoutSplitNote1ButtonClicked(object sender, EventArgs e)
+    {
+        // Disable the button so the user cant create more than one popouts
+        PopoutSplitNote1Button.IsEnabled = false;
+
+        SplitNote1PopoutActive = true;
+
+        // Set text to not show
+        SplitNoteLabel1.Text = "";
+
+        SplitNote1PopoutWindow = new Window(new SplitNote1Popout());
+
+        Application.Current.OpenWindow(SplitNote1PopoutWindow);
+    }
+
+    void OnPopoutSplitNote2ButtonClicked(object sender, EventArgs e)
+    {
+        // Disable the button so the user cant create more than one popouts
+        PopoutSplitNote2Button.IsEnabled = false;
+
+        SplitNote2PopoutActive = true;
+
+        // Set text to not show
+        SplitNoteLabel2.Text = "";
+
+        SplitNote2PopoutWindow = new Window(new SplitNote1Popout());
+
+        Application.Current.OpenWindow(SplitNote2PopoutWindow);
     }
 }

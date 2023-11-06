@@ -7,45 +7,27 @@
                CanBeDismissedByTappingOutsideOfPopup="False" >
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="300" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <ImageButton Source="close.png"
+                     BackgroundColor="#242424"
+                     WidthRequest="40"
+                     VerticalOptions="Start"
+                     HorizontalOptions="End"
+                     Clicked="OnCloseButtonClicked" />
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        
-        <Label Grid.Row="1"
-               Grid.Column="1"
-               Text="File Name" 
-               FontSize="20"
-               VerticalOptions="End" />
+        <VerticalStackLayout VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             WidthRequest="200" >
+            <Entry TextChanged="OnFileNameChanged"
+                   Placeholder="Enter File Name"
+                   PlaceholderColor="LightGray" />
 
-        <Entry Grid.Row="2"
-               Grid.Column="1"
-               TextChanged="OnFileNameChanged" />
+            <Button Text="Select File Location"
+                    Clicked="OnFileLocationButtonClicked" />
 
-        <Label Grid.Row="3"
-               Grid.Column="1"
-               Text="File Location"
-               FontSize="20" />
-
-        <Button Grid.Row="4"
-                Grid.Column="1"
-                Text="Select Folder"
-                Clicked="OnFileLocationButtonClicked" />
-
-        <Button Grid.Row="5"
-                Grid.Column="1"
-                Text="Save File"
-                Clicked="OnSaveFileButtonClicked" />
+            <Button x:Name="SaveButton"
+                    IsEnabled="False"
+                    Text="Save File"
+                    Clicked="OnSaveFileButtonClicked" />
+        </VerticalStackLayout>
     </Grid>
 </toolkit:Popup>
