@@ -96,7 +96,7 @@ public partial class MainPage : ContentPage
         // Get all active windows
         IReadOnlyList<Window> Windows = Application.Current.Windows;
 
-        // Close all windows but one
+        // Close all windows but one (Cant close the last one due to maui limitations)
         for (int i = 0; i < Windows.Count; i++)
         {
             Application.Current.CloseWindow(Windows[i]);
@@ -131,11 +131,6 @@ public partial class MainPage : ContentPage
 
                 // Connect to livesplit.server
                 soc.Connect(remoteEP);
-
-                ConnectionError = false;
-
-                // Start the timer / scheduled function calls
-                InitTimer();
             }
 			catch
 			{
@@ -145,12 +140,72 @@ public partial class MainPage : ContentPage
                 // Bring back to ConnectionPage
                 Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
             }
-        }
 
-		FirstAppear = false;
+            if (!ConnectionError)
+            {
+                CheckConnection();
+            }
+        }
+        else
+        {
+            FirstAppear = false;
+        }
         
         SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
         SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
+    }
+
+    void CheckConnection()
+    {
+        try
+        {
+            // Send message to livesplit.server to check current split
+            byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
+            soc.Send(message);
+
+            // Recieve message and "parse" it from computer-jargon -> readable string
+            byte[] b = new byte[100];
+            int k = soc.Receive(b);
+            string DataReceived = Encoding.ASCII.GetString(b, 0, k);
+
+            int ReceivedMessage = 0;
+
+            // Makes sure the whole message is recieved
+            if (DataReceived.EndsWith("\r\n"))
+            {
+                // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
+                // Thanks alekz for this :)
+                string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+
+                // Save recieved split-index
+                ReceivedMessage = int.Parse(Temp);
+            }
+
+            // If the wrong message is received, return to ConnectionPage with ConnectionError
+            if (ReceivedMessage != -1)
+            {
+                // Update variable to show "ConnectionError" on ConnectionPage
+                bool ConnectionError = true;
+
+                // Bring back to ConnectionPage
+                Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+            }
+            else
+            {
+                ConnectionError = false;
+
+                // Start the timer / scheduled function calls
+                InitTimer();
+            }
+        }
+        catch
+        {
+            // Update variable to show "ConnectionError" on ConnectionPage
+            bool ConnectionError = true;
+
+            // Bring back to ConnectionPage
+            Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+        }
     }
 
     public void InitTimer()
