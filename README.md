@@ -16,7 +16,7 @@
 <br>
 
 ### Technical Details
-### [.JSON Template](#json-template-1) | [Python Scripts](#python-scripts)
+### [.JSON Template](#json-template) | [Python Scripts](#python-scripts)
 
 <br>
 
