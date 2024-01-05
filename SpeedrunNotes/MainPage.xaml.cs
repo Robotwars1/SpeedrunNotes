@@ -252,7 +252,7 @@ public partial class MainPage : ContentPage
                 MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
             }
 
-            if (CurrentSplitIndex > 0)
+            if (CurrentSplitIndex >= 0)
             {
                 if (SplitNote1PopoutActive)
                 {
@@ -327,7 +327,7 @@ public partial class MainPage : ContentPage
         }
 
         // Only update stuff if the element isnt "Popouted"
-        if (!SplitNote1PopoutActive && CurrentSplitIndex > 0)
+        if (!SplitNote1PopoutActive && CurrentSplitIndex >= 0)
         {
             try
             {
@@ -377,7 +377,7 @@ public partial class MainPage : ContentPage
         }
 
         // Only update stuff if the element isnt "Popouted"
-        if (!SplitNote2PopoutActive && CurrentSplitIndex > 0)
+        if (!SplitNote2PopoutActive && CurrentSplitIndex >= 0)
         {
             try
             {
