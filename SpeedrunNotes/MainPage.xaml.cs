@@ -78,6 +78,7 @@ public partial class MainPage : ContentPage
 
         Window.MinimumWidth = 1280;
         Window.MinimumHeight = 720;
+        Window.Title = "SpeedrunNotes";
     }
 
     void OnMainPageLoaded(object sender, EventArgs e)

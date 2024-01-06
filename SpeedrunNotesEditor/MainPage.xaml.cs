@@ -77,6 +77,7 @@ public partial class MainPage : ContentPage
 
         Window.MinimumWidth = 1280;
         Window.MinimumHeight = 720;
+        Window.Title = "SpeedrunNotesEditor";
     }
 
     async void OnCreateFromTemplateClicked(object sender, EventArgs e)
