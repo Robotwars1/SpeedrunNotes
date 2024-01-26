@@ -9,32 +9,50 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
-
-        <CollectionView x:Name="TemplateDetailsViewerCollectionView" >
+        
+        <!-- Live preview & Editor area -->
+        <CollectionView x:Name="TemplateDetailsViewerCollectionView">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Border BackgroundColor="#181818"
+                            Stroke="#121212"
+                            StrokeThickness="5"
+                            StrokeShape="RoundRectangle 15,15,15,15" >
+                        <Grid ColumnDefinitions="*, *" 
+                              Margin="15" >
+                            <VerticalStackLayout HeightRequest="{Binding Height}" >
+                                <Label Padding="5"
+                                       Text="{Binding HeaderText}"
+                                       FontSize="25"
+                                       HeightRequest="50" />
 
-                        <Label Text="{Binding IndexLabel}" 
-                               FontSize="20"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                                <Grid>
+                                    <Entry ClassId="{Binding TextEntryId}"
+                                           HeightRequest="{Binding EntryHeight}"
+                                           Text="{Binding DetailsLabelText}"
+                                           TextChanged="OnEntryTextChanged"
+                                           IsEnabled="{Binding IsEntry}"
+                                           IsVisible="{Binding IsEntry}" />
 
-                        <Entry Grid.Column="1"
-                               ClassId="{Binding TextEntryId}"
-                               Text="{Binding DetailsLabelText}"
-                               TextChanged="UpdateDetailsText" />
+                                    <Editor ClassId="{Binding TextEntryId}"
+                                            HeightRequest="{Binding EntryHeight}"
+                                            Text="{Binding DetailsLabelText}"
+                                            TextChanged="OnEditorTextChanged"
+                                            IsEnabled="{Binding IsEditor}"
+                                            IsVisible="{Binding IsEditor}" />
+                                </Grid>
+                            </VerticalStackLayout>
 
-                        <Entry Grid.Column="2"
-                               ClassId="{Binding ImageEntryId}"
-                               Text="{Binding DetailsImageUrl}"
-                               TextChanged="UpdateDetailsImage" />
-                    </Grid>
+                            <Image Grid.Column="1"
+                                   Aspect="AspectFit" />
+
+                            <Button Text="Select Image"
+                                    Grid.Column="1"
+                                    HeightRequest="50"
+                                    VerticalOptions="End"
+                                    Clicked="OnImageSelectButtonClicked" />
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
@@ -73,7 +91,9 @@
                     WidthRequest="150"
                     Clicked="OnSaveTemplateClicked" />
 
-            <Button Text="Save As"
+            <Button x:Name="SaveTemplateAsButton"
+                    IsEnabled="False"
+                    Text="Save As"
                     WidthRequest="150"
                     Clicked="OnSaveAsTemplateClicked" />
 
@@ -93,17 +113,11 @@
                              Clicked="OnTemplateEditingInfoButtonClicked" />
             </HorizontalStackLayout>
 
-            <Button Text="Split Info"
-                    WidthRequest="150"
-                    Clicked="OnSplitInfoClicked" />
-
-            <Button Text="Split Notes 1"
-                    WidthRequest="150"
-                    Clicked="OnSplitNotes1Clicked" />
-
-            <Button Text="Split Notes 2"
-                    WidthRequest="150"
-                    Clicked="OnSplitNotes2Clicked" />
+            <Picker x:Name="SplitPicker"
+                    IsEnabled="False"
+                    HorizontalOptions="Center"
+                    MinimumWidthRequest="150"
+                    SelectedIndexChanged="OnSplitPickerSelectionChanged" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

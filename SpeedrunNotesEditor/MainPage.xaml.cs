@@ -20,18 +20,19 @@ public partial class MainPage : ContentPage
 
     string PreviousElement;
 
-	// 0 == Split Info
-	// 1 == Split Notes 1
-	// 2 == Split Notes 2
-	int ViewMode = 0;
+    int CurrentSplitIndex = 0;
 
     public class DetailsViewer
 	{
-		public string IndexLabel { get; set; }
+        public string HeaderText {  get; set; }
 		public string DetailsLabelText { get; set; }
 		public string TextEntryId { get; set; }
 		public string DetailsImageUrl { get; set; }
 		public string ImageEntryId { get; set; }
+        public double Height { get; set; }
+        public double EntryHeight { get; set; }
+        public bool IsEntry {  get; set; }
+        public bool IsEditor { get; set; }
 	}
 
     // Creates Collections of each class to populate each CollectionView
@@ -113,10 +114,14 @@ public partial class MainPage : ContentPage
                 SplitNoteImage2.Add(SplitsInfo[i].SplitInfoImage2);
             }
 
-            UpdateTemplateDetailsViewer();
-
             SaveTemplateButton.IsEnabled = true;
+            SaveTemplateAsButton.IsEnabled = true;
+            SplitPicker.IsEnabled = true;
             SettingTemplate = false;
+
+            UpdateSplitPicker();
+
+            UpdateTemplateDetailsViewer();
         }
     }
 
@@ -179,7 +184,12 @@ public partial class MainPage : ContentPage
 
             UpdateTemplateDetailsViewer();
 
+            SaveTemplateButton.IsEnabled = true;
+            SaveTemplateAsButton.IsEnabled = true;
+            SplitPicker.IsEnabled = true;
             SettingTemplate = false;
+
+            UpdateSplitPicker();
         }
     }
 
@@ -259,135 +269,87 @@ public partial class MainPage : ContentPage
 	{
         TemplateDetailsViewer.Clear();
 
-		switch (ViewMode)
-		{
-            // Split Info
-            case 0:
-                // Add a "line" for CollectionView, corresponding to how many splits there are
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
-                }
-                break;
-            // Split Notes 1
-            case 1:
-                // Add a "line" for CollectionView, corresponding to how many splits there are
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
-                }
-                break;
-            // Split Notes 2
-            case 2:
-                // Add a "line" for CollectionView, corresponding to how many splits there are
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
-                }
-                break;
-		}
+        TemplateDetailsViewer.Add(new DetailsViewer() { HeaderText = "Split Info", TextEntryId = "0", ImageEntryId = "0", DetailsLabelText = SplitNames[CurrentSplitIndex], DetailsImageUrl = SplitImages[CurrentSplitIndex], Height = 350, EntryHeight = 300, IsEntry = true, IsEditor = false });
+        TemplateDetailsViewer.Add(new DetailsViewer() { HeaderText = "Split Notes 1", TextEntryId = "1", ImageEntryId = "1", DetailsLabelText = SplitNoteText1[CurrentSplitIndex], DetailsImageUrl = SplitNoteImage1[CurrentSplitIndex], Height = 500, EntryHeight = 450, IsEntry = false, IsEditor = true });
+        TemplateDetailsViewer.Add(new DetailsViewer() { HeaderText = "Split Notes 2", TextEntryId = "2", ImageEntryId = "2", DetailsLabelText = SplitNoteText2[CurrentSplitIndex], DetailsImageUrl = SplitNoteImage2[CurrentSplitIndex], Height = 500, EntryHeight = 450, IsEntry = false, IsEditor = true });
 
         TemplateDetailsViewerCollectionView.ItemsSource = TemplateDetailsViewer;
     }
 
-	void OnSplitInfoClicked(object sender, EventArgs e)
-	{
-		ViewMode = 0;
-
-		UpdateTemplateDetailsViewer();
-	}
-
-    void OnSplitNotes1Clicked(object sender, EventArgs e)
-    {
-		ViewMode = 1;
-
-        UpdateTemplateDetailsViewer();
-    }
-
-    void OnSplitNotes2Clicked(object sender, EventArgs e)
-    {
-		ViewMode = 2;
-
-        UpdateTemplateDetailsViewer();
-    }
-
-	void UpdateDetailsText(object sender, TextChangedEventArgs e)
+	void OnEntryTextChanged(object sender, TextChangedEventArgs e)
 	{
         if (!SettingTemplate)
         {
-            switch (ViewMode)
+            if (TemplateDetailsViewer[int.Parse(((Entry)sender).ClassId)].IsEntry)
             {
-                case 0:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
-                        {
-                            SplitNames[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
-                case 1:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
-                        {
-                            SplitNoteText1[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
-                case 2:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
-                        {
-                            SplitNoteText2[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
+                switch (((Entry)sender).ClassId)
+                {
+                    case "0":
+                        SplitNames[CurrentSplitIndex] = e.NewTextValue;
+                        break;
+                    case "1":
+                        SplitNoteText1[CurrentSplitIndex] = e.NewTextValue;
+                        break;
+                    case "2":
+                        SplitNoteText2[CurrentSplitIndex] = e.NewTextValue;
+                        break;
+                }
             }
         }
     }
 
-    void UpdateDetailsImage(object sender, TextChangedEventArgs e)
+    void OnEditorTextChanged(object sender, TextChangedEventArgs e)
     {
         if (!SettingTemplate)
         {
-            switch (ViewMode)
+            if (TemplateDetailsViewer[int.Parse(((Editor)sender).ClassId)].IsEditor)
             {
-                case 0:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
-                        {
-                            SplitImages[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
-                case 1:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
-                        {
-                            SplitNoteImage1[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
-                case 2:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
-                        {
-                            SplitNoteImage2[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
+                switch (((Editor)sender).ClassId)
+                {
+                    case "0":
+                        SplitNames[CurrentSplitIndex] = e.NewTextValue;
+                        break;
+                    case "1":
+                        SplitNoteText1[CurrentSplitIndex] = e.NewTextValue;
+                        break;
+                    case "2":
+                        SplitNoteText2[CurrentSplitIndex] = e.NewTextValue;
+                        break;
+                }
             }
         }
+    }
+
+    void OnImageSelectButtonClicked(object sender, EventArgs e)
+    {
+        if (!SettingTemplate)
+        {
+            var Image = FilePicker.Default.PickAsync(default);
+
+            if (Image != null)
+            {
+                // TODO: STUFF
+            }
+        }
+    }
+
+    void OnSplitPickerSelectionChanged(object sender, EventArgs e)
+    {
+        var Picker = (Picker)sender;
+        CurrentSplitIndex = Picker.SelectedIndex;
+
+        UpdateTemplateDetailsViewer();
+    }
+
+    void UpdateSplitPicker()
+    {
+        SplitPicker.Items.Clear();
+        SplitPicker.ItemsSource = SplitNames;
+        SplitPicker.SelectedIndex = CurrentSplitIndex;
     }
 
     void OnTemplateEditingInfoButtonClicked(object sender, EventArgs e)
     {
-
         // Create a popup and pass through all important vars
         this.ShowPopup(new InfoPopup("template_editing_info.png"));
     }
