@@ -43,6 +43,12 @@ def CreateShortcuts():
         shortcut.Targetpath = ShortcutSourcePaths[i] # What the Shortcut links too
         shortcut.save()
 
+def ZipRelease():
+    print("Zipping Folder")
+
+    # Zip the entire folder to make it ready for upload
+    shutil.make_archive(ReleaseFolder, 'zip', ReleaseFolder)
+
 def ReleaseBuildFinished(Start, End):
     # Calulate how long the ReleaseBuild took, with 2 decimals
     Time = str(round(End - Start, 2))
@@ -65,13 +71,15 @@ def CreateRelease():
 
     CreateShortcuts()
 
+    ZipRelease()
+
     End = time.time()
 
     ReleaseBuildFinished(Start, End)
 
 # Write out header
 print("___________________________________")
-print("\nReleaseBuilder v1.1.0")
+print("\nReleaseBuilder v1.2.0")
 print("___________________________________")
 
 # Set all variables
