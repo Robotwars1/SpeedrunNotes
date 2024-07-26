@@ -5,119 +5,178 @@
              Background="#121212" >
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="250" />
-        </Grid.ColumnDefinitions>
-        
-        <!-- Live preview & Editor area -->
-        <CollectionView x:Name="TemplateDetailsViewerCollectionView">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- TabBar for selecting split to edit -->
+        <CollectionView x:Name="SplitSelector"
+                        Grid.ColumnSpan="2"
+                        HorizontalScrollBarVisibility="Never"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSelectedIndexChanged">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="2"/>
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border BackgroundColor="#181818"
-                            Stroke="#121212"
-                            StrokeThickness="5"
-                            StrokeShape="RoundRectangle 15,15,15,15" >
-                        <Grid ColumnDefinitions="*, *" 
-                              Margin="15" >
-                            <VerticalStackLayout HeightRequest="{Binding Height}" >
-                                <Label Padding="5"
-                                       Text="{Binding HeaderText}"
-                                       FontSize="25"
-                                       HeightRequest="50" />
+                    <Frame BackgroundColor="#404040"
+                           CornerRadius="5"
+                           Padding="5">
+                        <Label Text="{Binding .}"
+                               VerticalTextAlignment="Center"
+                               FontSize="20"
+                               LineBreakMode="NoWrap"/>
 
-                                <Grid>
-                                    <Entry ClassId="{Binding TextEntryId}"
-                                           HeightRequest="{Binding EntryHeight}"
-                                           Text="{Binding DetailsLabelText}"
-                                           TextChanged="OnEntryTextChanged"
-                                           IsEnabled="{Binding IsEntry}"
-                                           IsVisible="{Binding IsEntry}" />
-
-                                    <Editor ClassId="{Binding TextEntryId}"
-                                            HeightRequest="{Binding EntryHeight}"
-                                            Text="{Binding DetailsLabelText}"
-                                            TextChanged="OnEditorTextChanged"
-                                            IsEnabled="{Binding IsEditor}"
-                                            IsVisible="{Binding IsEditor}" />
-                                </Grid>
-                            </VerticalStackLayout>
-
-                            <Image Grid.Column="1"
-                                   Aspect="AspectFit" />
-
-                            <Button Text="Select Image"
-                                    Grid.Column="1"
-                                    HeightRequest="50"
-                                    VerticalOptions="End"
-                                    Clicked="OnImageSelectButtonClicked" />
-                        </Grid>
-                    </Border>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#323232" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#404040" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Background for Side-bar -->
-        <BoxView Grid.Column="1"
-                 Grid.RowSpan="2"
-                 Color="#242424" />
+        <Grid Grid.Row="1"
+              Padding="10"
+              RowSpacing="10"
+              ColumnSpacing="10"
+              RowDefinitions="*, *, *, *"
+              ColumnDefinitions="2*, 4*">
+            <Frame Padding="8"
+                   BorderColor="#323232"
+                   BackgroundColor="#323232">
+                <Grid RowDefinitions="*, 3*">
+                    <Label Text="Split Name"
+                           FontSize="25" />
+
+                    <Entry x:Name="SplitNameEntry"
+                           ClassId="0"
+                           Grid.Row="1" />
+                </Grid>
+            </Frame>
+
+            <Frame Padding="8"
+                   BorderColor="#323232"
+                   BackgroundColor="#323232"
+                   Grid.Row="1"
+                   Grid.RowSpan="2">
+                <Grid RowDefinitions="*, 3*, *">
+                    <Label Text="Split Image"
+                           FontSize="25" />
+
+                    <Image Grid.Row="1"/>
+
+                    <Button Text="Select Image"
+                            Grid.Row="2" />
+                </Grid>
+            </Frame>
+
+            <Frame Padding="8"
+                   BorderColor="#323232"
+                   BackgroundColor="#323232"
+                   Grid.Column="1"
+                   Grid.RowSpan="2">
+                <Grid RowDefinitions="*, 5*, *"
+                      ColumnDefinitions="*, *">
+                    <Label Text="Split Notes 1"
+                           FontSize="25" />
+
+                    <Editor x:Name="SplitNote1TextEditor"
+                            ClassId="1"
+                            Grid.Row="1"
+                            Grid.RowSpan="2" />
+
+                    <Image Grid.Row="1"
+                           Grid.Column="1"/>
+
+                    <Button Text="Select Image"
+                            Grid.Row="2"
+                            Grid.Column="1"/>
+                </Grid>
+            </Frame>
+
+            <Frame Padding="8"
+                   BorderColor="#323232"
+                   BackgroundColor="#323232"
+                   Grid.Column="1"
+                   Grid.Row="2"
+                   Grid.RowSpan="2">
+                <Grid RowDefinitions="*, 5*, *"
+                      ColumnDefinitions="*, *">
+                    <Label Text="Split Notes 2"
+                           FontSize="25" />
+
+                    <Editor x:Name="SplitNote2TextEditor"
+                            ClassId="2"
+                            Grid.Row="1"
+                            Grid.RowSpan="2" />
+
+                    <Image Grid.Row="1"
+                           Grid.Column="1"/>
+
+                    <Button Text="Select Image"
+                            Grid.Row="2"
+                            Grid.Column="1"/>
+                </Grid>
+            </Frame>
+        </Grid>
 
         <!-- Side-bar -->
-        <VerticalStackLayout Grid.Column="1"
-                             Grid.RowSpan="2"
-                             VerticalOptions="Center" >
-            <Label Text="Create Template"
-                   FontSize="20"
-                   HorizontalOptions="Center" />
+        <Frame x:Name="Sidebar"
+               VerticalOptions="End"
+               HorizontalOptions="End"
+               WidthRequest="200"
+               Padding="0"
+               Grid.RowSpan="2"
+               BackgroundColor="#323232">
+            <Grid ColumnDefinitions="50, *"
+                  RowDefinitions="30, 50, 50, 10, 50, 50">
+                <ImageButton x:Name="ToggleSidebarButton"
+                             Source="close_sidebar.png"
+                             BackgroundColor="#323232"
+                             Grid.RowSpan="6"
+                             WidthRequest="50"
+                             VerticalOptions="Center"
+                             Clicked="ToggleSidebar" />
 
-            <Button Text="From Split"
-                    WidthRequest="150"
-                    Clicked="OnCreateFromSplitClicked" />
-
-            <Button Text="From Template"
-                    WidthRequest="150"
-                    Clicked="OnCreateFromTemplateClicked" />
-
-            <!-- Spacer -->
-            <Label />
-
-            <Label Text="Save Template"
-                   FontSize="20"
-                   HorizontalOptions="Center" />
-
-            <Button x:Name="SaveTemplateButton"
-                    IsEnabled="False"
-                    Text="Save"
-                    WidthRequest="150"
-                    Clicked="OnSaveTemplateClicked" />
-
-            <Button x:Name="SaveTemplateAsButton"
-                    IsEnabled="False"
-                    Text="Save As"
-                    WidthRequest="150"
-                    Clicked="OnSaveAsTemplateClicked" />
-
-            <!-- Spacer -->
-            <Label />
-
-            <HorizontalStackLayout HorizontalOptions="Center" >
-                <Label Text="Template Editing"
+                <Label Text="New Template"
                        FontSize="20"
+                       Grid.Column="1"
                        HorizontalOptions="Center" />
 
-                <ImageButton Source="info.png"
-                             HorizontalOptions="End" 
-                             MinimumHeightRequest="30"
-                             HeightRequest="30"
-                             BackgroundColor="#242424"
-                             Clicked="OnTemplateEditingInfoButtonClicked" />
-            </HorizontalStackLayout>
+                <Button Text="Empty"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        WidthRequest="120" />
 
-            <Picker x:Name="SplitPicker"
-                    IsEnabled="False"
-                    HorizontalOptions="Center"
-                    MinimumWidthRequest="150"
-                    SelectedIndexChanged="OnSplitPickerSelectionChanged" />
-        </VerticalStackLayout>
+                <Button Text="From Splits"
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        WidthRequest="120" />
+
+                <Button Text="Save"
+                        Grid.Column="1"
+                        Grid.Row="4"
+                        WidthRequest="120" />
+
+                <Button Text="Load"
+                        WidthRequest="120"
+                        Grid.Column="1"
+                        Grid.Row="5"
+                        Clicked="OnCreateFromTemplateClicked" />
+                        </Grid>
+        </Frame>
     </Grid>
 </ContentPage>
