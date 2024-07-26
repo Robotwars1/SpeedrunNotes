@@ -11,27 +11,9 @@ public partial class SaveTemplatePopup : Popup
     string FileName;
     string FilePath;
 
-    int SplitsAmount;
+    List<MainPage.Split> SplitsInfo;
 
-    // Lists for keeping track of each thing that will be saved in template.json file
-    List<string> SplitNames;
-    List<string> SplitImages;
-    List<string> SplitNoteText1;
-    List<string> SplitNoteImage1;
-    List<string> SplitNoteText2;
-    List<string> SplitNoteImage2;
-
-    public class Split
-    {
-        public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImage { get; set; } = string.Empty;
-        public string SplitInfoText1 { get; set; } = string.Empty;
-        public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImage1 { get; set; } = string.Empty;
-        public string SplitInfoImage2 { get; set; } = string.Empty;
-    }
-
-    public SaveTemplatePopup(int splitsAmount, List<string> splitNames, List<string> splitImages, List<string> splitNoteText1, List<string> splitNoteImage1, List<string> splitNoteText2, List<string> splitNoteImage2)
+    public SaveTemplatePopup(List<MainPage.Split> splitsInfo)
     {
         InitializeComponent();
 
@@ -39,13 +21,7 @@ public partial class SaveTemplatePopup : Popup
         Size = new Size(300, 225);
 
         // Make sure all vars are assigned
-        SplitsAmount = splitsAmount;
-        SplitNames = splitNames;
-        SplitImages = splitImages;
-        SplitNoteText1 = splitNoteText1;
-        SplitNoteImage1 = splitNoteImage1;
-        SplitNoteText2 = splitNoteText2;
-        SplitNoteImage2 = splitNoteImage2;
+        SplitsInfo = splitsInfo;
     }
 
     void OnCloseButtonClicked(object sender, EventArgs e)
@@ -95,16 +71,9 @@ public partial class SaveTemplatePopup : Popup
 
     async void OnSaveFileButtonClicked(object sender, EventArgs e)
     {
-        var TemplateVars = new List<Split>();
         var File = Path.Combine(FilePath, FileName);
 
-        // Make sure the List TemplateVars has all values set
-        for (int i = 0; i < SplitsAmount; i++)
-        {
-            TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
-        }
-
-        JsonWrite(TemplateVars, File);
+        JsonWrite(SplitsInfo, File);
 
         await CloseAsync();
     }

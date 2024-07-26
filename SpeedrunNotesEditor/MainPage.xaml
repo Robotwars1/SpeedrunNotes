@@ -24,7 +24,7 @@
                     <Frame BackgroundColor="#404040"
                            CornerRadius="5"
                            Padding="5">
-                        <Label Text="{Binding .}"
+                        <Label Text="{Binding SplitTitle}"
                                VerticalTextAlignment="Center"
                                FontSize="20"
                                LineBreakMode="NoWrap"/>
@@ -175,7 +175,7 @@
                         WidthRequest="120"
                         Grid.Column="1"
                         Grid.Row="5"
-                        Clicked="OnCreateFromTemplateClicked" />
+                        Clicked="OnLoadFromTemplateClicked" />
                         </Grid>
         </Frame>
     </Grid>

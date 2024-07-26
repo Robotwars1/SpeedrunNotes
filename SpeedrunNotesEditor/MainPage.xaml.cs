@@ -7,18 +7,6 @@ namespace SpeedrunNotesEditor;
 
 public partial class MainPage : ContentPage
 {
-	int SplitsAmount;
-
-	// Lists for keeping track of each thing that will be saved in template.json file
-	List<string> SplitNames = new();
-	List<string> SplitImages = new();
-    List<string> SplitNoteText1 = new();
-    List<string> SplitNoteImage1 = new();
-    List<string> SplitNoteText2 = new();
-    List<string> SplitNoteImage2 = new();
-
-    string PreviousElement;
-
     int CurrentSplitIndex = 0;
 
     bool SidebarOut = true;
@@ -66,7 +54,7 @@ public partial class MainPage : ContentPage
         Window.Title = "SpeedrunNotesEditor";
     }
 
-    async void OnCreateFromTemplateClicked(object sender, EventArgs e)
+    async void OnLoadFromTemplateClicked(object sender, EventArgs e)
 	{
         var File = await FilePicker.PickAsync(default);
 
@@ -78,30 +66,9 @@ public partial class MainPage : ContentPage
             LoadedFilePath = File.FullPath;
             SplitsInfo = JsonParse(LoadedFilePath);
 
-            SplitsAmount = SplitsInfo.Count;
-
-            // Clear Lists incase another template was previously loaded / created
-            SplitNames.Clear();
-            SplitImages.Clear();
-            SplitNoteText1.Clear();
-            SplitNoteImage1.Clear();
-            SplitNoteText2.Clear();
-            SplitNoteImage2.Clear();
-
-            // Update corresponding lists
-            for (int i = 0; i < SplitsInfo.Count; i++)
-            {
-                SplitNames.Add(SplitsInfo[i].SplitTitle);
-                SplitImages.Add(SplitsInfo[i].SplitImage);
-                SplitNoteText1.Add(SplitsInfo[i].SplitInfoText1);
-                SplitNoteImage1.Add(SplitsInfo[i].SplitInfoImage1);
-                SplitNoteText2.Add(SplitsInfo[i].SplitInfoText2);
-                SplitNoteImage2.Add(SplitsInfo[i].SplitInfoImage2);
-            }
-
             SettingTemplate = false;
 
-            SplitSelector.ItemsSource = SplitNames;
+            SplitSelector.ItemsSource = SplitsInfo;
         }
     }
 
@@ -114,17 +81,8 @@ public partial class MainPage : ContentPage
 
     void OnSaveTemplateClicked(object sender, EventArgs e)
     {
-        // List to hold all the variables for writing into the json
-        var TemplateVars = new List<Split>();
-
-        // Make sure the List TemplateVars has all values set
-        for (int i = 0; i < SplitsAmount; i++)
-        {
-            TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
-        }
-
         // Write to the loaded file
-        JsonWrite(TemplateVars, LoadedFilePath);
+        JsonWrite(SplitsInfo, LoadedFilePath);
     }
 
     public static void JsonWrite(object Obj, string FileName)
@@ -138,7 +96,7 @@ public partial class MainPage : ContentPage
     void OnSaveAsTemplateClicked(object sender, EventArgs e)
 	{
         // Create a popup and pass through all important vars
-        this.ShowPopup(new SaveTemplatePopup(SplitsAmount, SplitNames, SplitImages, SplitNoteText1, SplitNoteImage1, SplitNoteText2, SplitNoteImage2));
+        this.ShowPopup(new SaveTemplatePopup(SplitsInfo));
 	}
 
     async void OnCreateFromSplitClicked(object sender, EventArgs e)
@@ -152,39 +110,23 @@ public partial class MainPage : ContentPage
 
             string FilePath = SplitFile.FullPath;
 
-            // Clear Lists incase another template was previously loaded / created
-            SplitNames.Clear();
-            SplitImages.Clear();
-            SplitNoteText1.Clear();
-            SplitNoteImage1.Clear();
-            SplitNoteText2.Clear();
-            SplitNoteImage2.Clear();
-
             LssParse(FilePath);
 
             SettingTemplate = false;
-
-            SplitSelector.ItemsSource = SplitNames;
         }
     }
 
 	// Function for getting the relevant data out of the selected .lss file
 	void LssParse(string FilePath)
 	{
-        // Reset SplitsAmount before re-calculating it
-        SplitsAmount = 0;
-
         XmlTextReader Reader = new(FilePath);
+        string PreviousElement = "";
 		
 		while (Reader.Read())
 		{
 			switch (Reader.NodeType)
 			{
 				case XmlNodeType.Element:
-					if (Reader.Name == "Segment")
-					{
-                        SplitsAmount++;
-                    }
 					PreviousElement = Reader.Name;
 					break;
 				case XmlNodeType.Text:
@@ -222,29 +164,19 @@ public partial class MainPage : ContentPage
 						// Removes every space at front and end of the actual split name
 						NameText = NameText.Trim(' ');
 
-						// Add the cleaned name to the List
-                        SplitNames.Add(NameText);
+						// Add newly found split to SplitsInfo
+                        SplitsInfo.Add(new Split() { SplitTitle = NameText });
                     }
 					break;
 			}
 		}
-
-		// Make sure the following Lists are populated with as many items as SplitNames
-		for (int i = 0; i < SplitNames.Count; i++)
-		{
-            SplitImages.Add(null);
-            SplitNoteText1.Add(null);
-            SplitNoteImage1.Add(null);
-            SplitNoteText2.Add(null);
-            SplitNoteImage2.Add(null);
-        }
 	}
 
 	void UpdateTemplateDetailsViewer()
 	{
-        SplitNameEntry.Text = SplitNames[CurrentSplitIndex];
-        SplitNote1TextEditor.Text = SplitNoteText1[CurrentSplitIndex];
-        SplitNote2TextEditor.Text = SplitNoteText2[CurrentSplitIndex];
+        SplitNameEntry.Text = SplitsInfo[CurrentSplitIndex].SplitTitle;
+        SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+        SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
 
         // TODO: Set Images
     }
@@ -256,13 +188,13 @@ public partial class MainPage : ContentPage
             switch (((VisualElement)sender).ClassId)
             {
                 case "0":
-                    SplitNames[CurrentSplitIndex] = e.NewTextValue;
+                    SplitsInfo[CurrentSplitIndex].SplitTitle = e.NewTextValue;
                     break;
                 case "1":
-                    SplitNoteText1[CurrentSplitIndex] = e.NewTextValue;
+                    SplitsInfo[CurrentSplitIndex].SplitInfoText1 = e.NewTextValue;
                     break;
                 case "2":
-                    SplitNoteText2[CurrentSplitIndex] = e.NewTextValue;
+                    SplitsInfo[CurrentSplitIndex].SplitInfoText2 = e.NewTextValue;
                     break;
             }
         }
@@ -289,11 +221,23 @@ public partial class MainPage : ContentPage
 
     void OnSelectedIndexChanged(object sender, SelectionChangedEventArgs e)
     {
-        string SplitName = e.CurrentSelection[0].ToString();
-        CurrentSplitIndex = SplitNames.IndexOf(SplitName);
+        Split SelectedItem = (Split)e.CurrentSelection[0];
+        string SplitName = SelectedItem.SplitTitle;
+
+        // Get index that has the selected SplitName
+        // Cant use IndexOf() cause reasons idk
+        for (int i = 0; i < SplitsInfo.Count; i++)
+        {
+            if (SplitsInfo[i].SplitTitle == SplitName)
+            {
+                CurrentSplitIndex = i;
+                break;
+            }
+        }
+        
         UpdateTemplateDetailsViewer();
     }
-
+        
     private void ToggleSidebar(object sender, EventArgs e)
     {
         if (SidebarOut)
