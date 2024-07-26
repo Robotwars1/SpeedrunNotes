@@ -11,9 +11,9 @@ public partial class SaveTemplatePopup : Popup
     string FileName;
     string FilePath;
 
-    List<MainPage.Split> SplitsInfo;
+    List<Split> SplitsInfo;
 
-    public SaveTemplatePopup(List<MainPage.Split> splitsInfo)
+    public SaveTemplatePopup(List<Split> splitsInfo)
     {
         InitializeComponent();
 

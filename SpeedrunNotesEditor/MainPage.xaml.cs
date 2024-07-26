@@ -12,23 +12,13 @@ public partial class MainPage : ContentPage
     bool SidebarOut = true;
 
     // Stuff for loading presets
-    List<Split> SplitsInfo;
+    public List<Split> SplitsInfo { get; set; } = new();
 
     // If null, then no file has been loaded
     string LoadedFilePath = null;
 
     // Bool for if currently loading template / creating template from splits to avoid dumb errors
     bool SettingTemplate = false;
-
-    public class Split
-    {
-        public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImage { get; set; } = string.Empty;
-        public string SplitInfoText1 { get; set; } = string.Empty;
-        public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImage1 { get; set; } = string.Empty;
-        public string SplitInfoImage2 { get; set; } = string.Empty;
-    }
 
     private readonly JsonSerializerOptions _readOptions = new()
     {
