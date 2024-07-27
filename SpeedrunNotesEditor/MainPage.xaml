@@ -66,7 +66,8 @@
 
                     <Entry x:Name="SplitNameEntry"
                            ClassId="0"
-                           Grid.Row="1" />
+                           Grid.Row="1"
+                           TextChanged="OnTextChanged" />
                 </Grid>
             </Frame>
 
@@ -99,7 +100,8 @@
                     <Editor x:Name="SplitNote1TextEditor"
                             ClassId="1"
                             Grid.Row="1"
-                            Grid.RowSpan="2" />
+                            Grid.RowSpan="2"
+                            TextChanged="OnTextChanged" />
 
                     <Image Grid.Row="1"
                            Grid.Column="1"/>
@@ -124,7 +126,8 @@
                     <Editor x:Name="SplitNote2TextEditor"
                             ClassId="2"
                             Grid.Row="1"
-                            Grid.RowSpan="2" />
+                            Grid.RowSpan="2"
+                            TextChanged="OnTextChanged" />
 
                     <Image Grid.Row="1"
                            Grid.Column="1"/>

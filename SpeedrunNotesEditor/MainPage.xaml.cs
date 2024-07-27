@@ -243,4 +243,9 @@ public partial class MainPage : ContentPage
 
         SidebarOut = !SidebarOut;
     }
+
+    private void SplitNameEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+
+    }
 }
