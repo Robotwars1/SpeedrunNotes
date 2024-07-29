@@ -21,15 +21,16 @@ public partial class MainPage : ContentPage
     // Bool for if currently loading template / creating template from splits to avoid dumb errors
     bool SettingTemplate = false;
 
+    private bool _InputEnabled = false;
     private bool EnableInput
     {
         get
         {
-            return EnableInput;
+            return _InputEnabled;
         }
         set
         {
-            EnableInput = value;
+            _InputEnabled = value;
             // Depending on if input is enabled all input-elements should be enabled/disabled to match this allowance
             SplitNameEntry.IsEnabled = value;
             SplitTitleImageButton.IsEnabled = value;
