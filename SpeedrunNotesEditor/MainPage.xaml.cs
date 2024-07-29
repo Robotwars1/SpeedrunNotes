@@ -21,6 +21,25 @@ public partial class MainPage : ContentPage
     // Bool for if currently loading template / creating template from splits to avoid dumb errors
     bool SettingTemplate = false;
 
+    private bool EnableInput
+    {
+        get
+        {
+            return EnableInput;
+        }
+        set
+        {
+            EnableInput = value;
+            // Depending on if input is enabled all input-elements should be enabled/disabled to match this allowance
+            SplitNameEntry.IsEnabled = value;
+            SplitTitleImageButton.IsEnabled = value;
+            SplitNote1TextEditor.IsEnabled = value;
+            SplitNote1ImageButton.IsEnabled = value;
+            SplitNote2TextEditor.IsEnabled = value;
+            SplitNote2ImageButton.IsEnabled = value;
+        }
+    }
+
     private readonly JsonSerializerOptions _readOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -34,6 +53,8 @@ public partial class MainPage : ContentPage
     public MainPage()
 	{
 		InitializeComponent();
+        // Always dissalow input at start
+        EnableInput = false;
 	}
 
     protected override void OnAppearing()
@@ -58,6 +79,7 @@ public partial class MainPage : ContentPage
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
             SettingTemplate = false;
+            EnableInput = true;
 
             SplitSelector.ItemsSource = SplitsInfo;
         }
@@ -104,6 +126,7 @@ public partial class MainPage : ContentPage
             LssParse(FilePath);
 
             SettingTemplate = false;
+            EnableInput = true;
         }
     }
 

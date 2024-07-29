@@ -67,6 +67,7 @@
                     <Entry x:Name="SplitNameEntry"
                            ClassId="0"
                            Grid.Row="1"
+                           IsEnabled="false"
                            TextChanged="OnTextChanged" />
                 </Grid>
             </Frame>
@@ -82,8 +83,10 @@
 
                     <Image Grid.Row="1"/>
 
-                    <Button Text="Select Image"
-                            Grid.Row="2" />
+                    <Button x:Name="SplitTitleImageButton"
+                            Text="Select Image"
+                            Grid.Row="2" 
+                            IsEnabled="false"/>
                 </Grid>
             </Frame>
 
@@ -101,14 +104,17 @@
                             ClassId="1"
                             Grid.Row="1"
                             Grid.RowSpan="2"
+                            IsEnabled="false"
                             TextChanged="OnTextChanged" />
 
                     <Image Grid.Row="1"
                            Grid.Column="1"/>
 
-                    <Button Text="Select Image"
+                    <Button x:Name="SplitNote1ImageButton"
+                            Text="Select Image"
                             Grid.Row="2"
-                            Grid.Column="1"/>
+                            Grid.Column="1"
+                            IsEnabled="false"/>
                 </Grid>
             </Frame>
 
@@ -127,14 +133,17 @@
                             ClassId="2"
                             Grid.Row="1"
                             Grid.RowSpan="2"
+                            IsEnabled="false"
                             TextChanged="OnTextChanged" />
 
                     <Image Grid.Row="1"
                            Grid.Column="1"/>
 
-                    <Button Text="Select Image"
+                    <Button x:Name="SplitNote2ImageButton"
+                            Text="Select Image"
                             Grid.Row="2"
-                            Grid.Column="1"/>
+                            Grid.Column="1"
+                            IsEnabled="false"/>
                 </Grid>
             </Frame>
         </Grid>
