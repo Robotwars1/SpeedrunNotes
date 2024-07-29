@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
+using CommunityToolkit.Maui.Storage;
 
 namespace SpeedrunNotesEditor;
 
@@ -46,15 +47,15 @@ public partial class MainPage : ContentPage
 
     async void OnLoadFromTemplateClicked(object sender, EventArgs e)
 	{
-        var File = await FilePicker.PickAsync(default);
+        var Folder = await FolderPicker.PickAsync(default);
 
-        // Only do stuff to File if it succesfully picks a file
-        if (File != null)
+        // Only do stuff if succesfully picks a folder
+        if (Folder != null)
         {
             SettingTemplate = true;
 
-            LoadedFilePath = File.FullPath;
-            SplitsInfo = JsonParse(LoadedFilePath);
+            LoadedFilePath = Folder.Folder.Path;
+            SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
             SettingTemplate = false;
 
