@@ -80,7 +80,6 @@ public partial class MainPage : ContentPage
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
             SettingTemplate = false;
-            EnableInput = true;
 
             SplitSelector.ItemsSource = SplitsInfo;
         }
@@ -127,7 +126,6 @@ public partial class MainPage : ContentPage
             LssParse(FilePath);
 
             SettingTemplate = false;
-            EnableInput = true;
         }
     }
 
@@ -254,6 +252,8 @@ public partial class MainPage : ContentPage
 
     void OnSelectedIndexChanged(object sender, SelectionChangedEventArgs e)
     {
+        EnableInput = true;
+
         Split SelectedItem = (Split)e.CurrentSelection[0];
         string SplitName = SelectedItem.SplitTitle;
 
