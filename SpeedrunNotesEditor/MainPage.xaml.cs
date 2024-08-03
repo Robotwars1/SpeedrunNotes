@@ -193,7 +193,9 @@ public partial class MainPage : ContentPage
         SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
         SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
 
-        // TODO: Set Images
+        SplitTitleImage.Source = SplitsInfo[CurrentSplitIndex].SplitTitle;
+        SplitNote1Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage1;
+        SplitNote2Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
     }
 
     void OnTextChanged(object sender, TextChangedEventArgs e)
@@ -215,15 +217,31 @@ public partial class MainPage : ContentPage
         }
     }
 
-    void OnImageSelectButtonClicked(object sender, EventArgs e)
+    async void OnImageSelectButtonClicked(object sender, EventArgs e)
     {
         if (!SettingTemplate)
         {
-            var Image = FilePicker.Default.PickAsync(default);
+            var Image = await FilePicker.Default.PickAsync(default);
 
             if (Image != null)
             {
-                // TODO: STUFF
+                // Save selected images filepath so it later can be saved
+                // Then set the image to be shown in editor window
+                switch (((VisualElement)sender).ClassId)
+                {
+                    case "0":
+                        SplitsInfo[CurrentSplitIndex].SplitImage = Image.FullPath;
+                        SplitTitleImage.Source = ImageSource.FromFile(Image.FullPath);
+                        break;
+                    case "1":
+                        SplitsInfo[CurrentSplitIndex].SplitInfoImage1 = Image.FullPath;
+                        SplitNote1Image.Source = ImageSource.FromFile(Image.FullPath);
+                        break;
+                    case "2":
+                        SplitsInfo[CurrentSplitIndex].SplitInfoImage2 = Image.FullPath;
+                        SplitNote2Image.Source = ImageSource.FromFile(Image.FullPath);
+                        break;
+                }
             }
         }
     }

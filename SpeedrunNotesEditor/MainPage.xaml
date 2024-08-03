@@ -81,12 +81,15 @@
                     <Label Text="Split Image"
                            FontSize="25" />
 
-                    <Image Grid.Row="1"/>
+                    <Image x:Name="SplitTitleImage"
+                           Grid.Row="1"/>
 
                     <Button x:Name="SplitTitleImageButton"
                             Text="Select Image"
                             Grid.Row="2" 
-                            IsEnabled="false"/>
+                            IsEnabled="false"
+                            ClassId="0"
+                            Clicked="OnImageSelectButtonClicked" />
                 </Grid>
             </Frame>
 
@@ -107,14 +110,17 @@
                             IsEnabled="false"
                             TextChanged="OnTextChanged" />
 
-                    <Image Grid.Row="1"
+                    <Image x:Name="SplitNote1Image"
+                           Grid.Row="1"
                            Grid.Column="1"/>
 
                     <Button x:Name="SplitNote1ImageButton"
                             Text="Select Image"
                             Grid.Row="2"
                             Grid.Column="1"
-                            IsEnabled="false"/>
+                            IsEnabled="false"
+                            ClassId="1"
+                            Clicked="OnImageSelectButtonClicked" />
                 </Grid>
             </Frame>
 
@@ -136,14 +142,17 @@
                             IsEnabled="false"
                             TextChanged="OnTextChanged" />
 
-                    <Image Grid.Row="1"
+                    <Image x:Name="SplitNote2Image"
+                           Grid.Row="1"
                            Grid.Column="1"/>
 
                     <Button x:Name="SplitNote2ImageButton"
                             Text="Select Image"
                             Grid.Row="2"
                             Grid.Column="1"
-                            IsEnabled="false"/>
+                            IsEnabled="false"
+                            ClassId="2"
+                            Clicked="OnImageSelectButtonClicked" />
                 </Grid>
             </Frame>
         </Grid>
