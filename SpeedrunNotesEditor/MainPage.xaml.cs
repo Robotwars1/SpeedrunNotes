@@ -191,7 +191,7 @@ public partial class MainPage : ContentPage
         SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
         SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
 
-        SplitTitleImage.Source = SplitsInfo[CurrentSplitIndex].SplitTitle;
+        SplitTitleImage.Source = SplitsInfo[CurrentSplitIndex].SplitImage;
         SplitNote1Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage1;
         SplitNote2Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
     }
@@ -270,7 +270,7 @@ public partial class MainPage : ContentPage
         
         UpdateTemplateDetailsViewer();
     }
-        
+    
     private void ToggleSidebar(object sender, EventArgs e)
     {
         if (SidebarOut)
