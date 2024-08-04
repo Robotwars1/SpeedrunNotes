@@ -98,7 +98,9 @@
                    BackgroundColor="#323232"
                    Grid.Column="1"
                    Grid.RowSpan="2">
-                <Grid RowDefinitions="*, 5*, *"
+                <Grid RowSpacing="5"
+                      ColumnSpacing="5"
+                      RowDefinitions="*, 5*, *"
                       ColumnDefinitions="*, *">
                     <Label Text="Split Notes 1"
                            FontSize="25" />
@@ -130,7 +132,9 @@
                    Grid.Column="1"
                    Grid.Row="2"
                    Grid.RowSpan="2">
-                <Grid RowDefinitions="*, 5*, *"
+                <Grid RowSpacing="5"
+                      ColumnSpacing="5"
+                      RowDefinitions="*, 5*, *"
                       ColumnDefinitions="*, *">
                     <Label Text="Split Notes 2"
                            FontSize="25" />
@@ -200,7 +204,7 @@
                         Grid.Column="1"
                         Grid.Row="5"
                         Clicked="OnLoadFromTemplateClicked" />
-                        </Grid>
+            </Grid>
         </Frame>
     </Grid>
 </ContentPage>
