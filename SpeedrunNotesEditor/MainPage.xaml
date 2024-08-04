@@ -193,7 +193,8 @@
                 <Button Text="From Splits"
                         Grid.Column="1"
                         Grid.Row="2"
-                        WidthRequest="120" />
+                        WidthRequest="120"
+                        Clicked="OnCreateFromSplitClicked" />
 
                 <Button Text="Save"
                         Grid.Column="1"

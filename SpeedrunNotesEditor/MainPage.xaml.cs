@@ -142,6 +142,8 @@ public partial class MainPage : ContentPage
             LssParse(FilePath);
 
             SettingTemplate = false;
+
+            SplitSelector.ItemsSource = SplitsInfo;
         }
     }
 
