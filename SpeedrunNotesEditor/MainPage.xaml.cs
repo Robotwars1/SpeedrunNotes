@@ -112,6 +112,22 @@ public partial class MainPage : ContentPage
         this.ShowPopup(new SaveTemplatePopup(SplitsInfo));
 	}
 
+    void OnCreateEmptyClicked(object sender, EventArgs e)
+    {
+        SettingTemplate = true;
+
+        // Clear whatever is loaded
+        SplitsInfo.Clear();
+        SplitSelector.SelectedItem = null;
+        EnableInput = false; // Since nothing is selected now
+
+        SplitsInfo.Add(new Split() { SplitTitle = "Split 1" });
+
+        SettingTemplate = false;
+
+        SplitSelector.ItemsSource = SplitsInfo;
+    }
+
     async void OnCreateFromSplitClicked(object sender, EventArgs e)
 	{
 		var SplitFile = await FilePicker.PickAsync(default);
@@ -196,6 +212,17 @@ public partial class MainPage : ContentPage
         SplitNote2Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
     }
 
+    void ClearTemplateDetailsViewer()
+    {
+        SplitNameEntry.Text = "";
+        SplitNote1TextEditor.Text = "";
+        SplitNote2TextEditor.Text = "";
+
+        SplitTitleImage.Source = "";
+        SplitNote1Image.Source = "";
+        SplitNote2Image.Source = "";
+    }
+
     void OnTextChanged(object sender, TextChangedEventArgs e)
 	{
         if (!SettingTemplate)
@@ -252,23 +279,31 @@ public partial class MainPage : ContentPage
 
     void OnSelectedIndexChanged(object sender, SelectionChangedEventArgs e)
     {
-        EnableInput = true;
-
-        Split SelectedItem = (Split)e.CurrentSelection[0];
-        string SplitName = SelectedItem.SplitTitle;
-
-        // Get index that has the selected SplitName
-        // Cant use IndexOf() cause reasons idk
-        for (int i = 0; i < SplitsInfo.Count; i++)
+        // If we are selecting something
+        if (e.CurrentSelection.Count > 0)
         {
-            if (SplitsInfo[i].SplitTitle == SplitName)
+            EnableInput = true;
+
+            Split SelectedItem = (Split)e.CurrentSelection[0];
+            string SplitName = SelectedItem.SplitTitle;
+
+            // Get index that has the selected SplitName
+            // Cant use IndexOf() cause reasons idk
+            for (int i = 0; i < SplitsInfo.Count; i++)
             {
-                CurrentSplitIndex = i;
-                break;
+                if (SplitsInfo[i].SplitTitle == SplitName)
+                {
+                    CurrentSplitIndex = i;
+                    break;
+                }
             }
+
+            UpdateTemplateDetailsViewer();
         }
-        
-        UpdateTemplateDetailsViewer();
+        else
+        {
+            ClearTemplateDetailsViewer();
+        }
     }
     
     private void ToggleSidebar(object sender, EventArgs e)

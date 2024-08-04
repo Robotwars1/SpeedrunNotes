@@ -187,7 +187,8 @@
                 <Button Text="Empty"
                         Grid.Column="1"
                         Grid.Row="1"
-                        WidthRequest="120" />
+                        WidthRequest="120"
+                        Clicked="OnCreateEmptyClicked"/>
 
                 <Button Text="From Splits"
                         Grid.Column="1"
