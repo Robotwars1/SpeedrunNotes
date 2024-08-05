@@ -96,6 +96,22 @@
             <Frame Padding="8"
                    BorderColor="#323232"
                    BackgroundColor="#323232"
+                   Grid.Row="3">
+                <Grid RowDefinitions="*, 3*">
+                    <Label Text="Template Name"
+                           FontSize="25" />
+
+                    <Entry x:Name="TemplateNameEntry"
+                           ClassId="0"
+                           Grid.Row="1"
+                           IsEnabled="false"
+                           TextChanged="OnTemplateNameChanged" />
+                </Grid>
+            </Frame>
+
+            <Frame Padding="8"
+                   BorderColor="#323232"
+                   BackgroundColor="#323232"
                    Grid.Column="1"
                    Grid.RowSpan="2">
                 <Grid RowSpacing="5"
@@ -196,10 +212,13 @@
                         WidthRequest="120"
                         Clicked="OnCreateFromSplitClicked" />
 
-                <Button Text="Save"
+                <Button x:Name="SaveButton"
+                        Text="Save"
                         Grid.Column="1"
                         Grid.Row="4"
-                        WidthRequest="120" />
+                        WidthRequest="120"
+                        IsEnabled="False"
+                        Clicked="OnSaveTemplateClicked" />
 
                 <Button Text="Load"
                         WidthRequest="120"

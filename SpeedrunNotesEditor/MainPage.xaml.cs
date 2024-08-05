@@ -3,6 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using CommunityToolkit.Maui.Storage;
+using Microsoft.Maui.Storage;
+using CommunityToolkit.Maui.Core.Primitives;
 
 namespace SpeedrunNotesEditor;
 
@@ -17,6 +19,8 @@ public partial class MainPage : ContentPage
 
     // If null, then no file has been loaded
     string LoadedFilePath = null;
+
+    string TemplateName = "";
 
     // Bool for if currently loading template / creating template from splits to avoid dumb errors
     bool SettingTemplate = false;
@@ -79,6 +83,9 @@ public partial class MainPage : ContentPage
             LoadedFilePath = Folder.Folder.Path;
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
+            TemplateNameEntry.Text = Folder.Folder.Name;
+            TemplateNameEntry.IsEnabled = true;
+
             SettingTemplate = false;
 
             SplitSelector.ItemsSource = SplitsInfo;
@@ -92,12 +99,6 @@ public partial class MainPage : ContentPage
         return Splits;
     }
 
-    void OnSaveTemplateClicked(object sender, EventArgs e)
-    {
-        // Write to the loaded file
-        JsonWrite(SplitsInfo, LoadedFilePath);
-    }
-
     public static void JsonWrite(object Obj, string FileName)
     {
         using var FileStream = File.Create(FileName);
@@ -106,11 +107,58 @@ public partial class MainPage : ContentPage
         JsonSerializer.Serialize(Utf8JsonWriter, Obj, _writeOptions);
     }
 
-    void OnSaveAsTemplateClicked(object sender, EventArgs e)
+    async void OnSaveTemplateClicked(object sender, EventArgs e)
 	{
-        // Create a popup and pass through all important vars
-        this.ShowPopup(new SaveTemplatePopup(SplitsInfo));
+        var Result = await FolderPicker.PickAsync(default);
+
+        if (Result.IsSuccessful)
+        {
+            string SaveLocation = Result.Folder.Path;
+
+            WriteToFolder(SaveLocation);
+        }
 	}
+
+    void WriteToFolder(string SaveLocation)
+    {
+        string TemplateFolderPath = $"{SaveLocation}/{TemplateName}";
+
+        // Create the template folder (unless it already exists)
+        if (!Directory.Exists(TemplateFolderPath))
+        {
+            Directory.CreateDirectory(TemplateFolderPath);
+        }
+
+        // Write the template.json file
+        using var FileStream = File.Create($"{TemplateFolderPath}/template.json");
+        using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
+        JsonSerializer.Serialize(Utf8JsonWriter, SplitsInfo, _writeOptions);
+
+        // Move all images into the template folder
+        for (int i = 0; i < SplitsInfo.Count; i++)
+        {
+            if (SplitsInfo[i].SplitImage != "")
+            {
+                File.Copy(SplitsInfo[i].SplitImage, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitImage)));
+            }
+            if (SplitsInfo[i].SplitInfoImage1 != "")
+            {
+                File.Copy(SplitsInfo[i].SplitInfoImage1, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage1)));
+            }
+            if (SplitsInfo[i].SplitInfoImage2 != "")
+            {
+                File.Copy(SplitsInfo[i].SplitInfoImage2, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage2)));
+            }
+        }
+    }
+
+    void OnTemplateNameChanged(object sender, TextChangedEventArgs e)
+    {
+        TemplateName = e.NewTextValue;
+
+        // Can only save if it has a name
+        SaveButton.IsEnabled = TemplateName.Length > 0;
+    }
 
     void OnCreateEmptyClicked(object sender, EventArgs e)
     {
@@ -124,6 +172,7 @@ public partial class MainPage : ContentPage
         SplitsInfo.Add(new Split() { SplitTitle = "Split 1" });
 
         SettingTemplate = false;
+        TemplateNameEntry.IsEnabled = true;
 
         SplitSelector.ItemsSource = SplitsInfo;
     }
@@ -142,6 +191,7 @@ public partial class MainPage : ContentPage
             LssParse(FilePath);
 
             SettingTemplate = false;
+            TemplateNameEntry.IsEnabled = true;
 
             SplitSelector.ItemsSource = SplitsInfo;
         }
