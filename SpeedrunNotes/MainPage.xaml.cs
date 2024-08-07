@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Diagnostics;
 using System.Reflection;
 using SpeedrunNotes.Popouts;
+using CommunityToolkit.Maui.Storage;
 
 namespace SpeedrunNotes;
 
@@ -442,13 +443,13 @@ public partial class MainPage : ContentPage
 
     async void OnLoadPresetBtnClicked(object sender, EventArgs e)
     {
-        var File = await FilePicker.PickAsync(JsonFilepickerOptions);
+        var Result = await FolderPicker.PickAsync(default);
 
         // Only do stuff to File if it succesfully picks a file
-        if (File != null)
+        if (Result.IsSuccessful)
         {
-            string FilePath = File.FullPath;
-            SplitsInfo = JsonParse(FilePath);
+            string FolderPath = Result.Folder.Path;
+            SplitsInfo = JsonParse($"{FolderPath}/template.json");
 
             TemplateLoaded = true;
 
