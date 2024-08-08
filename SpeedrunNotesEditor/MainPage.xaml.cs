@@ -139,15 +139,15 @@ public partial class MainPage : ContentPage
         {
             if (SplitsInfo[i].SplitImage != "")
             {
-                File.Copy(SplitsInfo[i].SplitImage, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitImage)));
+                File.Copy(SplitsInfo[i].SplitImage, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitImage)), true);
             }
             if (SplitsInfo[i].SplitInfoImage1 != "")
             {
-                File.Copy(SplitsInfo[i].SplitInfoImage1, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage1)));
+                File.Copy(SplitsInfo[i].SplitInfoImage1, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage1)), true);
             }
             if (SplitsInfo[i].SplitInfoImage2 != "")
             {
-                File.Copy(SplitsInfo[i].SplitInfoImage2, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage2)));
+                File.Copy(SplitsInfo[i].SplitInfoImage2, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage2)), true);
             }
         }
     }
