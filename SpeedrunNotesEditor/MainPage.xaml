@@ -177,6 +177,13 @@
             </Frame>
         </Grid>
 
+        <local:SaveIndicator x:Name="FileSaveIndicator"
+                             VerticalOptions="End"
+                             HorizontalOptions="Start"
+                             Padding="5"
+                             Grid.Row="2"
+                             IsVisible="False" />
+
         <!-- Side-bar -->
         <Frame x:Name="Sidebar"
                VerticalOptions="End"

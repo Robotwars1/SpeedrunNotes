@@ -66,7 +66,7 @@
                 <Label FontSize="16">
                     <!-- Text not inset to remove the insane amount of spaces in front of text -->
                     <Label.Text>
-Make sure LiveSplit.Server is added to your layout and started (left click -> Control -> Start Server)
+                        Make sure LiveSplit.Server is added to your layout and started (left click -> Control -> Start Server)
 
 Make sure you enter the same port as in the settings for LiveSplit.Server
                         
@@ -76,12 +76,6 @@ If this doesnt work, try changing "localhost" to your actual local IP. To get yo
             </VerticalStackLayout>
         </Border>
 
-        <!-- Background for Connection Stuff -->
-        <BoxView Grid.Row="2"
-                 Grid.RowSpan="3"
-                 Grid.Column="3"
-                 Color="#242424" />
-        
         <!-- Button to toggle InfoStuff -->
         <ImageButton Grid.Row="2"
                      Grid.Column="3"
@@ -90,67 +84,73 @@ If this doesnt work, try changing "localhost" to your actual local IP. To get yo
                      MinimumHeightRequest="40"
                      HeightRequest="40"
                      BackgroundColor="#242424"
+                     ZIndex="10"
                      Clicked="OnInfoToggleButtonClicked" />
 
         <!-- Connection Stuff -->
-        <VerticalStackLayout Grid.Row="3"
-                             Grid.Column="3"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center" >
-            <Label Grid.Row="2"
-                   Grid.Column="2"
-                   Grid.ColumnSpan="2"
-                   VerticalOptions="End"
-                   Text="Local IP" 
-                   FontSize="20" />
-
-            <HorizontalStackLayout>
-                <Entry x:Name="IPEntry"
-                       Grid.Row="3"
+        <Frame Grid.Row="2"
+               Grid.RowSpan="3"
+               Grid.Column="3"
+               BackgroundColor="#242424"
+               BorderColor="#242424"
+               CornerRadius="10">
+            <VerticalStackLayout VerticalOptions="Center"
+                                 HorizontalOptions="Center" >
+                <Label Grid.Row="2"
                        Grid.Column="2"
-                       WidthRequest="200"
-                       TextChanged="OnIpChanged" />
+                       Grid.ColumnSpan="2"
+                       VerticalOptions="End"
+                       Text="Local IP" 
+                       FontSize="20" />
 
-                <ImageButton Grid.Row="3"
-                             Grid.Column="3"
-                             HorizontalOptions="End"
-                             Source="reset.png"
-                             WidthRequest="50"
-                             Clicked="OnIpResetButtonClicked" />
-            </HorizontalStackLayout>
+                <HorizontalStackLayout>
+                    <Entry x:Name="IPEntry"
+                           Grid.Row="3"
+                           Grid.Column="2"
+                           WidthRequest="200"
+                           TextChanged="OnIpChanged" />
 
-            <Label Grid.Row="4"
-                   Grid.Column="2"
-                   Grid.ColumnSpan="2"
-                   VerticalOptions="End"
-                   Text="Port"
-                   FontSize="20" />
+                    <ImageButton Grid.Row="3"
+                                 Grid.Column="3"
+                                 HorizontalOptions="End"
+                                 Source="reset.png"
+                                 WidthRequest="50"
+                                 Clicked="OnIpResetButtonClicked" />
+                </HorizontalStackLayout>
 
-            <HorizontalStackLayout>
-                <Entry x:Name="PortEntry"
-                       Grid.Row="5"
+                <Label Grid.Row="4"
                        Grid.Column="2"
-                       WidthRequest="200"
-                       TextChanged="OnPortChanged" />
+                       Grid.ColumnSpan="2"
+                       VerticalOptions="End"
+                       Text="Port"
+                       FontSize="20" />
 
-                <ImageButton Grid.Row="5"
-                             Grid.Column="3"
-                             HorizontalOptions="End"
-                             Source="reset.png"
-                             WidthRequest="50"
-                             Clicked="OnPortResetButtonClicked" />
-            </HorizontalStackLayout>
-            
-            <Button x:Name="ConnectButton"
-                    Grid.Row="7"
-                    Grid.Column="2"
-                    Grid.ColumnSpan="2"
-                    WidthRequest="150"
-                    Text="Connect"
-                    FontSize="20" 
-                    Clicked="OnConnectButtonClicked" />
-        </VerticalStackLayout>
-        
+                <HorizontalStackLayout>
+                    <Entry x:Name="PortEntry"
+                           Grid.Row="5"
+                           Grid.Column="2"
+                           WidthRequest="200"
+                           TextChanged="OnPortChanged" />
+
+                    <ImageButton Grid.Row="5"
+                                 Grid.Column="3"
+                                 HorizontalOptions="End"
+                                 Source="reset.png"
+                                 WidthRequest="50"
+                                 Clicked="OnPortResetButtonClicked" />
+                </HorizontalStackLayout>
+
+                <Button x:Name="ConnectButton"
+                        Grid.Row="7"
+                        Grid.Column="2"
+                        Grid.ColumnSpan="2"
+                        WidthRequest="150"
+                        Text="Connect"
+                        FontSize="20" 
+                        Clicked="OnConnectButtonClicked" />
+            </VerticalStackLayout>
+        </Frame>
+
         <!-- Info Stuff -->
         <Border x:Name="InfoStuffBorder"
                 Grid.Column="5"

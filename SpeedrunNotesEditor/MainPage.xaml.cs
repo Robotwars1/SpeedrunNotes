@@ -121,34 +121,45 @@ public partial class MainPage : ContentPage
 
     void WriteToFolder(string SaveLocation)
     {
-        string TemplateFolderPath = $"{SaveLocation}/{TemplateName}";
+        FileSaveIndicator.SaveInProgress();
 
-        // Create the template folder (unless it already exists)
-        if (!Directory.Exists(TemplateFolderPath))
+        try
         {
-            Directory.CreateDirectory(TemplateFolderPath);
+            string TemplateFolderPath = $"{SaveLocation}/{TemplateName}";
+
+            // Create the template folder (unless it already exists)
+            if (!Directory.Exists(TemplateFolderPath))
+            {
+                Directory.CreateDirectory(TemplateFolderPath);
+            }
+
+            // Write the template.json file
+            using var FileStream = File.Create($"{TemplateFolderPath}/template.json");
+            using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
+            JsonSerializer.Serialize(Utf8JsonWriter, SplitsInfo, _writeOptions);
+
+            // Move all images into the template folder
+            for (int i = 0; i < SplitsInfo.Count; i++)
+            {
+                if (SplitsInfo[i].SplitImage != "")
+                {
+                    File.Copy(SplitsInfo[i].SplitImage, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitImage)), true);
+                }
+                if (SplitsInfo[i].SplitInfoImage1 != "")
+                {
+                    File.Copy(SplitsInfo[i].SplitInfoImage1, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage1)), true);
+                }
+                if (SplitsInfo[i].SplitInfoImage2 != "")
+                {
+                    File.Copy(SplitsInfo[i].SplitInfoImage2, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage2)), true);
+                }
+            }
+
+            FileSaveIndicator.SaveSucces();
         }
-
-        // Write the template.json file
-        using var FileStream = File.Create($"{TemplateFolderPath}/template.json");
-        using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
-        JsonSerializer.Serialize(Utf8JsonWriter, SplitsInfo, _writeOptions);
-
-        // Move all images into the template folder
-        for (int i = 0; i < SplitsInfo.Count; i++)
+        catch
         {
-            if (SplitsInfo[i].SplitImage != "")
-            {
-                File.Copy(SplitsInfo[i].SplitImage, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitImage)), true);
-            }
-            if (SplitsInfo[i].SplitInfoImage1 != "")
-            {
-                File.Copy(SplitsInfo[i].SplitInfoImage1, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage1)), true);
-            }
-            if (SplitsInfo[i].SplitInfoImage2 != "")
-            {
-                File.Copy(SplitsInfo[i].SplitInfoImage2, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage2)), true);
-            }
+            FileSaveIndicator.SaveFailed();
         }
     }
 
