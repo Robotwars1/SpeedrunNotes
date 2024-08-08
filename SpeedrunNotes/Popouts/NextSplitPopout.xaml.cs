@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Messaging;
+
 namespace SpeedrunNotes.Popouts;
 
 public partial class NextSplitPopout : ContentPage
@@ -11,16 +13,14 @@ public partial class NextSplitPopout : ContentPage
 	{
 		InitializeComponent();
 
-        MessagingCenter.Subscribe<MainPage, string>(this, "NextSplitLabel", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<NextSplitLabelMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            NextSplitLabelText = arg;
+            NextSplitLabelText = m.Value;
         });
 
-        MessagingCenter.Subscribe<MainPage, string>(this, "NextSplitImage", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<NextSplitImageMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            NextSplitImageFilePath = arg;
+            NextSplitImageFilePath = m.Value;
         });
 
         InitTimer();

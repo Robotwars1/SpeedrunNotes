@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Messaging;
+
 namespace SpeedrunNotes.Popouts;
 
 public partial class SplitNote2Popout : ContentPage
@@ -9,16 +11,14 @@ public partial class SplitNote2Popout : ContentPage
 	{
 		InitializeComponent();
 
-        MessagingCenter.Subscribe<MainPage, int>(this, "SplitNote2FontSize", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<SplitInfo2FontMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            FontSize = arg;
+            FontSize = m.Value;
         });
 
-        MessagingCenter.Subscribe<MainPage, string>(this, "SplitNote2Label", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<SplitInfo2TextMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            SplitNoteLabelText = arg;
+            SplitNoteLabelText = m.Value;
         });
 
         InitTimer();

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using SpeedrunNotes.Popouts;
 using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace SpeedrunNotes;
 
@@ -250,21 +251,21 @@ public partial class MainPage : ContentPage
                 string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
                 string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
 
-                MessagingCenter.Send(this, "NextSplitLabel", NextSplitLabel);
-                MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
+                WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
+                WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
             }
 
             if (CurrentSplitIndex >= 0)
             {
                 if (SplitNote1PopoutActive)
                 {
-                    MessagingCenter.Send(this, "SplitNote1FontSize", SplitNoteLabel1.FontSize);
-                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText1);
+                    WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel1.FontSize));
+                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].SplitInfoText1));
                 }
                 if (SplitNote1PopoutActive)
                 {
-                    MessagingCenter.Send(this, "SplitNote2FontSize", SplitNoteLabel2.FontSize);
-                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText2);
+                    WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel2.FontSize));
+                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].SplitInfoText2));
                 }
             }
 
