@@ -284,17 +284,14 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
+                if (File.Exists(SplitsInfo[CurrentSplitIndex + 1].SplitImage))
                 {
                     // Only redraw if something changed
                     if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
                     {
                         // Update title and image of next split
                         NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-
-                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
-
-                        NextSplitImage.Source = ImageSource.FromFile(FileLocation);
+                        NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
 
                         PreviousTitle = NextSplitLabel.Text;
                     }
@@ -334,17 +331,14 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
+                if (File.Exists(SplitsInfo[CurrentSplitIndex].SplitInfoImage1))
                 {
                     // Only redraw if something changed
                     if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
                     {
                         // Update notes for current split
                         SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-
-                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
-
-                        SplitNoteImage1.Source = ImageSource.FromFile(FileLocation);
+                        SplitNoteImage1.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage1;
 
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
@@ -384,17 +378,14 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2)))
+                if (File.Exists(SplitsInfo[CurrentSplitIndex].SplitInfoImage2))
                 {
                     // Only redraw if something changed
                     if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
                     {
                         // Update notes for current split
                         SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-
-                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
-
-                        SplitNoteImage2.Source = ImageSource.FromFile(FileLocation);
+                        SplitNoteImage2.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
