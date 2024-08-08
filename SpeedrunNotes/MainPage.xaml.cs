@@ -308,6 +308,18 @@ public partial class MainPage : ContentPage
                         PreviousTitle = NextSplitLabel.Text;
                     }
                 }
+                else // If no image is meant to show
+                {
+                    // Only redraw if something changed
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    {
+                        // Update title and image of next split
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                        NextSplitImage.Source = "";
+
+                        PreviousTitle = NextSplitLabel.Text;
+                    }
+                }
             }
             catch
             {
@@ -355,6 +367,18 @@ public partial class MainPage : ContentPage
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
+                else // If no image is meant to show
+                {
+                    // Only redraw if something changed
+                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
+                    {
+                        // Update notes for current split
+                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                        SplitNoteImage1.Source = "";
+
+                        PreviousLabel1 = SplitNoteLabel1.Text;
+                    }
+                }
             }
             catch
             {
@@ -398,6 +422,18 @@ public partial class MainPage : ContentPage
                         // Update notes for current split
                         SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
                         SplitNoteImage2.Source = "imageloadfail.png";
+
+                        PreviousLabel2 = SplitNoteLabel2.Text;
+                    }
+                }
+                else // If no image is meant to show
+                {
+                    // Only redraw if something changed
+                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
+                    {
+                        // Update notes for current split
+                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                        SplitNoteImage2.Source = "";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
