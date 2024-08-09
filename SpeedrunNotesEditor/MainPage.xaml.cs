@@ -3,8 +3,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using CommunityToolkit.Maui.Storage;
-using Microsoft.Maui.Storage;
-using CommunityToolkit.Maui.Core.Primitives;
 
 namespace SpeedrunNotesEditor;
 
@@ -155,15 +153,15 @@ public partial class MainPage : ContentPage
             // Move all images into the template folder
             for (int i = 0; i < SplitsInfo.Count; i++)
             {
-                if (SplitsInfo[i].SplitImageName != "")
+                if (SplitsInfo[i].ImageName != "")
                 {
                     File.Copy(ImagePaths[i].TitleImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].TitleImageName)), true);
                 }
-                if (SplitsInfo[i].SplitInfoImageName1 != "")
+                if (SplitsInfo[i].InfoImageName1 != "")
                 {
                     File.Copy(ImagePaths[i].Notes1ImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes1ImageName)), true);
                 }
-                if (SplitsInfo[i].SplitInfoImageName2 != "")
+                if (SplitsInfo[i].InfoImageName2 != "")
                 {
                     File.Copy(ImagePaths[i].Notes2ImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes2ImageName)), true);
                 }
@@ -195,7 +193,7 @@ public partial class MainPage : ContentPage
         SplitSelector.SelectedItem = null;
         EnableInput = false; // Since nothing is selected now
 
-        SplitsInfo.Add(new Split() { SplitTitle = "Split 1" });
+        SplitsInfo.Add(new Split() { Title = "Split 1" });
         ImagePaths.Add(new ImageFilePaths());
 
         SettingTemplate = false;
@@ -273,7 +271,7 @@ public partial class MainPage : ContentPage
 						NameText = NameText.Trim(' ');
 
 						// Add newly found split to SplitsInfo
-                        SplitsInfo.Add(new Split() { SplitTitle = NameText });
+                        SplitsInfo.Add(new Split() { Title = NameText });
                         ImagePaths.Add(new ImageFilePaths());
                     }
 					break;
@@ -283,9 +281,9 @@ public partial class MainPage : ContentPage
 
 	void UpdateTemplateDetailsViewer()
 	{
-        SplitNameEntry.Text = SplitsInfo[CurrentSplitIndex].SplitTitle;
-        SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-        SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+        SplitNameEntry.Text = SplitsInfo[CurrentSplitIndex].Title;
+        SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
+        SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
 
         SplitTitleImage.Source = ImagePaths[CurrentSplitIndex].TitleImageName;
         SplitNote1Image.Source = ImagePaths[CurrentSplitIndex].Notes1ImageName;
@@ -310,13 +308,13 @@ public partial class MainPage : ContentPage
             switch (((VisualElement)sender).ClassId)
             {
                 case "0":
-                    SplitsInfo[CurrentSplitIndex].SplitTitle = e.NewTextValue;
+                    SplitsInfo[CurrentSplitIndex].Title = e.NewTextValue;
                     break;
                 case "1":
-                    SplitsInfo[CurrentSplitIndex].SplitInfoText1 = e.NewTextValue;
+                    SplitsInfo[CurrentSplitIndex].InfoText1 = e.NewTextValue;
                     break;
                 case "2":
-                    SplitsInfo[CurrentSplitIndex].SplitInfoText2 = e.NewTextValue;
+                    SplitsInfo[CurrentSplitIndex].InfoText2 = e.NewTextValue;
                     break;
             }
         }
@@ -335,17 +333,17 @@ public partial class MainPage : ContentPage
                 switch (((VisualElement)sender).ClassId)
                 {
                     case "0":
-                        SplitsInfo[CurrentSplitIndex].SplitImageName = Image.FileName;
+                        SplitsInfo[CurrentSplitIndex].ImageName = Image.FileName;
                         ImagePaths[CurrentSplitIndex].TitleImageName = Image.FullPath;
                         SplitTitleImage.Source = ImageSource.FromFile(Image.FullPath);
                         break;
                     case "1":
-                        SplitsInfo[CurrentSplitIndex].SplitInfoImageName1 = Image.FileName;
+                        SplitsInfo[CurrentSplitIndex].InfoImageName1 = Image.FileName;
                         ImagePaths[CurrentSplitIndex].Notes1ImageName = Image.FullPath;
                         SplitNote1Image.Source = ImageSource.FromFile(Image.FullPath);
                         break;
                     case "2":
-                        SplitsInfo[CurrentSplitIndex].SplitInfoImageName2 = Image.FileName;
+                        SplitsInfo[CurrentSplitIndex].InfoImageName2 = Image.FileName;
                         ImagePaths[CurrentSplitIndex].Notes2ImageName = Image.FullPath;
                         SplitNote2Image.Source = ImageSource.FromFile(Image.FullPath);
                         break;
@@ -368,13 +366,13 @@ public partial class MainPage : ContentPage
             EnableInput = true;
 
             Split SelectedItem = (Split)e.CurrentSelection[0];
-            string SplitName = SelectedItem.SplitTitle;
+            string SplitName = SelectedItem.Title;
 
             // Get index that has the selected SplitName
             // Cant use IndexOf() cause reasons idk
             for (int i = 0; i < SplitsInfo.Count; i++)
             {
-                if (SplitsInfo[i].SplitTitle == SplitName)
+                if (SplitsInfo[i].Title == SplitName)
                 {
                     CurrentSplitIndex = i;
                     break;
@@ -403,10 +401,5 @@ public partial class MainPage : ContentPage
         }
 
         SidebarOut = !SidebarOut;
-    }
-
-    private void SplitNameEntry_TextChanged(object sender, TextChangedEventArgs e)
-    {
-
     }
 }

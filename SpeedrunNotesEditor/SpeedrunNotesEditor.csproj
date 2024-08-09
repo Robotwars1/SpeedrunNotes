@@ -58,16 +58,10 @@
 	  <Compile Update="InfoPopup.xaml.cs">
 	    <DependentUpon>InfoPopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="SaveTemplatePopup.xaml.cs">
-	    <DependentUpon>SaveTemplatePopup.xaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="InfoPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="SaveTemplatePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

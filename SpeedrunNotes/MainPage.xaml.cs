@@ -44,12 +44,12 @@ public partial class MainPage : ContentPage
 
     public class Split
     {
-        public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImageName { get; set; } = string.Empty;
-        public string SplitInfoText1 { get; set; } = string.Empty;
-        public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImageName1 { get; set; } = string.Empty;
-        public string SplitInfoImageName2 { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string ImageName { get; set; } = string.Empty;
+        public string InfoText1 { get; set; } = string.Empty;
+        public string InfoText2 { get; set; } = string.Empty;
+        public string InfoImageName1 { get; set; } = string.Empty;
+        public string InfoImageName2 { get; set; } = string.Empty;
     }
 
     private readonly JsonSerializerOptions _options = new()
@@ -250,8 +250,8 @@ public partial class MainPage : ContentPage
             // Send needed variables to each active popout
             if (NextSplitPopoutActive)
             {
-                string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImageName);
+                string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
+                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].ImageName);
 
                 WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
                 WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
@@ -262,12 +262,12 @@ public partial class MainPage : ContentPage
                 if (SplitNote1PopoutActive)
                 {
                     WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel1.FontSize));
-                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].SplitInfoText1));
+                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText1));
                 }
                 if (SplitNote1PopoutActive)
                 {
                     WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel2.FontSize));
-                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].SplitInfoText2));
+                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText2));
                 }
             }
 
@@ -286,25 +286,25 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].SplitImageName)))
+                if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName)))
                 {
                     // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}")
                     {
                         // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                        NextSplitImage.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].SplitImageName}";
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
+                        NextSplitImage.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].ImageName}";
 
                         PreviousTitle = NextSplitLabel.Text;
                     }
                 }
-                else if (SplitsInfo[CurrentSplitIndex + 1].SplitImageName != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex + 1].ImageName != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}")
                     {
                         // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
                         NextSplitImage.Source = "imageloadfail.png";
 
                         PreviousTitle = NextSplitLabel.Text;
@@ -313,10 +313,10 @@ public partial class MainPage : ContentPage
                 else // If no image is meant to show
                 {
                     // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
+                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}")
                     {
                         // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
+                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
                         NextSplitImage.Source = "";
 
                         PreviousTitle = NextSplitLabel.Text;
@@ -345,25 +345,25 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].SplitInfoImageName1)))
+                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName1)))
                 {
                     // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
+                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].InfoText1)
                     {
                         // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                        SplitNoteImage1.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].SplitInfoImageName1}";
+                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
+                        SplitNoteImage1.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName1}";
 
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
-                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImageName1 != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex].InfoImageName1 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
+                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].InfoText1)
                     {
                         // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
                         SplitNoteImage1.Source = "imageloadfail.png";
 
                         PreviousLabel1 = SplitNoteLabel1.Text;
@@ -372,10 +372,10 @@ public partial class MainPage : ContentPage
                 else // If no image is meant to show
                 {
                     // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
+                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].InfoText1)
                     {
                         // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
+                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
                         SplitNoteImage1.Source = "";
 
                         PreviousLabel1 = SplitNoteLabel1.Text;
@@ -404,25 +404,25 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].SplitInfoImageName2)))
+                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName2)))
                 {
                     // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
+                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].InfoText2)
                     {
                         // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                        SplitNoteImage2.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].SplitInfoImageName2}";
+                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
+                        SplitNoteImage2.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName2}";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
                 }
-                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImageName2 != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex].InfoImageName2 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
+                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].InfoText2)
                     {
                         // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
                         SplitNoteImage2.Source = "imageloadfail.png";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
@@ -431,10 +431,10 @@ public partial class MainPage : ContentPage
                 else // If no image is meant to show
                 {
                     // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
+                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].InfoText2)
                     {
                         // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
+                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
                         SplitNoteImage2.Source = "";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;

@@ -2,11 +2,11 @@
 {
     public class Split
     {
-        public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImageName { get; set; } = string.Empty;
-        public string SplitInfoText1 { get; set; } = string.Empty;
-        public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImageName1 { get; set; } = string.Empty;
-        public string SplitInfoImageName2 { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string ImageName { get; set; } = string.Empty;
+        public string InfoText1 { get; set; } = string.Empty;
+        public string InfoText2 { get; set; } = string.Empty;
+        public string InfoImageName1 { get; set; } = string.Empty;
+        public string InfoImageName2 { get; set; } = string.Empty;
     }
 }
