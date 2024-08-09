@@ -25,6 +25,15 @@ public partial class MainPage : ContentPage
     // Bool for if currently loading template / creating template from splits to avoid dumb errors
     bool SettingTemplate = false;
 
+    List<ImageFilePaths> ImagePaths = new();
+
+    public class ImageFilePaths
+    {
+        public string TitleImageName { get; set; } = string.Empty;
+        public string Notes1ImageName { get; set; } = string.Empty;
+        public string Notes2ImageName { get; set; } = string.Empty;
+    }
+
     private bool _InputEnabled = false;
     private bool EnableInput
     {
@@ -82,6 +91,11 @@ public partial class MainPage : ContentPage
 
             LoadedFilePath = Folder.Folder.Path;
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
+
+            for (int i = 0; i <  SplitsInfo.Count; i++)
+            {
+                ImagePaths.Add(new ImageFilePaths());
+            }
 
             TemplateNameEntry.Text = Folder.Folder.Name;
             TemplateNameEntry.IsEnabled = true;
@@ -141,17 +155,17 @@ public partial class MainPage : ContentPage
             // Move all images into the template folder
             for (int i = 0; i < SplitsInfo.Count; i++)
             {
-                if (SplitsInfo[i].SplitImage != "")
+                if (SplitsInfo[i].SplitImageName != "")
                 {
-                    File.Copy(SplitsInfo[i].SplitImage, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitImage)), true);
+                    File.Copy(ImagePaths[i].TitleImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].TitleImageName)), true);
                 }
-                if (SplitsInfo[i].SplitInfoImage1 != "")
+                if (SplitsInfo[i].SplitInfoImageName1 != "")
                 {
-                    File.Copy(SplitsInfo[i].SplitInfoImage1, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage1)), true);
+                    File.Copy(ImagePaths[i].Notes1ImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes1ImageName)), true);
                 }
-                if (SplitsInfo[i].SplitInfoImage2 != "")
+                if (SplitsInfo[i].SplitInfoImageName2 != "")
                 {
-                    File.Copy(SplitsInfo[i].SplitInfoImage2, Path.Combine(TemplateFolderPath, Path.GetFileName(SplitsInfo[i].SplitInfoImage2)), true);
+                    File.Copy(ImagePaths[i].Notes2ImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes2ImageName)), true);
                 }
             }
 
@@ -177,10 +191,12 @@ public partial class MainPage : ContentPage
 
         // Clear whatever is loaded
         SplitsInfo.Clear();
+        ImagePaths.Clear();
         SplitSelector.SelectedItem = null;
         EnableInput = false; // Since nothing is selected now
 
         SplitsInfo.Add(new Split() { SplitTitle = "Split 1" });
+        ImagePaths.Add(new ImageFilePaths());
 
         SettingTemplate = false;
         TemplateNameEntry.IsEnabled = true;
@@ -258,6 +274,7 @@ public partial class MainPage : ContentPage
 
 						// Add newly found split to SplitsInfo
                         SplitsInfo.Add(new Split() { SplitTitle = NameText });
+                        ImagePaths.Add(new ImageFilePaths());
                     }
 					break;
 			}
@@ -270,9 +287,9 @@ public partial class MainPage : ContentPage
         SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
         SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
 
-        SplitTitleImage.Source = SplitsInfo[CurrentSplitIndex].SplitImage;
-        SplitNote1Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage1;
-        SplitNote2Image.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
+        SplitTitleImage.Source = ImagePaths[CurrentSplitIndex].TitleImageName;
+        SplitNote1Image.Source = ImagePaths[CurrentSplitIndex].Notes1ImageName;
+        SplitNote2Image.Source = ImagePaths[CurrentSplitIndex].Notes2ImageName;
     }
 
     void ClearTemplateDetailsViewer()
@@ -318,15 +335,18 @@ public partial class MainPage : ContentPage
                 switch (((VisualElement)sender).ClassId)
                 {
                     case "0":
-                        SplitsInfo[CurrentSplitIndex].SplitImage = Image.FullPath;
+                        SplitsInfo[CurrentSplitIndex].SplitImageName = Image.FileName;
+                        ImagePaths[CurrentSplitIndex].TitleImageName = Image.FullPath;
                         SplitTitleImage.Source = ImageSource.FromFile(Image.FullPath);
                         break;
                     case "1":
-                        SplitsInfo[CurrentSplitIndex].SplitInfoImage1 = Image.FullPath;
+                        SplitsInfo[CurrentSplitIndex].SplitInfoImageName1 = Image.FileName;
+                        ImagePaths[CurrentSplitIndex].Notes1ImageName = Image.FullPath;
                         SplitNote1Image.Source = ImageSource.FromFile(Image.FullPath);
                         break;
                     case "2":
-                        SplitsInfo[CurrentSplitIndex].SplitInfoImage2 = Image.FullPath;
+                        SplitsInfo[CurrentSplitIndex].SplitInfoImageName2 = Image.FileName;
+                        ImagePaths[CurrentSplitIndex].Notes2ImageName = Image.FullPath;
                         SplitNote2Image.Source = ImageSource.FromFile(Image.FullPath);
                         break;
                 }

@@ -40,14 +40,16 @@ public partial class MainPage : ContentPage
     readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
     readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
 
+    string LoadedTemplatePath = "";
+
     public class Split
     {
         public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImage { get; set; } = string.Empty;
+        public string SplitImageName { get; set; } = string.Empty;
         public string SplitInfoText1 { get; set; } = string.Empty;
         public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImage1 { get; set; } = string.Empty;
-        public string SplitInfoImage2 { get; set; } = string.Empty;
+        public string SplitInfoImageName1 { get; set; } = string.Empty;
+        public string SplitInfoImageName2 { get; set; } = string.Empty;
     }
 
     private readonly JsonSerializerOptions _options = new()
@@ -249,7 +251,7 @@ public partial class MainPage : ContentPage
             if (NextSplitPopoutActive)
             {
                 string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
+                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImageName);
 
                 WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
                 WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
@@ -284,19 +286,19 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(SplitsInfo[CurrentSplitIndex + 1].SplitImage))
+                if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].SplitImageName)))
                 {
                     // Only redraw if something changed
                     if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
                     {
                         // Update title and image of next split
                         NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                        NextSplitImage.Source = SplitsInfo[CurrentSplitIndex + 1].SplitImage;
+                        NextSplitImage.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].SplitImageName}";
 
                         PreviousTitle = NextSplitLabel.Text;
                     }
                 }
-                else if (SplitsInfo[CurrentSplitIndex + 1].SplitImage != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex + 1].SplitImageName != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
@@ -343,19 +345,19 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(SplitsInfo[CurrentSplitIndex].SplitInfoImage1))
+                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].SplitInfoImageName1)))
                 {
                     // Only redraw if something changed
                     if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
                     {
                         // Update notes for current split
                         SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                        SplitNoteImage1.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage1;
+                        SplitNoteImage1.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].SplitInfoImageName1}";
 
                         PreviousLabel1 = SplitNoteLabel1.Text;
                     }
                 }
-                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage1 != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImageName1 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
@@ -402,19 +404,19 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (File.Exists(SplitsInfo[CurrentSplitIndex].SplitInfoImage2))
+                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].SplitInfoImageName2)))
                 {
                     // Only redraw if something changed
                     if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
                     {
                         // Update notes for current split
                         SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                        SplitNoteImage2.Source = SplitsInfo[CurrentSplitIndex].SplitInfoImage2;
+                        SplitNoteImage2.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].SplitInfoImageName2}";
 
                         PreviousLabel2 = SplitNoteLabel2.Text;
                     }
                 }
-                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage2 != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImageName2 != "") // Only show ImageLoadError if an image is meant to show
                 {
                     // Only redraw if something changed
                     if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
@@ -476,8 +478,8 @@ public partial class MainPage : ContentPage
         // Only do stuff to File if it succesfully picks a file
         if (Result.IsSuccessful)
         {
-            string FolderPath = Result.Folder.Path;
-            SplitsInfo = JsonParse($"{FolderPath}/template.json");
+            LoadedTemplatePath = Result.Folder.Path;
+            SplitsInfo = JsonParse($"{LoadedTemplatePath}/template.json");
 
             TemplateLoaded = true;
 
