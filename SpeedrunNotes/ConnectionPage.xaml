@@ -78,13 +78,16 @@ If this doesnt work, try changing "localhost" to your actual local IP. To get yo
 
         <!-- Button to toggle InfoStuff -->
         <ImageButton Grid.Row="2"
+                     Grid.RowSpan="2"
                      Grid.Column="3"
+                     VerticalOptions="Start"
                      HorizontalOptions="End"
                      Source="info.png"
                      MinimumHeightRequest="40"
                      HeightRequest="40"
                      BackgroundColor="#242424"
                      ZIndex="10"
+                     Margin="4"
                      Clicked="OnInfoToggleButtonClicked" />
 
         <!-- Connection Stuff -->

@@ -2,8 +2,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Diagnostics;
-using System.Reflection;
 using SpeedrunNotes.Popouts;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.Messaging;
@@ -15,6 +13,8 @@ public partial class MainPage : ContentPage
 	bool FirstAppear = true;
 
     bool ConnectionError = false;
+
+    bool SidebarOut = true;
 
     bool TemplateLoaded = false;
 
@@ -37,9 +37,6 @@ public partial class MainPage : ContentPage
     Window SplitNote1PopoutWindow;
     Window SplitNote2PopoutWindow;
 
-    readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
-    readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
-
     string LoadedTemplatePath = "";
 
     public class Split
@@ -55,20 +52,6 @@ public partial class MainPage : ContentPage
     private readonly JsonSerializerOptions _options = new()
     {
         PropertyNameCaseInsensitive = true
-    };
-
-    // Custom FileType to only show .json files in FilePicker
-    static FilePickerFileType CustomFileType = new FilePickerFileType(
-                new Dictionary<DevicePlatform, IEnumerable<string>>
-                {
-                    { DevicePlatform.WinUI, new[] { ".json"} },
-                });
-
-    // Options for .json FilePicker
-    PickOptions JsonFilepickerOptions = new()
-    {
-        PickerTitle = "Please select a comic file",
-        FileTypes = CustomFileType,
     };
 
     public MainPage()
@@ -251,7 +234,7 @@ public partial class MainPage : ContentPage
             if (NextSplitPopoutActive)
             {
                 string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
-                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].ImageName);
+                string NextSplitImageFileLocation = Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName);
 
                 WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
                 WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
@@ -490,16 +473,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
-    {
-        Process.Start("explorer.exe", ImagesPath);
-    }
-
-    void OnOpenTemplateFolderBtnClicked(object sender, EventArgs e)
-    {
-        Process.Start("explorer.exe", TemplatesPath);
-    }
-
     void SplitNotes1FontSizeIncrease(object sender, EventArgs e)
     {
         SplitNoteLabel1.FontSize += 1;
@@ -592,5 +565,21 @@ public partial class MainPage : ContentPage
         SplitNote2PopoutWindow = new Window(new SplitNote1Popout());
 
         Application.Current.OpenWindow(SplitNote2PopoutWindow);
+    }
+
+    private void ToggleSidebar(object sender, EventArgs e)
+    {
+        if (SidebarOut)
+        {
+            Sidebar.TranslateTo(250, 0);
+            ToggleSidebarButton.Source = "open_sidebar.png";
+        }
+        else
+        {
+            Sidebar.TranslateTo(0, 0);
+            ToggleSidebarButton.Source = "close_sidebar.png";
+        }
+
+        SidebarOut = !SidebarOut;
     }
 }
