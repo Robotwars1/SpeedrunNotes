@@ -27,7 +27,7 @@
                     <Frame BackgroundColor="#404040"
                            CornerRadius="5"
                            Padding="5">
-                        <Label Text="{Binding SplitTitle}"
+                        <Label Text="{Binding Title}"
                                VerticalTextAlignment="Center"
                                FontSize="20"
                                LineBreakMode="NoWrap"/>
