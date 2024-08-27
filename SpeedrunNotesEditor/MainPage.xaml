@@ -8,48 +8,54 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="60" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- TabBar for selecting split to edit -->
-        <CollectionView x:Name="SplitSelector"
-                        Grid.ColumnSpan="2"
-                        HorizontalScrollBarVisibility="Never"
-                        SelectionMode="Single"
-                        SelectionChanged="OnSelectedIndexChanged"
-                        ItemsSource="{Binding SplitsInfo}">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="2"/>
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:Split">
-                    <Frame BackgroundColor="#404040"
-                           CornerRadius="5"
-                           Padding="5">
-                        <Label Text="{Binding Title}"
-                               VerticalTextAlignment="Center"
-                               FontSize="20"
-                               LineBreakMode="NoWrap"/>
+        <!-- TabBar for selecting split to edit 
+             Frame is workaround to put padding around the collectionview -->
+        <!-- No bottom margin to avoid double-stacked spacing -->
+        <Frame Margin="10, 10, 10, 0"
+               Padding="0"
+               BackgroundColor="#000000ff">
+            <CollectionView x:Name="SplitSelector"
+                            Grid.ColumnSpan="2"
+                            HorizontalScrollBarVisibility="Never"
+                            SelectionMode="Single"
+                            SelectionChanged="OnSelectedIndexChanged"
+                            ItemsSource="{Binding SplitsInfo}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="2"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Split">
+                        <Frame BackgroundColor="#404040"
+                               CornerRadius="5"
+                               Padding="5">
+                            <Label Text="{Binding Title}"
+                                   VerticalTextAlignment="Center"
+                                   FontSize="20"
+                                   LineBreakMode="NoWrap"/>
 
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup Name="CommonStates">
-                                <VisualState Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="#323232" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState Name="Selected">
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="#404040" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#323232" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#404040" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
 
         <Grid Grid.Row="1"
               Padding="10"
