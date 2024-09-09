@@ -138,9 +138,6 @@ public partial class MainPage : ContentPage
         {
             FirstAppear = false;
         }
-        
-        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
-        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
     }
 
     void CheckConnection()

@@ -48,32 +48,11 @@
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 
-		<MauiImage Include="Images\*" />
-
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiImage Remove="Images\workplz - Copy.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Images\workplz - Copy.txt" />
-	  <None Remove="Images\WorkPlz.txt" />
-	  <None Remove="Json-Templates\Template.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="Images\workplz.txt">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Json-Templates\Template.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>
