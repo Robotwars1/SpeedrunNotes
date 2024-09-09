@@ -3,6 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using CommunityToolkit.Maui.Storage;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace SpeedrunNotesEditor;
 
@@ -13,7 +15,7 @@ public partial class MainPage : ContentPage
     bool SidebarOut = true;
 
     // Stuff for loading presets
-    public List<Split> SplitsInfo { get; set; } = new();
+    public ObservableCollection<Split> SplitsInfo { get; set; } = new();
 
     // If null, then no file has been loaded
     string LoadedFilePath = null;
@@ -65,6 +67,7 @@ public partial class MainPage : ContentPage
     public MainPage()
 	{
 		InitializeComponent();
+        BindingContext = this;
         // Always dissalow input at start
         EnableInput = false;
 	}
@@ -87,6 +90,8 @@ public partial class MainPage : ContentPage
         {
             SettingTemplate = true;
 
+            ClearLoadedFile();
+
             LoadedFilePath = Folder.Folder.Path;
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
@@ -99,15 +104,13 @@ public partial class MainPage : ContentPage
             TemplateNameEntry.IsEnabled = true;
 
             SettingTemplate = false;
-
-            SplitSelector.ItemsSource = SplitsInfo;
         }
     }
 
-    public List<Split> JsonParse(string FilePath)
+    public ObservableCollection<Split> JsonParse(string FilePath)
     {
         using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _readOptions);
+        ObservableCollection<Split> Splits = JsonSerializer.Deserialize<ObservableCollection<Split>>(json, _readOptions);
         return Splits;
     }
 
@@ -183,23 +186,25 @@ public partial class MainPage : ContentPage
         SaveButton.IsEnabled = TemplateName.Length > 0;
     }
 
-    void OnCreateEmptyClicked(object sender, EventArgs e)
+    void ClearLoadedFile()
     {
-        SettingTemplate = true;
-
-        // Clear whatever is loaded
         SplitsInfo.Clear();
         ImagePaths.Clear();
         SplitSelector.SelectedItem = null;
         EnableInput = false; // Since nothing is selected now
+    }
+
+    void OnCreateEmptyClicked(object sender, EventArgs e)
+    {
+        SettingTemplate = true;
+
+        ClearLoadedFile();
 
         SplitsInfo.Add(new Split() { Title = "Split 1" });
         ImagePaths.Add(new ImageFilePaths());
 
         SettingTemplate = false;
         TemplateNameEntry.IsEnabled = true;
-
-        SplitSelector.ItemsSource = SplitsInfo;
     }
 
     async void OnCreateFromSplitClicked(object sender, EventArgs e)
@@ -211,14 +216,14 @@ public partial class MainPage : ContentPage
         {
             SettingTemplate = true;
 
+            ClearLoadedFile();
+
             string FilePath = SplitFile.FullPath;
 
             LssParse(FilePath);
 
             SettingTemplate = false;
             TemplateNameEntry.IsEnabled = true;
-
-            SplitSelector.ItemsSource = SplitsInfo;
         }
     }
 
@@ -238,7 +243,7 @@ public partial class MainPage : ContentPage
 				case XmlNodeType.Text:
 					if (PreviousElement == "Name")
 					{
-						string NameText;
+						string NameText = "";
 
 						// If the first char is "-", remove it
 						if (Reader.Value.Substring(0, 1) == "-")
@@ -250,7 +255,7 @@ public partial class MainPage : ContentPage
 						{
 							int Chars = 0;
 
-							foreach (Char ch in Reader.Value)
+							foreach (char ch in Reader.Value)
 							{
                                 Chars++;
                                 if (ch == '}')
@@ -272,12 +277,13 @@ public partial class MainPage : ContentPage
 
 						// Add newly found split to SplitsInfo
                         SplitsInfo.Add(new Split() { Title = NameText });
+                        Debug.WriteLine($"{NameText} {SplitsInfo.Count}");
                         ImagePaths.Add(new ImageFilePaths());
                     }
 					break;
 			}
 		}
-	}
+    }
 
 	void UpdateTemplateDetailsViewer()
 	{
