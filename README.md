@@ -2,6 +2,7 @@
 <div align="center">
 
 ### [Installation](#installation-1)
+### [Troubleshooting](#troubleshooting-1)
 
 <br>
 
@@ -29,6 +30,13 @@ When its finished, extract the contents of the folder and launch the .exe and yo
 
 **IMPORTANT:** You need LiveSplit.Server in your split layout for this program to work.
 If you don't have it added to your layout, head over to [LiveSplit.Servers github]("https://github.com/LiveSplit/LiveSplit.Server#install") and follow the installation instructions there.
+
+# Troubleshooting
+### ConnectionError
+1. Make sure LiveSplit.Server is added to your layout
+2. Make sure LiveSplit.Server is started (right click -> Control -> Start Server)
+3. Make sure you enter the same port as in the settings for LiveSplit.Server
+4. If this doesnt work, try changing "localhost" to your actual **local** IP.
 
 # SpeedrunNotes Overview
 SpeedrunNotes is a program written in C# and Xaml with the help of .Net Maui. By communicating with [LiveSplit.Server](https://github.com/LiveSplit/LiveSplit.Server) it gets information about your current split and shows any notes
