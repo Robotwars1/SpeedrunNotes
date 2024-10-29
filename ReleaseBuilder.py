@@ -89,7 +89,7 @@ ReleaseName = input("\nName of Release: ")
 ReleaseFolder = f'Releases\{ReleaseName}'
 
 ProjectsPath = [f'{ScriptPath}\SpeedrunNotes\SpeedrunNotes.csproj', f'{ScriptPath}\SpeedrunNotesEditor\SpeedrunNotesEditor.csproj']
-BuildSourcePaths = [f'{ScriptPath}/SpeedrunNotes/bin/Release/net7.0-windows10.0.19041.0/win10-x64', f'{ScriptPath}/SpeedrunNotesEditor/bin/Release/net7.0-windows10.0.19041.0/win10-x64']
+BuildSourcePaths = [f'{ScriptPath}/SpeedrunNotes/bin/Release/net8.0-windows10.0.19041.0/win10-x64', f'{ScriptPath}/SpeedrunNotesEditor/bin/Release/net8.0-windows10.0.19041.0/win10-x64']
 BuildBinFolderPaths = [f'{ScriptPath}/SpeedrunNotes/bin', f'{ScriptPath}/SpeedrunNotesEditor/bin']
 BuildDestinationPaths = [f'{ReleaseFolder}/SpeedrunNotes', f'{ReleaseFolder}/SpeedrunNotesEditor']
 
