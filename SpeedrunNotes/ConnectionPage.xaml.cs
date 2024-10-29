@@ -25,21 +25,7 @@ public partial class ConnectionPage : ContentPage
 
     void OnConnectionPageAppearing(object sender, EventArgs e)
 	{
-		if (ConnectionError == true)
-		{
-			// Show ConnectionError
-			ConnectionErrorBackground.IsVisible = true;
-			ConnectionErrorLabel.IsVisible = true;
-		}
-		else
-		{
-            // Hide ConnectionError
-            ConnectionErrorBackground.IsVisible = false;
-            ConnectionErrorLabel.IsVisible = false;
-        }
-
-        InfoStuffBorder.IsVisible = false;
-		ConnectionErrorTroubleshootingBorder.IsVisible = false;
+        ConnectionErrorBackground.IsVisible = ConnectionError;
 
         ConnectButton.Text = "Connect";
     }
@@ -75,17 +61,5 @@ public partial class ConnectionPage : ContentPage
 		await Task.Delay(5);
 
 		await Navigation.PopModalAsync();
-    }
-
-	void OnInfoToggleButtonClicked(object sender, EventArgs e)
-	{
-		// Toggle visibility by setting it to opposite of current value
-		InfoStuffBorder.IsVisible = !InfoStuffBorder.IsVisible;
-    }
-
-	void OnConnectionErrorTroubleshootingButtonClicked(object sender, EventArgs e)
-	{
-        // Toggle visibility by setting it to opposite of current value
-        ConnectionErrorTroubleshootingBorder.IsVisible = !ConnectionErrorTroubleshootingBorder.IsVisible;
     }
 }
