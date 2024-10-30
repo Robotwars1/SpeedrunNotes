@@ -417,8 +417,6 @@ public partial class MainPage : ContentPage
         SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
     }
 
-    #endregion
-
     void OnSplitNotesEntryTextChanged(object sender, EventArgs e)
     {
         // Make sure only numbers are entered
@@ -442,6 +440,8 @@ public partial class MainPage : ContentPage
             SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
         }
     }
+
+    #endregion
 
     #region Popout Buttons
 
