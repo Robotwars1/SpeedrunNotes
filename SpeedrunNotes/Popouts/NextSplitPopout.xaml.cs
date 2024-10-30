@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace SpeedrunNotes.Popouts;
 
-public partial class NextSplitPopout : ContentPage
+public partial class NextSplitPopout : BasePopout
 {
     string NextSplitLabelText;
     string NextSplitImageFilePath;
@@ -26,29 +26,7 @@ public partial class NextSplitPopout : ContentPage
         InitTimer();
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-
-        Window.MinimumWidth = 320;
-        Window.MinimumHeight = 200;
-    }
-
-    public void InitTimer()
-    {
-        // Setup timer to send / recieve message with LiveSplit.Server every second
-        System.Timers.Timer Timer = new(1000);
-        Timer.Elapsed += OnTimedEvent;
-        Timer.AutoReset = true;
-        Timer.Enabled = true;
-    }
-
-    void OnTimedEvent(object sender, EventArgs e)
-    {
-        MainThread.BeginInvokeOnMainThread(UpdateNextSplit);
-    }
-
-    void UpdateNextSplit()
+    public override void UpdateData()
     {
         if (File.Exists(NextSplitImageFilePath))
         {

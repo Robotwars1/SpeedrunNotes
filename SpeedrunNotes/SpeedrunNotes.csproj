@@ -74,6 +74,9 @@
 	  <MauiXaml Update="ConnectionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Popouts\BasePopout.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Popouts\SplitNote2Popout.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
