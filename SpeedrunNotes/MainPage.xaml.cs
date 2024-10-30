@@ -166,10 +166,10 @@ public partial class MainPage : ContentPage
                 WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel1.FontSize));
                 WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText1));
             }
-            if (SplitNote1PopoutActive)
+            if (SplitNote2PopoutActive)
             {
-                WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel2.FontSize));
-                WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText2));
+                WeakReferenceMessenger.Default.Send(new SplitInfo2FontMessage((int)SplitNoteLabel2.FontSize));
+                WeakReferenceMessenger.Default.Send(new SplitInfo2TextMessage(SplitsInfo[CurrentSplitIndex].InfoText2));
             }
         }
 
@@ -292,7 +292,7 @@ public partial class MainPage : ContentPage
         else
         {
             // If it has been disabled, re-enable the button and set SplitNote1PopoutActive to false
-            if (!Windows.Contains(NextSplitPopoutWindow))
+            if (!Windows.Contains(SplitNote1PopoutWindow))
             {
                 PopoutSplitNote1Button.IsEnabled = true;
                 SplitNote1PopoutActive = false;
@@ -351,7 +351,7 @@ public partial class MainPage : ContentPage
         else
         {
             // If it has been disabled, re-enable the button and set SplitNote2PopoutActive to false
-            if (!Windows.Contains(NextSplitPopoutWindow))
+            if (!Windows.Contains(SplitNote2PopoutWindow))
             {
                 PopoutSplitNote2Button.IsEnabled = true;
                 SplitNote2PopoutActive = false;
