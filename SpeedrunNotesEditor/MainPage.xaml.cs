@@ -93,10 +93,11 @@ public partial class MainPage : ContentPage
             ClearLoadedFile();
 
             LoadedFilePath = Folder.Folder.Path;
-            SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
+            ObservableCollection<Split> Splits = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
-            for (int i = 0; i <  SplitsInfo.Count; i++)
+            for (int i = 0; i <  Splits.Count; i++)
             {
+                SplitsInfo.Add(Splits[i]); // Dumb workaround to make splits show in tabbar
                 ImagePaths.Add(new ImageFilePaths());
             }
 
