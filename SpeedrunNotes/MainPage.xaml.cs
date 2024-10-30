@@ -116,63 +116,65 @@ public partial class MainPage : ContentPage
     {
         // Setup timer to send / recieve message with LiveSplit.Server every second
         System.Timers.Timer Timer = new(1000);
-        Timer.Elapsed += OnTimedEvent;
+        Timer.Elapsed += GetLivesplitData;
         Timer.AutoReset = true;
         Timer.Enabled = true;
     }
 
-    private void OnTimedEvent(object sender, EventArgs e)
+    private void GetLivesplitData(object sender, EventArgs e)
     {
         // So it only does update stuff if there is a TemplateLoaded
-        if (TemplateLoaded)
+        if (!TemplateLoaded)
         {
-            // Send message to livesplit.server to check current split
-            byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
-            soc.Send(message);
-
-            // Recieve message and "parse" it from computer-jargon -> readable string
-            byte[] b = new byte[100];
-            int k = soc.Receive(b);
-            string DataReceived = Encoding.ASCII.GetString(b, 0, k);
-
-            // Makes sure the whole message is recieved
-            if (DataReceived.EndsWith("\r\n"))
-            {
-                // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
-                // Thanks alekz for this :)
-                string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
-
-                // Save recieved split-index
-                CurrentSplitIndex = int.Parse(Temp);
-            }
-
-            // Send needed variables to each active popout
-            if (NextSplitPopoutActive)
-            {
-                string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
-                string NextSplitImageFileLocation = Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName);
-
-                WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
-                WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
-            }
-
-            if (CurrentSplitIndex >= 0)
-            {
-                if (SplitNote1PopoutActive)
-                {
-                    WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel1.FontSize));
-                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText1));
-                }
-                if (SplitNote1PopoutActive)
-                {
-                    WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel2.FontSize));
-                    WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText2));
-                }
-            }
-
-            // Do UI update stuff, has to be on main thread cause Maui ig
-            MainThread.BeginInvokeOnMainThread(UpdateUiElements);
+            return;
         }
+
+        // Send message to livesplit.server to check current split
+        byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
+        soc.Send(message);
+
+        // Recieve message and "parse" it from computer-jargon -> readable string
+        byte[] b = new byte[100];
+        int k = soc.Receive(b);
+        string DataReceived = Encoding.ASCII.GetString(b, 0, k);
+
+        // Makes sure the whole message is recieved
+        if (DataReceived.EndsWith("\r\n"))
+        {
+            // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
+            // Thanks alekz for this :)
+            string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+
+            // Save recieved split-index
+            CurrentSplitIndex = int.Parse(Temp);
+        }
+
+        // Send needed variables to each active popout
+        if (NextSplitPopoutActive)
+        {
+            string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
+            string NextSplitImageFileLocation = Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName);
+
+            WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
+            WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
+        }
+
+        if (CurrentSplitIndex >= 0)
+        {
+            if (SplitNote1PopoutActive)
+            {
+                WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel1.FontSize));
+                WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText1));
+            }
+            if (SplitNote1PopoutActive)
+            {
+                WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel2.FontSize));
+                WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText2));
+            }
+        }
+
+        // Do UI update stuff, has to be on main thread cause Maui ig
+        MainThread.BeginInvokeOnMainThread(UpdateUiElements);
     }
 
     void UpdateUiElements()
@@ -389,6 +391,8 @@ public partial class MainPage : ContentPage
         }
     }
 
+    #region Font Size Stuff
+
     void SplitNotes1FontSizeIncrease(object sender, EventArgs e)
     {
         SplitNoteLabel1.FontSize += 1;
@@ -413,6 +417,8 @@ public partial class MainPage : ContentPage
         SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
     }
 
+    #endregion
+
     void OnSplitNotesEntryTextChanged(object sender, EventArgs e)
     {
         // Make sure only numbers are entered
@@ -436,6 +442,8 @@ public partial class MainPage : ContentPage
             SplitNoteLabel2.FontSize = int.Parse(Builder.ToString());
         }
     }
+
+    #region Popout Buttons
 
     void OnPopoutNextSplitButtonClicked(object sender, EventArgs e)
     {
@@ -482,6 +490,8 @@ public partial class MainPage : ContentPage
 
         Application.Current.OpenWindow(SplitNote2PopoutWindow);
     }
+
+    #endregion
 
     private void ToggleSidebar(object sender, EventArgs e)
     {
