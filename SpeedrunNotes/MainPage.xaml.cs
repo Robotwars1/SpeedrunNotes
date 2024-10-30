@@ -10,8 +10,6 @@ namespace SpeedrunNotes;
 
 public partial class MainPage : ContentPage
 {
-	bool FirstAppear = true;
-
     bool SidebarOut = true;
 
     bool TemplateLoaded = false;
@@ -36,16 +34,6 @@ public partial class MainPage : ContentPage
     Window SplitNote2PopoutWindow;
 
     string LoadedTemplatePath = "";
-
-    public class Split
-    {
-        public string Title { get; set; } = string.Empty;
-        public string ImageName { get; set; } = string.Empty;
-        public string InfoText1 { get; set; } = string.Empty;
-        public string InfoText2 { get; set; } = string.Empty;
-        public string InfoImageName1 { get; set; } = string.Empty;
-        public string InfoImageName2 { get; set; } = string.Empty;
-    }
 
     private readonly JsonSerializerOptions _options = new()
     {
@@ -94,40 +82,34 @@ public partial class MainPage : ContentPage
 
     void OnMainPageAppearing(object sender, EventArgs e)
 	{
-		// If not first time it appears, eg when going from ConnectionPage to MainPage
-        if (!FirstAppear)
+        try
         {
-			try
-			{
-                // Setup Socket, IP and Port
-                soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                IPAddress ip;
+            // Setup Socket, IP and Port
+            soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress ip;
 
-                // If IP is localhost, input the IP for localhost, eg 127.0.0.1
-                if (Preferences.Default.Get("IP", "localhost") == "localhost")
-                {
-                    ip = IPAddress.Parse("127.0.0.1");
-                }
-                else
-                {
-                    ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
-                }
-
-                IPEndPoint remoteEP = new(ip, (Preferences.Default.Get("Port", 16834)));
-
-                // Connect to livesplit.server
-                soc.Connect(remoteEP);
+            // If IP is localhost, input the IP for localhost, eg 127.0.0.1
+            if (Preferences.Default.Get("IP", "localhost") == "localhost")
+            {
+                ip = IPAddress.Parse("127.0.0.1");
             }
-			catch
-			{
-                // Bring back to ConnectionPage
-                Navigation.PushModalAsync(new ConnectionPage());
+            else
+            {
+                ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
             }
+
+            IPEndPoint remoteEP = new(ip, (Preferences.Default.Get("Port", 16834)));
+
+            // Connect to livesplit.server
+            soc.Connect(remoteEP);
         }
-        else
+        catch
         {
-            FirstAppear = false;
+            // Bring back to ConnectionPage
+            Navigation.PushModalAsync(new ConnectionPage());
         }
+
+        InitTimer();
     }
 
     public void InitTimer()
