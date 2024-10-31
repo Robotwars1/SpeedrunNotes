@@ -15,7 +15,8 @@ public partial class MainPage : ContentPage
     bool SidebarOut = true;
 
     // Stuff for loading presets
-    public ObservableCollection<Split> SplitsInfo { get; set; } = new();
+    private List<Split> SplitsInfo = new();
+    public ObservableCollection<string> SplitTitles { get; set; } = new();
 
     // If null, then no file has been loaded
     string LoadedFilePath = null;
@@ -93,11 +94,11 @@ public partial class MainPage : ContentPage
             ClearLoadedFile();
 
             LoadedFilePath = Folder.Folder.Path;
-            ObservableCollection<Split> Splits = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
+            SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
-            for (int i = 0; i <  Splits.Count; i++)
+            for (int i = 0; i < SplitsInfo.Count; i++)
             {
-                SplitsInfo.Add(Splits[i]); // Dumb workaround to make splits show in tabbar
+                SplitTitles.Add(SplitsInfo[i].Title); // Dumb workaround to make splits show in tabbar
                 ImagePaths.Add(new ImageFilePaths());
             }
 
@@ -108,10 +109,10 @@ public partial class MainPage : ContentPage
         }
     }
 
-    public ObservableCollection<Split> JsonParse(string FilePath)
+    public List<Split> JsonParse(string FilePath)
     {
         using FileStream json = File.OpenRead(FilePath);
-        ObservableCollection<Split> Splits = JsonSerializer.Deserialize<ObservableCollection<Split>>(json, _readOptions);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _readOptions);
         return Splits;
     }
 
@@ -190,8 +191,10 @@ public partial class MainPage : ContentPage
     void ClearLoadedFile()
     {
         SplitsInfo.Clear();
+        SplitTitles.Clear();
         ImagePaths.Clear();
         SplitSelector.SelectedItem = null;
+        ClearTemplateDetailsViewer();
         EnableInput = false; // Since nothing is selected now
     }
 
@@ -202,6 +205,7 @@ public partial class MainPage : ContentPage
         ClearLoadedFile();
 
         SplitsInfo.Add(new Split() { Title = "Split 1" });
+        SplitTitles.Add("Split 1");
         ImagePaths.Add(new ImageFilePaths());
 
         SettingTemplate = false;
@@ -278,6 +282,7 @@ public partial class MainPage : ContentPage
 
 						// Add newly found split to SplitsInfo
                         SplitsInfo.Add(new Split() { Title = NameText });
+                        SplitTitles.Add(NameText);
                         Debug.WriteLine($"{NameText} {SplitsInfo.Count}");
                         ImagePaths.Add(new ImageFilePaths());
                     }
@@ -315,7 +320,14 @@ public partial class MainPage : ContentPage
             switch (((VisualElement)sender).ClassId)
             {
                 case "0":
+                    if (SplitTitles[CurrentSplitIndex] == e.NewTextValue)
+                    {
+                        return;
+                    }
+
                     SplitsInfo[CurrentSplitIndex].Title = e.NewTextValue;
+                    SplitTitles[CurrentSplitIndex] = e.NewTextValue;
+                    SplitSelector.SelectedItem = SplitTitles[CurrentSplitIndex];
                     break;
                 case "1":
                     SplitsInfo[CurrentSplitIndex].InfoText1 = e.NewTextValue;
@@ -372,14 +384,13 @@ public partial class MainPage : ContentPage
         {
             EnableInput = true;
 
-            Split SelectedItem = (Split)e.CurrentSelection[0];
-            string SplitName = SelectedItem.Title;
+            string SelectedItem = (string)e.CurrentSelection[0];
 
             // Get index that has the selected SplitName
             // Cant use IndexOf() cause reasons idk
-            for (int i = 0; i < SplitsInfo.Count; i++)
+            for (int i = 0; i < SplitTitles.Count; i++)
             {
-                if (SplitsInfo[i].Title == SplitName)
+                if (SplitTitles[i] == SelectedItem)
                 {
                     CurrentSplitIndex = i;
                     break;
@@ -387,10 +398,6 @@ public partial class MainPage : ContentPage
             }
 
             UpdateTemplateDetailsViewer();
-        }
-        else
-        {
-            ClearTemplateDetailsViewer();
         }
     }
     

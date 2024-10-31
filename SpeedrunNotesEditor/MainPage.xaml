@@ -23,16 +23,16 @@
                             HorizontalScrollBarVisibility="Never"
                             SelectionMode="Single"
                             SelectionChanged="OnSelectedIndexChanged"
-                            ItemsSource="{Binding SplitsInfo}">
+                            ItemsSource="{Binding SplitTitles}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" ItemSpacing="2"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Split">
+                    <DataTemplate x:DataType="x:String">
                         <Frame BackgroundColor="#404040"
                                CornerRadius="5"
                                Padding="5">
-                            <Label Text="{Binding Title}"
+                            <Label Text="{Binding .}"
                                    VerticalTextAlignment="Center"
                                    FontSize="20"
                                    LineBreakMode="NoWrap"/>
@@ -46,7 +46,7 @@
                                     </VisualState>
                                     <VisualState Name="Selected">
                                         <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="#404040" />
+                                            <Setter Property="BackgroundColor" Value="#484848" />
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
