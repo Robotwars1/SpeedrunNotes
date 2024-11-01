@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using CommunityToolkit.Maui.Storage;
@@ -10,23 +9,14 @@ namespace SpeedrunNotesEditor;
 
 public partial class MainPage : ContentPage
 {
-    int CurrentSplitIndex = 0;
+    private int CurrentSplitIndex = 0;
+    private bool SidebarOut = true;
+    private string TemplateName = "";
+    private bool SettingTemplate = false;
 
-    bool SidebarOut = true;
-
-    // Stuff for loading presets
-    private List<Split> SplitsInfo = new();
-    public ObservableCollection<string> SplitTitles { get; set; } = new();
-
-    // If null, then no file has been loaded
-    string LoadedFilePath = null;
-
-    string TemplateName = "";
-
-    // Bool for if currently loading template / creating template from splits to avoid dumb errors
-    bool SettingTemplate = false;
-
-    List<ImageFilePaths> ImagePaths = new();
+    private List<Split> SplitsInfo = [];
+    private List<ImageFilePaths> ImagePaths = [];
+    public ObservableCollection<string> SplitTitles { get; set; } = [];
 
     public class ImageFilePaths
     {
@@ -93,7 +83,7 @@ public partial class MainPage : ContentPage
 
             ClearLoadedFile();
 
-            LoadedFilePath = Result.Folder.Path;
+            string LoadedFilePath = Result.Folder.Path;
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
             for (int i = 0; i < SplitsInfo.Count; i++)
@@ -184,7 +174,7 @@ public partial class MainPage : ContentPage
     {
         TemplateName = e.NewTextValue;
 
-        // Can only save if it has a name
+        // Can only save if template has a name
         SaveButton.IsEnabled = TemplateName.Length > 0;
     }
 
@@ -280,10 +270,9 @@ public partial class MainPage : ContentPage
 						// Removes every space at front and end of the actual split name
 						NameText = NameText.Trim(' ');
 
-						// Add newly found split to SplitsInfo
+						// Add newly found split to lists
                         SplitsInfo.Add(new Split() { Title = NameText });
                         SplitTitles.Add(NameText);
-                        Debug.WriteLine($"{NameText} {SplitsInfo.Count}");
                         ImagePaths.Add(new ImageFilePaths());
                     }
 					break;
@@ -320,10 +309,7 @@ public partial class MainPage : ContentPage
             switch (((VisualElement)sender).ClassId)
             {
                 case "0":
-                    if (SplitTitles[CurrentSplitIndex] == e.NewTextValue)
-                    {
-                        return;
-                    }
+                    if (SplitTitles[CurrentSplitIndex] == e.NewTextValue) { return; }
 
                     SplitsInfo[CurrentSplitIndex].Title = e.NewTextValue;
                     SplitTitles[CurrentSplitIndex] = e.NewTextValue;
@@ -369,12 +355,6 @@ public partial class MainPage : ContentPage
                 }
             }
         }
-    }
-
-    void OnTemplateEditingInfoButtonClicked(object sender, EventArgs e)
-    {
-        // Create a popup and pass through all important vars
-        this.ShowPopup(new InfoPopup("template_editing_info.png"));
     }
 
     void OnSelectedIndexChanged(object sender, SelectionChangedEventArgs e)
