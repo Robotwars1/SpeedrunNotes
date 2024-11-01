@@ -84,16 +84,16 @@ public partial class MainPage : ContentPage
 
     async void OnLoadFromTemplateClicked(object sender, EventArgs e)
 	{
-        var Folder = await FolderPicker.PickAsync(default);
+        var Result = await FolderPicker.PickAsync(default);
 
         // Only do stuff if succesfully picks a folder
-        if (Folder != null)
+        if (Result.IsSuccessful)
         {
             SettingTemplate = true;
 
             ClearLoadedFile();
 
-            LoadedFilePath = Folder.Folder.Path;
+            LoadedFilePath = Result.Folder.Path;
             SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
             for (int i = 0; i < SplitsInfo.Count; i++)
@@ -102,7 +102,7 @@ public partial class MainPage : ContentPage
                 ImagePaths.Add(new ImageFilePaths());
             }
 
-            TemplateNameEntry.Text = Folder.Folder.Name;
+            TemplateNameEntry.Text = Result.Folder.Name;
             TemplateNameEntry.IsEnabled = true;
 
             SettingTemplate = false;
