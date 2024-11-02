@@ -181,47 +181,31 @@ public partial class MainPage : ContentPage
     {
         // Get all active windows
         IReadOnlyList<Window> Windows = Application.Current.Windows;
-
+        
         // Only update stuff if the element isnt "Popouted"
         if (!NextSplitPopoutActive)
         {
             try
             {
+                string NewTitle = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
+
+                // If nothing has changed, throw exception to get out of having to redraw
+                if (PreviousTitle == NewTitle) { throw new Exception("Nothing to Update"); }
+
+                NextSplitLabel.Text = NewTitle;
+                PreviousTitle = NewTitle;
+
                 if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName)))
                 {
-                    // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}")
-                    {
-                        // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
-                        NextSplitImage.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].ImageName}";
-
-                        PreviousTitle = NextSplitLabel.Text;
-                    }
+                    NextSplitImage.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].ImageName}";
                 }
                 else if (SplitsInfo[CurrentSplitIndex + 1].ImageName != "") // Only show ImageLoadError if an image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}")
-                    {
-                        // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
-                        NextSplitImage.Source = "imageloadfail.png";
-
-                        PreviousTitle = NextSplitLabel.Text;
-                    }
+                    NextSplitImage.Source = "imageloadfail.png";
                 }
                 else // If no image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}")
-                    {
-                        // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
-                        NextSplitImage.Source = "";
-
-                        PreviousTitle = NextSplitLabel.Text;
-                    }
+                    NextSplitImage.Source = "";
                 }
             }
             catch
@@ -246,41 +230,25 @@ public partial class MainPage : ContentPage
         {
             try
             {
+                string NewText = SplitsInfo[CurrentSplitIndex].InfoText1;
+
+                // If nothing has changed, throw exception to get out of having to redraw
+                if (PreviousLabel1 == NewText) { throw new Exception("Nothing to Update"); }
+
+                SplitNoteLabel1.Text = NewText;
+                PreviousLabel1 = NewText;
+
                 if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName1)))
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].InfoText1)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
-                        SplitNoteImage1.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName1}";
-
-                        PreviousLabel1 = SplitNoteLabel1.Text;
-                    }
+                    SplitNoteImage1.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName1}";
                 }
                 else if (SplitsInfo[CurrentSplitIndex].InfoImageName1 != "") // Only show ImageLoadError if an image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].InfoText1)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
-                        SplitNoteImage1.Source = "imageloadfail.png";
-
-                        PreviousLabel1 = SplitNoteLabel1.Text;
-                    }
+                    SplitNoteImage1.Source = "imageloadfail.png";
                 }
                 else // If no image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].InfoText1)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
-                        SplitNoteImage1.Source = "";
-
-                        PreviousLabel1 = SplitNoteLabel1.Text;
-                    }
+                    SplitNoteImage1.Source = "";
                 }
             }
             catch
@@ -305,41 +273,25 @@ public partial class MainPage : ContentPage
         {
             try
             {
+                string NewText = SplitsInfo[CurrentSplitIndex].InfoText2;
+
+                // If nothing has changed, throw exception to get out of having to redraw
+                if (PreviousLabel2 == NewText) { throw new Exception("Nothing to Update"); }
+
+                SplitNoteLabel2.Text = NewText;
+                PreviousLabel2 = NewText;
+
                 if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName2)))
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].InfoText2)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
-                        SplitNoteImage2.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName2}";
-
-                        PreviousLabel2 = SplitNoteLabel2.Text;
-                    }
+                    SplitNoteImage2.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName2}";
                 }
                 else if (SplitsInfo[CurrentSplitIndex].InfoImageName2 != "") // Only show ImageLoadError if an image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].InfoText2)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
-                        SplitNoteImage2.Source = "imageloadfail.png";
-
-                        PreviousLabel2 = SplitNoteLabel2.Text;
-                    }
+                    SplitNoteImage2.Source = "imageloadfail.png";
                 }
                 else // If no image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].InfoText2)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
-                        SplitNoteImage2.Source = "";
-
-                        PreviousLabel2 = SplitNoteLabel2.Text;
-                    }
+                    SplitNoteImage2.Source = "";
                 }
             }
             catch
