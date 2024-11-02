@@ -145,6 +145,7 @@
                         <Entry x:Name="SplitNotes1Entry"
                                ClassId="1"
                                FontSize="14"
+                               Text="14"
                                MinimumHeightRequest="30"
                                HeightRequest="30"
                                TextChanged="OnSplitNotesEntryTextChanged" />
@@ -174,6 +175,7 @@
                         <Entry x:Name="SplitNotes2Entry"
                                ClassId="2"
                                FontSize="14"
+                               Text="14"
                                MinimumHeightRequest="30"
                                HeightRequest="30"
                                TextChanged="OnSplitNotesEntryTextChanged" />
