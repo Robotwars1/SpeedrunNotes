@@ -66,7 +66,7 @@
             <Frame Padding="8"
                    BorderColor="#323232"
                    BackgroundColor="#323232">
-                <Grid RowDefinitions="*, 3.5*">
+                <Grid RowDefinitions="40, *">
                     <Label Text="Split Name"
                            FontSize="25" />
 
@@ -84,7 +84,7 @@
                    BackgroundColor="#323232"
                    Grid.Row="1"
                    Grid.RowSpan="2">
-                <Grid RowDefinitions="0.7*, 5*, *">
+                <Grid RowDefinitions="40, 5*, *">
                     <Label Text="Split Image"
                            FontSize="25" />
 
@@ -104,7 +104,7 @@
                    BorderColor="#323232"
                    BackgroundColor="#323232"
                    Grid.Row="3">
-                <Grid RowDefinitions="*, 3.5*">
+                <Grid RowDefinitions="40, *">
                     <Label Text="Template Name"
                            FontSize="25" />
 
@@ -124,7 +124,7 @@
                    Grid.RowSpan="2">
                 <Grid RowSpacing="5"
                       ColumnSpacing="8"
-                      RowDefinitions="0.7*, 5*, *"
+                      RowDefinitions="35, 5*, *"
                       ColumnDefinitions="*, *">
                     <Label Text="Split Notes 1"
                            FontSize="25" />
@@ -159,7 +159,7 @@
                    Grid.RowSpan="2">
                 <Grid RowSpacing="5"
                       ColumnSpacing="8"
-                      RowDefinitions="0.7*, 5*, *"
+                      RowDefinitions="35, 5*, *"
                       ColumnDefinitions="*, *">
                     <Label Text="Split Notes 2"
                            FontSize="25" />
