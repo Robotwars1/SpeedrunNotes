@@ -84,7 +84,7 @@
                    BackgroundColor="#323232"
                    Grid.Row="1"
                    Grid.RowSpan="2">
-                <Grid RowDefinitions="40, 5*, *">
+                <Grid RowDefinitions="40, 5*, 1.2*">
                     <Label Text="Split Image"
                            FontSize="25" />
 
@@ -124,7 +124,7 @@
                    Grid.RowSpan="2">
                 <Grid RowSpacing="5"
                       ColumnSpacing="8"
-                      RowDefinitions="35, 5*, *"
+                      RowDefinitions="35, 5*, 1.2*"
                       ColumnDefinitions="*, *">
                     <Label Text="Split Notes 1"
                            FontSize="25" />
@@ -159,7 +159,7 @@
                    Grid.RowSpan="2">
                 <Grid RowSpacing="5"
                       ColumnSpacing="8"
-                      RowDefinitions="35, 5*, *"
+                      RowDefinitions="35, 5*, 1.2*"
                       ColumnDefinitions="*, *">
                     <Label Text="Split Notes 2"
                            FontSize="25" />
