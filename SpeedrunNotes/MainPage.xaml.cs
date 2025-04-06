@@ -20,7 +20,7 @@ public partial class MainPage : ContentPage
     string PreviousLabel1;
     string PreviousLabel2;
 
-    Socket soc;
+    Socket Soc;
 
     List<Split> SplitsInfo;
 
@@ -35,7 +35,7 @@ public partial class MainPage : ContentPage
 
     string LoadedTemplatePath = "";
 
-    private readonly JsonSerializerOptions _options = new()
+    private readonly JsonSerializerOptions ReadOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
@@ -85,23 +85,23 @@ public partial class MainPage : ContentPage
         try
         {
             // Setup Socket, IP and Port
-            soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPAddress ip;
+            Soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress IP;
 
             // If IP is localhost, input the IP for localhost, eg 127.0.0.1
             if (Preferences.Default.Get("IP", "localhost") == "localhost")
             {
-                ip = IPAddress.Parse("127.0.0.1");
+                IP = IPAddress.Parse("127.0.0.1");
             }
             else
             {
-                ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
+                IP = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
             }
 
-            IPEndPoint remoteEP = new(ip, (Preferences.Default.Get("Port", 16834)));
+            IPEndPoint RemoteEP = new(IP, (Preferences.Default.Get("Port", 16834)));
 
             // Connect to livesplit.server
-            soc.Connect(remoteEP);
+            Soc.Connect(RemoteEP);
         }
         catch
         {
@@ -130,12 +130,12 @@ public partial class MainPage : ContentPage
         }
 
         // Send message to livesplit.server to check current split
-        byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
-        soc.Send(message);
+        byte[] Message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
+        Soc.Send(Message);
 
         // Recieve message and "parse" it from computer-jargon -> readable string
         byte[] b = new byte[100];
-        int k = soc.Receive(b);
+        int k = Soc.Receive(b);
         string DataReceived = Encoding.ASCII.GetString(b, 0, k);
 
         // Makes sure the whole message is recieved
@@ -314,8 +314,8 @@ public partial class MainPage : ContentPage
 
     public List<Split> JsonParse(string FilePath)
     {
-        using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _options);
+        using FileStream Json = File.OpenRead(FilePath);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(Json, ReadOptions);
         return Splits;
     }
 

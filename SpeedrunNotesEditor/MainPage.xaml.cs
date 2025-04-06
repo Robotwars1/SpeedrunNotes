@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using System.Xml;
 using CommunityToolkit.Maui.Storage;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace SpeedrunNotesEditor;
 
@@ -45,12 +44,12 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private readonly JsonSerializerOptions _readOptions = new()
+    private readonly JsonSerializerOptions ReadOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
-    private static readonly JsonSerializerOptions _writeOptions = new()
+    private static readonly JsonSerializerOptions WriteOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
@@ -101,8 +100,8 @@ public partial class MainPage : ContentPage
 
     public List<Split> JsonParse(string FilePath)
     {
-        using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _readOptions);
+        using FileStream Json = File.OpenRead(FilePath);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(Json, ReadOptions);
         return Splits;
     }
 
@@ -111,7 +110,7 @@ public partial class MainPage : ContentPage
         using var FileStream = File.Create(FileName);
         using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
 
-        JsonSerializer.Serialize(Utf8JsonWriter, Obj, _writeOptions);
+        JsonSerializer.Serialize(Utf8JsonWriter, Obj, WriteOptions);
     }
 
     async void OnSaveTemplateClicked(object sender, EventArgs e)
@@ -143,7 +142,7 @@ public partial class MainPage : ContentPage
             // Write the template.json file
             using var FileStream = File.Create($"{TemplateFolderPath}/template.json");
             using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
-            JsonSerializer.Serialize(Utf8JsonWriter, SplitsInfo, _writeOptions);
+            JsonSerializer.Serialize(Utf8JsonWriter, SplitsInfo, WriteOptions);
 
             // Move all images into the template folder
             for (int i = 0; i < SplitsInfo.Count; i++)
