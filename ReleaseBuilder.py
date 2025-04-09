@@ -23,15 +23,18 @@ def BuildProjects():
     print("Building Projects")
 
     # Build each project
-    for ProjectPath in ProjectsPath:
-        subprocess.call([MSBuild, ProjectPath, Arg1])
+    for ProjectPath in ProjectPaths:
+        subprocess.call([MSBuild, ProjectPath, Arg1, Arg2, Arg3])
 
 def MoveBuildResults():
     print("Moving Build Results")
 
     # Copy each build folder to the created release folder
     for i in range(2):
-        shutil.copytree(BuildSourcePaths[i], BuildDestinationPaths[i])
+        try:
+            shutil.copytree(BuildSourcePaths[i], BuildDestinationPaths[i])
+        except:
+            print(f"Failed to copy {BuildSourcePaths[i]} to {BuildDestinationPaths[i]}")
 
 def CreateShortcuts():
     print("Creating Shortcuts")
@@ -55,7 +58,7 @@ def ReleaseBuildFinished(Start, End):
 
     print("___________________________________")
     print(f"\nFinished Release in {Time} seconds")
-    print(f'\nBuild location: {ScriptPath}\{ReleaseFolder}')
+    print(f'\nBuild location: {ScriptPath}\\{ReleaseFolder}')
     print("___________________________________")
 
 def CreateRelease():
@@ -86,24 +89,26 @@ print("___________________________________")
 ScriptPath = os.getcwd()
 
 ReleaseName = input("\nName of Release: ")
-ReleaseFolder = f'Releases\{ReleaseName}'
+ReleaseFolder = f'Releases\\{ReleaseName}'
 
-ProjectsPath = [f'{ScriptPath}\SpeedrunNotes\SpeedrunNotes.csproj', f'{ScriptPath}\SpeedrunNotesEditor\SpeedrunNotesEditor.csproj']
-BuildSourcePaths = [f'{ScriptPath}/SpeedrunNotes/bin/Release/net8.0-windows10.0.19041.0/win10-x64', f'{ScriptPath}/SpeedrunNotesEditor/bin/Release/net8.0-windows10.0.19041.0/win10-x64']
-BuildBinFolderPaths = [f'{ScriptPath}/SpeedrunNotes/bin', f'{ScriptPath}/SpeedrunNotesEditor/bin']
-BuildDestinationPaths = [f'{ReleaseFolder}/SpeedrunNotes', f'{ReleaseFolder}/SpeedrunNotesEditor']
+ProjectPaths = [f'{ScriptPath}\\SpeedrunNotes\\SpeedrunNotes.csproj', f'{ScriptPath}\\SpeedrunNotesEditor\\SpeedrunNotesEditor.csproj']
+BuildSourcePaths = [f'{ScriptPath}\\SpeedrunNotes\\bin\\Release\\net8.0-windows10.0.19041.0\\win10-x64', f'{ScriptPath}\\SpeedrunNotesEditor\\bin\\Release\\net8.0-windows10.0.19041.0\\win10-x64']
+BuildBinFolderPaths = [f'{ScriptPath}\\SpeedrunNotes\\bin', f'{ScriptPath}\\SpeedrunNotesEditor\\bin']
+BuildDestinationPaths = [f'{ReleaseFolder}\\SpeedrunNotes', f'{ReleaseFolder}\\SpeedrunNotesEditor']
 
-ShortcutSourcePaths = [f'{BuildSourcePaths[0]}\SpeedrunNotes.exe', f'{BuildSourcePaths[1]}\SpeedrunNotesEditor.exe']
-ShortcutDestinationPaths = [f'{ReleaseFolder}\SpeedrunNotes.lnk', f'{ReleaseFolder}\SpeedrunNotesEditor.lnk']
+ShortcutSourcePaths = [f'{BuildSourcePaths[0]}\\SpeedrunNotes.exe', f'{BuildSourcePaths[1]}\\SpeedrunNotesEditor.exe']
+ShortcutDestinationPaths = [f'{ReleaseFolder}\\SpeedrunNotes.lnk', f'{ReleaseFolder}\\SpeedrunNotesEditor.lnk']
 
-MSBuild = r'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe'
+MSBuild = r'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe'
 
-Arg1 = '/p:Configuration=Release'
+Arg1 = '/p:Configuration=Release' # Build in release
+Arg2 = '/verbosity:quiet' # Only outputs warnings and errors
+Arg3 = '/clp:Summary' # Show the build summary (Warnings, Errors and Time)
 
 # Write out more stuff
 print("\nProjects to build: \n  -SpeedrunNotes \n  -SpeedrunNotesEditor")
-print(f"\nBuild destination: {ScriptPath}\{ReleaseFolder}")
-AAA = input("\nPress Enter to start building the Release")
+print(f"\nBuild destination: {ScriptPath}\\{ReleaseFolder}")
+input("\nPress Enter to start building the Release")
 print("___________________________________")
 
 CreateRelease()
