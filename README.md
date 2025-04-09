@@ -68,25 +68,25 @@ Below is an example of how these .json files are structured
 ```json
 [
     {
-        "splitTitle":"",
-        "splitImage":"",
-        "splitInfoText1":"",
-        "splitInfoText2":"",
-        "splitInfoImage1":"",
-        "splitInfoImage2":""
+        "Title":"",
+        "ImageName":"",
+        "InfoText1":"",
+        "InfoText2":"",
+        "InfoImageName1":"",
+        "InfoImageName2":""
     }
 ]
 ```
 And a chart of what type each variable is
 
-| Variable        | Type   | Property  |
-| --------------- | ------ | --------- |
-| splitTitle      | String | Title     |
-| splitImage      | String | Image URL |
-| splitInfoText1  | String | Text      |
-| splitInfoText2  | String | Text      |
-| splitInfoImage1 | String | Image URL |
-| splitInfoImage2 | String | Image URL |
+| Variable       | Type   | Property  |
+| -------------- | ------ | --------- |
+| Title          | String | Title     |
+| ImageName      | String | Image URL |
+| InfoText1      | String | Text      |
+| InfoText2      | String | Text      |
+| InfoImageName1 | String | Image URL |
+| InfoImageName2 | String | Image URL |
 
 ## Template Creation
 For creating a template there are 2 primary ways, either via editing a .json file direcly through a code editor or by using SpeedrunNotesEditor. For writing a template through code, make sure to copy the template shown above. If using SpeedrunNotesEditor then follow [usage instructions](#speedrunnotes-using).
