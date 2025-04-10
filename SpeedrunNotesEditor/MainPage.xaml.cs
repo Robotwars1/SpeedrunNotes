@@ -198,6 +198,7 @@ public partial class MainPage : ContentPage
         ImagePaths.Add(new ImageFilePaths());
 
         SettingTemplate = false;
+        TemplateNameEntry.Text = "";
         TemplateNameEntry.IsEnabled = true;
     }
 
@@ -215,6 +216,8 @@ public partial class MainPage : ContentPage
             string FilePath = SplitFile.FullPath;
 
             LssParse(FilePath);
+
+            TemplateNameEntry.Text = SplitFile.FileName.Replace(".lss", "");
 
             SettingTemplate = false;
             TemplateNameEntry.IsEnabled = true;
