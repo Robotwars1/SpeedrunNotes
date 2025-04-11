@@ -14,11 +14,8 @@ public partial class MainPage : ContentPage
 
     bool TemplateLoaded = false;
 
-    int CurrentSplitIndex;
-
-    string PreviousTitle;
-    string PreviousLabel1;
-    string PreviousLabel2;
+    int CurrentSplitIndex = 0;
+    int PreviousSplitIndex = 0;
 
     Socket Soc;
 
@@ -149,6 +146,12 @@ public partial class MainPage : ContentPage
             CurrentSplitIndex = int.Parse(Temp);
         }
 
+        // If selected split hasnt changed, theres no need to update anything
+        if (PreviousSplitIndex == CurrentSplitIndex)
+        {
+            return;
+        }
+
         // Send needed variables to each active popout
         if (NextSplitPopoutActive)
         {
@@ -175,6 +178,8 @@ public partial class MainPage : ContentPage
 
         // Do UI update stuff, has to be on main thread cause Maui ig
         MainThread.BeginInvokeOnMainThread(UpdateUiElements);
+
+        PreviousSplitIndex = CurrentSplitIndex;
     }
 
     void UpdateUiElements()
@@ -189,11 +194,7 @@ public partial class MainPage : ContentPage
             {
                 string NewTitle = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
 
-                // If nothing has changed, throw exception to get out of having to redraw
-                if (PreviousTitle == NewTitle) { throw new Exception("Nothing to Update"); }
-
                 NextSplitLabel.Text = NewTitle;
-                PreviousTitle = NewTitle;
 
                 if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName)))
                 {
@@ -221,7 +222,6 @@ public partial class MainPage : ContentPage
             {
                 PopoutNextSplitButton.IsEnabled = true;
                 NextSplitPopoutActive = false;
-                PreviousTitle = null; // Set to null so it has to be re-drawn
             }
         }
 
@@ -232,11 +232,7 @@ public partial class MainPage : ContentPage
             {
                 string NewText = SplitsInfo[CurrentSplitIndex].InfoText1;
 
-                // If nothing has changed, throw exception to get out of having to redraw
-                if (PreviousLabel1 == NewText) { throw new Exception("Nothing to Update"); }
-
                 SplitNoteLabel1.Text = NewText;
-                PreviousLabel1 = NewText;
 
                 if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName1)))
                 {
@@ -264,7 +260,6 @@ public partial class MainPage : ContentPage
             {
                 PopoutSplitNote1Button.IsEnabled = true;
                 SplitNote1PopoutActive = false;
-                PreviousLabel1 = null; // Set to null so it has to be re-drawn
             }
         }
 
@@ -275,11 +270,7 @@ public partial class MainPage : ContentPage
             {
                 string NewText = SplitsInfo[CurrentSplitIndex].InfoText2;
 
-                // If nothing has changed, throw exception to get out of having to redraw
-                if (PreviousLabel2 == NewText) { throw new Exception("Nothing to Update"); }
-
                 SplitNoteLabel2.Text = NewText;
-                PreviousLabel2 = NewText;
 
                 if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName2)))
                 {
@@ -307,7 +298,6 @@ public partial class MainPage : ContentPage
             {
                 PopoutSplitNote2Button.IsEnabled = true;
                 SplitNote2PopoutActive = false;
-                PreviousLabel2 = null; // Set to null so it has to be re-drawn
             }
         }
     }
