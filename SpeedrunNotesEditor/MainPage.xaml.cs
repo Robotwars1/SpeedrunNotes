@@ -88,7 +88,7 @@ public partial class MainPage : ContentPage
             for (int i = 0; i < SplitsInfo.Count; i++)
             {
                 SplitTitles.Add(SplitsInfo[i].Title); // Dumb workaround to make splits show in tabbar
-                ImagePaths.Add(new ImageFilePaths());
+                ImagePaths.Add(new ImageFilePaths() { TitleImageName = $"{LoadedFilePath}/{SplitsInfo[i].ImageName}", Notes1ImageName = $"{LoadedFilePath}/{SplitsInfo[i].InfoImageName1}", Notes2ImageName = $"{LoadedFilePath}/{SplitsInfo[i].InfoImageName2}" });
             }
 
             TemplateNameEntry.Text = Result.Folder.Name;
@@ -288,9 +288,9 @@ public partial class MainPage : ContentPage
         SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
         SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
 
-        SplitTitleImage.Source = ImagePaths[CurrentSplitIndex].TitleImageName;
-        SplitNote1Image.Source = ImagePaths[CurrentSplitIndex].Notes1ImageName;
-        SplitNote2Image.Source = ImagePaths[CurrentSplitIndex].Notes2ImageName;
+        SplitTitleImage.Source = ImageSource.FromFile(ImagePaths[CurrentSplitIndex].TitleImageName);
+        SplitNote1Image.Source = ImageSource.FromFile(ImagePaths[CurrentSplitIndex].Notes1ImageName);
+        SplitNote2Image.Source = ImageSource.FromFile(ImagePaths[CurrentSplitIndex].Notes2ImageName);
     }
 
     void ClearTemplateDetailsViewer()
