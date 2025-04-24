@@ -149,15 +149,36 @@ public partial class MainPage : ContentPage
             {
                 if (SplitsInfo[i].ImageName != "")
                 {
-                    File.Copy(ImagePaths[i].TitleImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].TitleImageName)), true);
+                    string SourcePath = ImagePaths[i].TitleImageName;
+                    string TargetPath = Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].TitleImageName));
+
+                    // So it doesnt try to create a copy at the same place as the original
+                    if (SourcePath != TargetPath)
+                    {
+                        File.Copy(SourcePath, TargetPath, true);
+                    }
                 }
                 if (SplitsInfo[i].InfoImageName1 != "")
                 {
-                    File.Copy(ImagePaths[i].Notes1ImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes1ImageName)), true);
+                    string SourcePath = ImagePaths[i].Notes1ImageName;
+                    string TargetPath = Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes1ImageName));
+
+                    // So it doesnt try to create a copy at the same place as the original
+                    if (SourcePath != TargetPath)
+                    {
+                        File.Copy(SourcePath, TargetPath, true);
+                    }
                 }
                 if (SplitsInfo[i].InfoImageName2 != "")
                 {
-                    File.Copy(ImagePaths[i].Notes2ImageName, Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes2ImageName)), true);
+                    string SourcePath = ImagePaths[i].Notes2ImageName;
+                    string TargetPath = Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes2ImageName));
+
+                    // So it doesnt try to create a copy at the same place as the original
+                    if (SourcePath != TargetPath)
+                    {
+                        File.Copy(SourcePath, TargetPath, true);
+                    }
                 }
             }
 
