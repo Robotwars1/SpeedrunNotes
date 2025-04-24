@@ -198,7 +198,7 @@ public partial class MainPage : ContentPage
 
                 if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName)))
                 {
-                    NextSplitImage.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].ImageName}";
+                    NextSplitImage.Source = ImageSource.FromFile($"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].ImageName}");
                 }
                 else if (SplitsInfo[CurrentSplitIndex + 1].ImageName != "") // Only show ImageLoadError if an image is meant to show
                 {
@@ -236,7 +236,7 @@ public partial class MainPage : ContentPage
 
                 if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName1)))
                 {
-                    SplitNoteImage1.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName1}";
+                    SplitNoteImage1.Source = ImageSource.FromFile($"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName1}");
                 }
                 else if (SplitsInfo[CurrentSplitIndex].InfoImageName1 != "") // Only show ImageLoadError if an image is meant to show
                 {
@@ -274,7 +274,7 @@ public partial class MainPage : ContentPage
 
                 if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName2)))
                 {
-                    SplitNoteImage2.Source = $"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName2}";
+                    SplitNoteImage2.Source = ImageSource.FromFile($"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName2}");
                 }
                 else if (SplitsInfo[CurrentSplitIndex].InfoImageName2 != "") // Only show ImageLoadError if an image is meant to show
                 {
