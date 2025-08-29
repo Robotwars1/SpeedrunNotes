@@ -219,7 +219,7 @@ public partial class MainPage : ContentPage
         ImagePaths.Add(new ImageFilePaths());
 
         SettingTemplate = false;
-        TemplateNameEntry.Text = "";
+        TemplateNameEntry.Text = "New Template";
         TemplateNameEntry.IsEnabled = true;
     }
 
