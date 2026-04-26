@@ -2,27 +2,22 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Diagnostics;
-using System.Reflection;
 using SpeedrunNotes.Popouts;
+using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace SpeedrunNotes;
 
 public partial class MainPage : ContentPage
 {
-	bool FirstAppear = true;
-
-    bool ConnectionError = false;
+    bool SidebarOut = true;
 
     bool TemplateLoaded = false;
 
-    int CurrentSplitIndex;
+    int CurrentSplitIndex = 0;
+    int PreviousSplitIndex = 0;
 
-    string PreviousTitle;
-    string PreviousLabel1;
-    string PreviousLabel2;
-
-    Socket soc;
+    Socket Soc;
 
     List<Split> SplitsInfo;
 
@@ -35,36 +30,11 @@ public partial class MainPage : ContentPage
     Window SplitNote1PopoutWindow;
     Window SplitNote2PopoutWindow;
 
-    readonly string ImagesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Images");
-    readonly string TemplatesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Json-Templates");
+    string LoadedTemplatePath = "";
 
-    public class Split
-    {
-        public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImage { get; set; } = string.Empty;
-        public string SplitInfoText1 { get; set; } = string.Empty;
-        public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImage1 { get; set; } = string.Empty;
-        public string SplitInfoImage2 { get; set; } = string.Empty;
-    }
-
-    private readonly JsonSerializerOptions _options = new()
+    private readonly JsonSerializerOptions ReadOptions = new()
     {
         PropertyNameCaseInsensitive = true
-    };
-
-    // Custom FileType to only show .json files in FilePicker
-    static FilePickerFileType CustomFileType = new FilePickerFileType(
-                new Dictionary<DevicePlatform, IEnumerable<string>>
-                {
-                    { DevicePlatform.WinUI, new[] { ".json"} },
-                });
-
-    // Options for .json FilePicker
-    PickOptions JsonFilepickerOptions = new()
-    {
-        PickerTitle = "Please select a comic file",
-        FileTypes = CustomFileType,
     };
 
     public MainPage()
@@ -78,12 +48,13 @@ public partial class MainPage : ContentPage
 
         Window.MinimumWidth = 1280;
         Window.MinimumHeight = 720;
+        Window.Title = "SpeedrunNotes";
     }
 
     void OnMainPageLoaded(object sender, EventArgs e)
     {
         // When loaded, open the ConnectionPage
-        Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+        Navigation.PushModalAsync(new ConnectionPage());
 
         // Attach a function to when closing the main window
         IReadOnlyList<Window> Windows = Application.Current.Windows;
@@ -108,205 +79,134 @@ public partial class MainPage : ContentPage
 
     void OnMainPageAppearing(object sender, EventArgs e)
 	{
-		// If not first time it appears, eg when going from ConnectionPage to MainPage
-        if (!FirstAppear)
-        {
-			try
-			{
-                // Setup Socket, IP and Port
-                soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                IPAddress ip;
-
-                // If IP is localhost, input the IP for localhost, eg 127.0.0.1
-                if (Preferences.Default.Get("IP", "localhost") == "localhost")
-                {
-                    ip = IPAddress.Parse("127.0.0.1");
-                }
-                else
-                {
-                    ip = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
-                }
-
-                IPEndPoint remoteEP = new(ip, (Preferences.Default.Get("Port", 16834)));
-
-                // Connect to livesplit.server
-                soc.Connect(remoteEP);
-            }
-			catch
-			{
-                // Update variable to show "ConnectionError" on ConnectionPage
-                bool ConnectionError = true;
-
-                // Bring back to ConnectionPage
-                Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
-            }
-
-            if (!ConnectionError)
-            {
-                CheckConnection();
-            }
-        }
-        else
-        {
-            FirstAppear = false;
-        }
-        
-        SplitNotes1Entry.Text = $"{SplitNoteLabel1.FontSize}";
-        SplitNotes2Entry.Text = $"{SplitNoteLabel2.FontSize}";
-    }
-
-    void CheckConnection()
-    {
         try
         {
-            // Send message to livesplit.server to check current split
-            byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
-            soc.Send(message);
+            // Setup Socket, IP and Port
+            Soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress IP;
 
-            // Recieve message and "parse" it from computer-jargon -> readable string
-            byte[] b = new byte[100];
-            int k = soc.Receive(b);
-            string DataReceived = Encoding.ASCII.GetString(b, 0, k);
-
-            int ReceivedMessage = 0;
-
-            // Makes sure the whole message is recieved
-            if (DataReceived.EndsWith("\r\n"))
+            // If IP is localhost, input the IP for localhost, eg 127.0.0.1
+            if (Preferences.Default.Get("IP", "localhost") == "localhost")
             {
-                // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
-                // Thanks alekz for this :)
-                string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
-
-                // Save recieved split-index
-                ReceivedMessage = int.Parse(Temp);
-            }
-
-            // If the wrong message is received, return to ConnectionPage with ConnectionError
-            if (ReceivedMessage != -1)
-            {
-                // Update variable to show "ConnectionError" on ConnectionPage
-                bool ConnectionError = true;
-
-                // Bring back to ConnectionPage
-                Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+                IP = IPAddress.Parse("127.0.0.1");
             }
             else
             {
-                ConnectionError = false;
-
-                // Start the timer / scheduled function calls
-                InitTimer();
+                IP = IPAddress.Parse(Preferences.Default.Get("IP", "localhost"));
             }
+
+            IPEndPoint RemoteEP = new(IP, (Preferences.Default.Get("Port", 16834)));
+
+            // Connect to livesplit.server
+            Soc.Connect(RemoteEP);
         }
         catch
         {
-            // Update variable to show "ConnectionError" on ConnectionPage
-            bool ConnectionError = true;
-
             // Bring back to ConnectionPage
-            Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+            Navigation.PushModalAsync(new ConnectionPage());
         }
+
+        InitTimer();
     }
 
     public void InitTimer()
     {
         // Setup timer to send / recieve message with LiveSplit.Server every second
         System.Timers.Timer Timer = new(1000);
-        Timer.Elapsed += OnTimedEvent;
+        Timer.Elapsed += GetLivesplitData;
         Timer.AutoReset = true;
         Timer.Enabled = true;
     }
 
-    private void OnTimedEvent(object sender, EventArgs e)
+    private void GetLivesplitData(object sender, EventArgs e)
     {
         // So it only does update stuff if there is a TemplateLoaded
-        if (TemplateLoaded)
+        if (!TemplateLoaded)
         {
-            // Send message to livesplit.server to check current split
-            byte[] message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
-            soc.Send(message);
-
-            // Recieve message and "parse" it from computer-jargon -> readable string
-            byte[] b = new byte[100];
-            int k = soc.Receive(b);
-            string DataReceived = Encoding.ASCII.GetString(b, 0, k);
-
-            // Makes sure the whole message is recieved
-            if (DataReceived.EndsWith("\r\n"))
-            {
-                // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
-                // Thanks alekz for this :)
-                string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
-
-                // Save recieved split-index
-                CurrentSplitIndex = int.Parse(Temp);
-            }
-
-            // Send needed variables to each active popout
-            if (NextSplitPopoutActive)
-            {
-                string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                string NextSplitImageFileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
-
-                MessagingCenter.Send(this, "NextSplitLabel", NextSplitLabel);
-                MessagingCenter.Send(this, "NextSplitImage", NextSplitImageFileLocation);
-            }
-
-            if (CurrentSplitIndex > 0)
-            {
-                if (SplitNote1PopoutActive)
-                {
-                    MessagingCenter.Send(this, "SplitNote1FontSize", SplitNoteLabel1.FontSize);
-                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText1);
-                }
-                if (SplitNote1PopoutActive)
-                {
-                    MessagingCenter.Send(this, "SplitNote2FontSize", SplitNoteLabel2.FontSize);
-                    MessagingCenter.Send(this, "SplitNote1Label", SplitsInfo[CurrentSplitIndex].SplitInfoText2);
-                }
-            }
-
-            // Do UI update stuff, has to be on main thread cause Maui ig
-            MainThread.BeginInvokeOnMainThread(UpdateUiElements);
+            return;
         }
+
+        // Send message to livesplit.server to check current split
+        byte[] Message = Encoding.ASCII.GetBytes("getsplitindex\r\n");
+        Soc.Send(Message);
+
+        // Recieve message and "parse" it from computer-jargon -> readable string
+        byte[] b = new byte[100];
+        int k = Soc.Receive(b);
+        string DataReceived = Encoding.ASCII.GetString(b, 0, k);
+
+        // Makes sure the whole message is recieved
+        if (DataReceived.EndsWith("\r\n"))
+        {
+            // Only remove the last 2 instead of last 4 for some reason that I do not understand, removes the "\r\n" tho so thats good
+            // Thanks alekz for this :)
+            string Temp = DataReceived.Remove(DataReceived.Length - 2, 2);
+
+            // Save recieved split-index
+            CurrentSplitIndex = int.Parse(Temp);
+        }
+
+        // If selected split hasnt changed, theres no need to update anything
+        if (PreviousSplitIndex == CurrentSplitIndex)
+        {
+            return;
+        }
+
+        // Send needed variables to each active popout
+        if (NextSplitPopoutActive)
+        {
+            string NextSplitLabel = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
+            string NextSplitImageFileLocation = Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName);
+
+            WeakReferenceMessenger.Default.Send(new NextSplitLabelMessage(NextSplitLabel));
+            WeakReferenceMessenger.Default.Send(new NextSplitImageMessage(NextSplitImageFileLocation));
+        }
+
+        if (CurrentSplitIndex >= 0)
+        {
+            if (SplitNote1PopoutActive)
+            {
+                WeakReferenceMessenger.Default.Send(new SplitInfo1FontMessage((int)SplitNoteLabel1.FontSize));
+                WeakReferenceMessenger.Default.Send(new SplitInfo1TextMessage(SplitsInfo[CurrentSplitIndex].InfoText1));
+            }
+            if (SplitNote2PopoutActive)
+            {
+                WeakReferenceMessenger.Default.Send(new SplitInfo2FontMessage((int)SplitNoteLabel2.FontSize));
+                WeakReferenceMessenger.Default.Send(new SplitInfo2TextMessage(SplitsInfo[CurrentSplitIndex].InfoText2));
+            }
+        }
+
+        // Do UI update stuff, has to be on main thread cause Maui ig
+        MainThread.BeginInvokeOnMainThread(UpdateUiElements);
+
+        PreviousSplitIndex = CurrentSplitIndex;
     }
 
     void UpdateUiElements()
     {
         // Get all active windows
         IReadOnlyList<Window> Windows = Application.Current.Windows;
-
+        
         // Only update stuff if the element isnt "Popouted"
         if (!NextSplitPopoutActive)
         {
             try
             {
-                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage)))
+                string NewTitle = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].Title}";
+
+                NextSplitLabel.Text = NewTitle;
+
+                if (File.Exists(Path.Combine(LoadedTemplatePath, SplitsInfo[CurrentSplitIndex + 1].ImageName)))
                 {
-                    // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
-                    {
-                        // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-
-                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex + 1].SplitImage);
-
-                        NextSplitImage.Source = ImageSource.FromFile(FileLocation);
-
-                        PreviousTitle = NextSplitLabel.Text;
-                    }
+                    NextSplitImage.Source = ImageSource.FromFile($"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex + 1].ImageName}");
                 }
-                else if (SplitsInfo[CurrentSplitIndex + 1].SplitImage != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex + 1].ImageName != "") // Only show ImageLoadError if an image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousTitle != $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}")
-                    {
-                        // Update title and image of next split
-                        NextSplitLabel.Text = $"Next Split: {SplitsInfo[CurrentSplitIndex + 1].SplitTitle}";
-                        NextSplitImage.Source = "imageloadfail.png";
-
-                        PreviousTitle = NextSplitLabel.Text;
-                    }
+                    NextSplitImage.Source = "imageloadfail.png";
+                }
+                else // If no image is meant to show
+                {
+                    NextSplitImage.Source = "";
                 }
             }
             catch
@@ -322,41 +222,29 @@ public partial class MainPage : ContentPage
             {
                 PopoutNextSplitButton.IsEnabled = true;
                 NextSplitPopoutActive = false;
-                PreviousTitle = null; // Set to null so it has to be re-drawn
             }
         }
 
         // Only update stuff if the element isnt "Popouted"
-        if (!SplitNote1PopoutActive && CurrentSplitIndex > 0)
+        if (!SplitNote1PopoutActive && CurrentSplitIndex >= 0)
         {
             try
             {
-                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1)))
+                string NewText = SplitsInfo[CurrentSplitIndex].InfoText1;
+
+                SplitNoteLabel1.Text = NewText;
+
+                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName1)))
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-
-                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage1);
-
-                        SplitNoteImage1.Source = ImageSource.FromFile(FileLocation);
-
-                        PreviousLabel1 = SplitNoteLabel1.Text;
-                    }
+                    SplitNoteImage1.Source = ImageSource.FromFile($"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName1}");
                 }
-                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage1 != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex].InfoImageName1 != "") // Only show ImageLoadError if an image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel1 != SplitsInfo[CurrentSplitIndex].SplitInfoText1)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel1.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText1;
-                        SplitNoteImage1.Source = "imageloadfail.png";
-
-                        PreviousLabel1 = SplitNoteLabel1.Text;
-                    }
+                    SplitNoteImage1.Source = "imageloadfail.png";
+                }
+                else // If no image is meant to show
+                {
+                    SplitNoteImage1.Source = "";
                 }
             }
             catch
@@ -368,45 +256,33 @@ public partial class MainPage : ContentPage
         else
         {
             // If it has been disabled, re-enable the button and set SplitNote1PopoutActive to false
-            if (!Windows.Contains(NextSplitPopoutWindow))
+            if (!Windows.Contains(SplitNote1PopoutWindow))
             {
                 PopoutSplitNote1Button.IsEnabled = true;
                 SplitNote1PopoutActive = false;
-                PreviousLabel1 = null; // Set to null so it has to be re-drawn
             }
         }
 
         // Only update stuff if the element isnt "Popouted"
-        if (!SplitNote2PopoutActive && CurrentSplitIndex > 0)
+        if (!SplitNote2PopoutActive && CurrentSplitIndex >= 0)
         {
             try
             {
-                if (File.Exists(Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2)))
+                string NewText = SplitsInfo[CurrentSplitIndex].InfoText2;
+
+                SplitNoteLabel2.Text = NewText;
+
+                if (File.Exists(Path.Combine(LoadedTemplatePath ,SplitsInfo[CurrentSplitIndex].InfoImageName2)))
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-
-                        string FileLocation = Path.Combine(ImagesPath, SplitsInfo[CurrentSplitIndex].SplitInfoImage2);
-
-                        SplitNoteImage2.Source = ImageSource.FromFile(FileLocation);
-
-                        PreviousLabel2 = SplitNoteLabel2.Text;
-                    }
+                    SplitNoteImage2.Source = ImageSource.FromFile($"{LoadedTemplatePath}/{SplitsInfo[CurrentSplitIndex].InfoImageName2}");
                 }
-                else if (SplitsInfo[CurrentSplitIndex].SplitInfoImage2 != "") // Only show ImageLoadError if an image is meant to show
+                else if (SplitsInfo[CurrentSplitIndex].InfoImageName2 != "") // Only show ImageLoadError if an image is meant to show
                 {
-                    // Only redraw if something changed
-                    if (PreviousLabel2 != SplitsInfo[CurrentSplitIndex].SplitInfoText2)
-                    {
-                        // Update notes for current split
-                        SplitNoteLabel2.Text = SplitsInfo[CurrentSplitIndex].SplitInfoText2;
-                        SplitNoteImage2.Source = "imageloadfail.png";
-
-                        PreviousLabel2 = SplitNoteLabel2.Text;
-                    }
+                    SplitNoteImage2.Source = "imageloadfail.png";
+                }
+                else // If no image is meant to show
+                {
+                    SplitNoteImage2.Source = "";
                 }
             }
             catch
@@ -418,36 +294,35 @@ public partial class MainPage : ContentPage
         else
         {
             // If it has been disabled, re-enable the button and set SplitNote2PopoutActive to false
-            if (!Windows.Contains(NextSplitPopoutWindow))
+            if (!Windows.Contains(SplitNote2PopoutWindow))
             {
                 PopoutSplitNote2Button.IsEnabled = true;
                 SplitNote2PopoutActive = false;
-                PreviousLabel2 = null; // Set to null so it has to be re-drawn
             }
         }
     }
 
     public List<Split> JsonParse(string FilePath)
     {
-        using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _options);
+        using FileStream Json = File.OpenRead(FilePath);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(Json, ReadOptions);
         return Splits;
     }
 
     void OnReconnectBtnClicked(object sender, EventArgs e)
 	{
-		Navigation.PushModalAsync(new ConnectionPage(ConnectionError));
+		Navigation.PushModalAsync(new ConnectionPage());
 	}
 
     async void OnLoadPresetBtnClicked(object sender, EventArgs e)
     {
-        var File = await FilePicker.PickAsync(JsonFilepickerOptions);
+        var Result = await FolderPicker.PickAsync(default);
 
         // Only do stuff to File if it succesfully picks a file
-        if (File != null)
+        if (Result.IsSuccessful)
         {
-            string FilePath = File.FullPath;
-            SplitsInfo = JsonParse(FilePath);
+            LoadedTemplatePath = Result.Folder.Path;
+            SplitsInfo = JsonParse($"{LoadedTemplatePath}/template.json");
 
             TemplateLoaded = true;
 
@@ -458,15 +333,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    void OnOpenImageFolderBtnClicked(object sender, EventArgs e)
-    {
-        Process.Start("explorer.exe", ImagesPath);
-    }
-
-    void OnOpenTemplateFolderBtnClicked(object sender, EventArgs e)
-    {
-        Process.Start("explorer.exe", TemplatesPath);
-    }
+    #region Font Size Stuff
 
     void SplitNotes1FontSizeIncrease(object sender, EventArgs e)
     {
@@ -516,6 +383,10 @@ public partial class MainPage : ContentPage
         }
     }
 
+    #endregion
+
+    #region Popout Buttons
+
     void OnPopoutNextSplitButtonClicked(object sender, EventArgs e)
     {
         // Disable the button so the user cant create more than one popouts
@@ -560,5 +431,23 @@ public partial class MainPage : ContentPage
         SplitNote2PopoutWindow = new Window(new SplitNote1Popout());
 
         Application.Current.OpenWindow(SplitNote2PopoutWindow);
+    }
+
+    #endregion
+
+    private void ToggleSidebar(object sender, EventArgs e)
+    {
+        if (SidebarOut)
+        {
+            Sidebar.TranslateTo(250, 0);
+            ToggleSidebarButton.Source = "open_sidebar.png";
+        }
+        else
+        {
+            Sidebar.TranslateTo(0, 0);
+            ToggleSidebarButton.Source = "close_sidebar.png";
+        }
+
+        SidebarOut = !SidebarOut;
     }
 }

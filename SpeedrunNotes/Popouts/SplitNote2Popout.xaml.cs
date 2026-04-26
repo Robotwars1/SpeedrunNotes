@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.Messaging;
+
 namespace SpeedrunNotes.Popouts;
 
-public partial class SplitNote2Popout : ContentPage
+public partial class SplitNote2Popout : BasePopout
 {
     int FontSize;
     string SplitNoteLabelText;
@@ -9,44 +11,20 @@ public partial class SplitNote2Popout : ContentPage
 	{
 		InitializeComponent();
 
-        MessagingCenter.Subscribe<MainPage, int>(this, "SplitNote2FontSize", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<SplitInfo2FontMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            FontSize = arg;
+            FontSize = m.Value;
         });
 
-        MessagingCenter.Subscribe<MainPage, string>(this, "SplitNote2Label", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<SplitInfo2TextMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            SplitNoteLabelText = arg;
+            SplitNoteLabelText = m.Value;
         });
 
         InitTimer();
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-
-        Window.MinimumWidth = 320;
-        Window.MinimumHeight = 200;
-    }
-
-    public void InitTimer()
-    {
-        // Setup timer to send / recieve message with LiveSplit.Server every second
-        System.Timers.Timer Timer = new(1000);
-        Timer.Elapsed += OnTimedEvent;
-        Timer.AutoReset = true;
-        Timer.Enabled = true;
-    }
-
-    void OnTimedEvent(object sender, EventArgs e)
-    {
-        MainThread.BeginInvokeOnMainThread(UpdateNextSplit);
-    }
-
-    void UpdateNextSplit()
+    public override void UpdateData()
     {
         SplitNoteLabel.Text = SplitNoteLabelText;
         SplitNoteLabel.FontSize = FontSize;
