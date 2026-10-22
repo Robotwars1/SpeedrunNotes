@@ -1,2 +1,0 @@
-This file just sits here so Process.Start can open this folder
-Funny C# woo

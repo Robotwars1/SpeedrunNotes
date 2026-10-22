@@ -2,6 +2,7 @@
 <div align="center">
 
 ### [Installation](#installation-1)
+### [Troubleshooting](#troubleshooting-1)
 
 <br>
 
@@ -29,6 +30,13 @@ When its finished, extract the contents of the folder and launch the .exe and yo
 
 **IMPORTANT:** You need LiveSplit.Server in your split layout for this program to work.
 If you don't have it added to your layout, head over to [LiveSplit.Servers github]("https://github.com/LiveSplit/LiveSplit.Server#install") and follow the installation instructions there.
+
+# Troubleshooting
+### ConnectionError
+1. Make sure LiveSplit.Server is added to your layout
+2. Make sure LiveSplit.Server is started (right click -> Control -> Start Server)
+3. Make sure you enter the same port as in the settings for LiveSplit.Server
+4. If this doesnt work, try changing "localhost" to your actual **local** IP.
 
 # SpeedrunNotes Overview
 SpeedrunNotes is a program written in C# and Xaml with the help of .Net Maui. By communicating with [LiveSplit.Server](https://github.com/LiveSplit/LiveSplit.Server) it gets information about your current split and shows any notes
@@ -60,25 +68,25 @@ Below is an example of how these .json files are structured
 ```json
 [
     {
-        "splitTitle":"",
-        "splitImage":"",
-        "splitInfoText1":"",
-        "splitInfoText2":"",
-        "splitInfoImage1":"",
-        "splitInfoImage2":""
+        "Title":"",
+        "ImageName":"",
+        "InfoText1":"",
+        "InfoText2":"",
+        "InfoImageName1":"",
+        "InfoImageName2":""
     }
 ]
 ```
 And a chart of what type each variable is
 
-| Variable        | Type   | Property  |
-| --------------- | ------ | --------- |
-| splitTitle      | String | Title     |
-| splitImage      | String | Image URL |
-| splitInfoText1  | String | Text      |
-| splitInfoText2  | String | Text      |
-| splitInfoImage1 | String | Image URL |
-| splitInfoImage2 | String | Image URL |
+| Variable       | Type   | Property  |
+| -------------- | ------ | --------- |
+| Title          | String | Title     |
+| ImageName      | String | Image URL |
+| InfoText1      | String | Text      |
+| InfoText2      | String | Text      |
+| InfoImageName1 | String | Image URL |
+| InfoImageName2 | String | Image URL |
 
 ## Template Creation
 For creating a template there are 2 primary ways, either via editing a .json file direcly through a code editor or by using SpeedrunNotesEditor. For writing a template through code, make sure to copy the template shown above. If using SpeedrunNotesEditor then follow [usage instructions](#speedrunnotes-using).
@@ -92,8 +100,3 @@ ReleaseBuilder is a custom-made Python script that automates the process of buil
 ```
 python -m pip install --upgrade pywin32
 ```
-
-## FileMover.py
-FileMover is a Python script that can move every image and template file from an old version to a new version to make updating less of a pain.
-
-**IMPORTANT:** For running it, make sure to install [Python 3.11 or later](https://www.python.org/downloads/)

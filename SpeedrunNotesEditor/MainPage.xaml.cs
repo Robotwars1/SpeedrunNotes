@@ -1,67 +1,55 @@
-﻿using CommunityToolkit.Maui.Views;
-using System.Collections.ObjectModel;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
+using CommunityToolkit.Maui.Storage;
+using System.Collections.ObjectModel;
 
 namespace SpeedrunNotesEditor;
 
 public partial class MainPage : ContentPage
 {
-	int SplitsAmount;
+    private int CurrentSplitIndex = 0;
+    private bool SidebarOut = true;
+    private string TemplateName = "";
+    private bool SettingTemplate = false;
 
-	// Lists for keeping track of each thing that will be saved in template.json file
-	List<string> SplitNames = new();
-	List<string> SplitImages = new();
-    List<string> SplitNoteText1 = new();
-    List<string> SplitNoteImage1 = new();
-    List<string> SplitNoteText2 = new();
-    List<string> SplitNoteImage2 = new();
+    private List<Split> SplitsInfo = [];
+    private List<ImageFilePaths> ImagePaths = [];
+    public ObservableCollection<string> SplitTitles { get; set; } = [];
 
-    string PreviousElement;
-
-	// 0 == Split Info
-	// 1 == Split Notes 1
-	// 2 == Split Notes 2
-	int ViewMode = 0;
-
-    public class DetailsViewer
-	{
-		public string IndexLabel { get; set; }
-		public string DetailsLabelText { get; set; }
-		public string TextEntryId { get; set; }
-		public string DetailsImageUrl { get; set; }
-		public string ImageEntryId { get; set; }
-	}
-
-    // Creates Collections of each class to populate each CollectionView
-    ObservableCollection<DetailsViewer> TemplateDetailsViewer = new();
-
-    // Stuff for loading presets
-    List<Split> SplitsInfo;
-
-    // If null, then no file has been loaded
-    string LoadedFilePath = null;
-
-    // Bool for if currently loading template / creating template from splits to avoid dumb errors
-    bool SettingTemplate = false;
-
-    public class Split
+    public class ImageFilePaths
     {
-        public string SplitTitle { get; set; } = string.Empty;
-        public string SplitImage { get; set; } = string.Empty;
-        public string SplitInfoText1 { get; set; } = string.Empty;
-        public string SplitInfoText2 { get; set; } = string.Empty;
-        public string SplitInfoImage1 { get; set; } = string.Empty;
-        public string SplitInfoImage2 { get; set; } = string.Empty;
+        public string TitleImageName { get; set; } = string.Empty;
+        public string Notes1ImageName { get; set; } = string.Empty;
+        public string Notes2ImageName { get; set; } = string.Empty;
     }
 
-    private readonly JsonSerializerOptions _readOptions = new()
+    private bool _InputEnabled = false;
+    private bool EnableInput
+    {
+        get
+        {
+            return _InputEnabled;
+        }
+        set
+        {
+            _InputEnabled = value;
+            // Depending on if input is enabled all input-elements should be enabled/disabled to match this allowance
+            SplitNameEntry.IsEnabled = value;
+            SplitTitleImageButton.IsEnabled = value;
+            SplitNote1TextEditor.IsEnabled = value;
+            SplitNote1ImageButton.IsEnabled = value;
+            SplitNote2TextEditor.IsEnabled = value;
+            SplitNote2ImageButton.IsEnabled = value;
+        }
+    }
+
+    private readonly JsonSerializerOptions ReadOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
-    private static readonly JsonSerializerOptions _writeOptions = new()
+    private static readonly JsonSerializerOptions WriteOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
@@ -69,6 +57,9 @@ public partial class MainPage : ContentPage
     public MainPage()
 	{
 		InitializeComponent();
+        BindingContext = this;
+        // Always dissalow input at start
+        EnableInput = false;
 	}
 
     protected override void OnAppearing()
@@ -77,68 +68,41 @@ public partial class MainPage : ContentPage
 
         Window.MinimumWidth = 1280;
         Window.MinimumHeight = 720;
+        Window.Title = "SpeedrunNotesEditor";
     }
 
-    async void OnCreateFromTemplateClicked(object sender, EventArgs e)
+    async void OnLoadFromTemplateClicked(object sender, EventArgs e)
 	{
-        var File = await FilePicker.PickAsync(default);
+        var Result = await FolderPicker.PickAsync(default);
 
-        // Only do stuff to File if it succesfully picks a file
-        if (File != null)
+        // Only do stuff if succesfully picks a folder
+        if (Result.IsSuccessful)
         {
             SettingTemplate = true;
 
-            LoadedFilePath = File.FullPath;
-            SplitsInfo = JsonParse(LoadedFilePath);
+            ClearLoadedFile();
 
-            SplitsAmount = SplitsInfo.Count;
+            string LoadedFilePath = Result.Folder.Path;
+            SplitsInfo = JsonParse($"{LoadedFilePath}/template.json"); // Parse and load the json file
 
-            // Clear Lists incase another template was previously loaded / created
-            SplitNames.Clear();
-            SplitImages.Clear();
-            SplitNoteText1.Clear();
-            SplitNoteImage1.Clear();
-            SplitNoteText2.Clear();
-            SplitNoteImage2.Clear();
-
-            // Update corresponding lists
             for (int i = 0; i < SplitsInfo.Count; i++)
             {
-                SplitNames.Add(SplitsInfo[i].SplitTitle);
-                SplitImages.Add(SplitsInfo[i].SplitImage);
-                SplitNoteText1.Add(SplitsInfo[i].SplitInfoText1);
-                SplitNoteImage1.Add(SplitsInfo[i].SplitInfoImage1);
-                SplitNoteText2.Add(SplitsInfo[i].SplitInfoText2);
-                SplitNoteImage2.Add(SplitsInfo[i].SplitInfoImage2);
+                SplitTitles.Add(SplitsInfo[i].Title); // Dumb workaround to make splits show in tabbar
+                ImagePaths.Add(new ImageFilePaths() { TitleImageName = $"{LoadedFilePath}/{SplitsInfo[i].ImageName}", Notes1ImageName = $"{LoadedFilePath}/{SplitsInfo[i].InfoImageName1}", Notes2ImageName = $"{LoadedFilePath}/{SplitsInfo[i].InfoImageName2}" });
             }
 
-            UpdateTemplateDetailsViewer();
+            TemplateNameEntry.Text = Result.Folder.Name;
+            TemplateNameEntry.IsEnabled = true;
 
-            SaveTemplateButton.IsEnabled = true;
             SettingTemplate = false;
         }
     }
 
     public List<Split> JsonParse(string FilePath)
     {
-        using FileStream json = File.OpenRead(FilePath);
-        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(json, _readOptions);
+        using FileStream Json = File.OpenRead(FilePath);
+        List<Split> Splits = JsonSerializer.Deserialize<List<Split>>(Json, ReadOptions);
         return Splits;
-    }
-
-    void OnSaveTemplateClicked(object sender, EventArgs e)
-    {
-        // List to hold all the variables for writing into the json
-        var TemplateVars = new List<Split>();
-
-        // Make sure the List TemplateVars has all values set
-        for (int i = 0; i < SplitsAmount; i++)
-        {
-            TemplateVars.Add(new Split() { SplitTitle = SplitNames[i], SplitImage = SplitImages[i], SplitInfoText1 = SplitNoteText1[i], SplitInfoImage1 = SplitNoteImage1[i], SplitInfoText2 = SplitNoteText2[i], SplitInfoImage2 = SplitNoteImage2[i] });
-        }
-
-        // Write to the loaded file
-        JsonWrite(TemplateVars, LoadedFilePath);
     }
 
     public static void JsonWrite(object Obj, string FileName)
@@ -146,14 +110,118 @@ public partial class MainPage : ContentPage
         using var FileStream = File.Create(FileName);
         using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
 
-        JsonSerializer.Serialize(Utf8JsonWriter, Obj, _writeOptions);
+        JsonSerializer.Serialize(Utf8JsonWriter, Obj, WriteOptions);
     }
 
-    void OnSaveAsTemplateClicked(object sender, EventArgs e)
+    async void OnSaveTemplateClicked(object sender, EventArgs e)
 	{
-        // Create a popup and pass through all important vars
-        this.ShowPopup(new SaveTemplatePopup(SplitsAmount, SplitNames, SplitImages, SplitNoteText1, SplitNoteImage1, SplitNoteText2, SplitNoteImage2));
+        var Result = await FolderPicker.PickAsync(default);
+
+        if (Result.IsSuccessful)
+        {
+            string SaveLocation = Result.Folder.Path;
+
+            WriteToFolder(SaveLocation);
+        }
 	}
+
+    void WriteToFolder(string SaveLocation)
+    {
+        FileSaveIndicator.SaveInProgress();
+
+        try
+        {
+            string TemplateFolderPath = $"{SaveLocation}/{TemplateName}";
+
+            // Create the template folder (unless it already exists)
+            if (!Directory.Exists(TemplateFolderPath))
+            {
+                Directory.CreateDirectory(TemplateFolderPath);
+            }
+
+            // Write the template.json file
+            using var FileStream = File.Create($"{TemplateFolderPath}/template.json");
+            using var Utf8JsonWriter = new Utf8JsonWriter(FileStream);
+            JsonSerializer.Serialize(Utf8JsonWriter, SplitsInfo, WriteOptions);
+
+            // Move all images into the template folder
+            for (int i = 0; i < SplitsInfo.Count; i++)
+            {
+                if (SplitsInfo[i].ImageName != "")
+                {
+                    string SourcePath = ImagePaths[i].TitleImageName;
+                    string TargetPath = Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].TitleImageName));
+
+                    // So it doesnt try to create a copy at the same place as the original
+                    if (SourcePath != TargetPath)
+                    {
+                        File.Copy(SourcePath, TargetPath, true);
+                    }
+                }
+                if (SplitsInfo[i].InfoImageName1 != "")
+                {
+                    string SourcePath = ImagePaths[i].Notes1ImageName;
+                    string TargetPath = Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes1ImageName));
+
+                    // So it doesnt try to create a copy at the same place as the original
+                    if (SourcePath != TargetPath)
+                    {
+                        File.Copy(SourcePath, TargetPath, true);
+                    }
+                }
+                if (SplitsInfo[i].InfoImageName2 != "")
+                {
+                    string SourcePath = ImagePaths[i].Notes2ImageName;
+                    string TargetPath = Path.Combine(TemplateFolderPath, Path.GetFileName(ImagePaths[i].Notes2ImageName));
+
+                    // So it doesnt try to create a copy at the same place as the original
+                    if (SourcePath != TargetPath)
+                    {
+                        File.Copy(SourcePath, TargetPath, true);
+                    }
+                }
+            }
+
+            FileSaveIndicator.SaveSucces();
+        }
+        catch
+        {
+            FileSaveIndicator.SaveFailed();
+        }
+    }
+
+    void OnTemplateNameChanged(object sender, TextChangedEventArgs e)
+    {
+        TemplateName = e.NewTextValue;
+
+        // Can only save if template has a name
+        SaveButton.IsEnabled = TemplateName.Length > 0;
+    }
+
+    void ClearLoadedFile()
+    {
+        SplitsInfo.Clear();
+        SplitTitles.Clear();
+        ImagePaths.Clear();
+        SplitSelector.SelectedItem = null;
+        ClearTemplateDetailsViewer();
+        EnableInput = false; // Since nothing is selected now
+    }
+
+    void OnCreateEmptyClicked(object sender, EventArgs e)
+    {
+        SettingTemplate = true;
+
+        ClearLoadedFile();
+
+        SplitsInfo.Add(new Split() { Title = "Split 1" });
+        SplitTitles.Add("Split 1");
+        ImagePaths.Add(new ImageFilePaths());
+
+        SettingTemplate = false;
+        TemplateNameEntry.Text = "New Template";
+        TemplateNameEntry.IsEnabled = true;
+    }
 
     async void OnCreateFromSplitClicked(object sender, EventArgs e)
 	{
@@ -164,47 +232,36 @@ public partial class MainPage : ContentPage
         {
             SettingTemplate = true;
 
-            string FilePath = SplitFile.FullPath;
+            ClearLoadedFile();
 
-            // Clear Lists incase another template was previously loaded / created
-            SplitNames.Clear();
-            SplitImages.Clear();
-            SplitNoteText1.Clear();
-            SplitNoteImage1.Clear();
-            SplitNoteText2.Clear();
-            SplitNoteImage2.Clear();
+            string FilePath = SplitFile.FullPath;
 
             LssParse(FilePath);
 
-            UpdateTemplateDetailsViewer();
+            TemplateNameEntry.Text = SplitFile.FileName.Replace(".lss", "");
 
             SettingTemplate = false;
+            TemplateNameEntry.IsEnabled = true;
         }
     }
 
 	// Function for getting the relevant data out of the selected .lss file
 	void LssParse(string FilePath)
 	{
-        // Reset SplitsAmount before re-calculating it
-        SplitsAmount = 0;
-
         XmlTextReader Reader = new(FilePath);
+        string PreviousElement = "";
 		
 		while (Reader.Read())
 		{
 			switch (Reader.NodeType)
 			{
 				case XmlNodeType.Element:
-					if (Reader.Name == "Segment")
-					{
-                        SplitsAmount++;
-                    }
 					PreviousElement = Reader.Name;
 					break;
 				case XmlNodeType.Text:
 					if (PreviousElement == "Name")
 					{
-						string NameText;
+						string NameText = "";
 
 						// If the first char is "-", remove it
 						if (Reader.Value.Substring(0, 1) == "-")
@@ -216,7 +273,7 @@ public partial class MainPage : ContentPage
 						{
 							int Chars = 0;
 
-							foreach (Char ch in Reader.Value)
+							foreach (char ch in Reader.Value)
 							{
                                 Chars++;
                                 if (ch == '}')
@@ -236,158 +293,130 @@ public partial class MainPage : ContentPage
 						// Removes every space at front and end of the actual split name
 						NameText = NameText.Trim(' ');
 
-						// Add the cleaned name to the List
-                        SplitNames.Add(NameText);
+						// Add newly found split to lists
+                        SplitsInfo.Add(new Split() { Title = NameText });
+                        SplitTitles.Add(NameText);
+                        ImagePaths.Add(new ImageFilePaths());
                     }
 					break;
 			}
 		}
-
-		// Make sure the following Lists are populated with as many items as SplitNames
-		for (int i = 0; i < SplitNames.Count; i++)
-		{
-            SplitImages.Add(null);
-            SplitNoteText1.Add(null);
-            SplitNoteImage1.Add(null);
-            SplitNoteText2.Add(null);
-            SplitNoteImage2.Add(null);
-        }
-	}
+    }
 
 	void UpdateTemplateDetailsViewer()
 	{
-        TemplateDetailsViewer.Clear();
+        SplitNameEntry.Text = SplitsInfo[CurrentSplitIndex].Title;
+        SplitNote1TextEditor.Text = SplitsInfo[CurrentSplitIndex].InfoText1;
+        SplitNote2TextEditor.Text = SplitsInfo[CurrentSplitIndex].InfoText2;
 
-		switch (ViewMode)
-		{
-            // Split Info
-            case 0:
-                // Add a "line" for CollectionView, corresponding to how many splits there are
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNames[i], DetailsImageUrl = SplitImages[i] });
-                }
-                break;
-            // Split Notes 1
-            case 1:
-                // Add a "line" for CollectionView, corresponding to how many splits there are
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText1[i], DetailsImageUrl = SplitNoteImage1[i] });
-                }
-                break;
-            // Split Notes 2
-            case 2:
-                // Add a "line" for CollectionView, corresponding to how many splits there are
-                for (int i = 0; i < SplitsAmount; i++)
-                {
-                    TemplateDetailsViewer.Add(new DetailsViewer() { IndexLabel = (i + 1).ToString(), TextEntryId = i.ToString(), ImageEntryId = i.ToString(), DetailsLabelText = SplitNoteText2[i], DetailsImageUrl = SplitNoteImage2[i] });
-                }
-                break;
-		}
-
-        TemplateDetailsViewerCollectionView.ItemsSource = TemplateDetailsViewer;
+        SplitTitleImage.Source = ImageSource.FromFile(ImagePaths[CurrentSplitIndex].TitleImageName);
+        SplitNote1Image.Source = ImageSource.FromFile(ImagePaths[CurrentSplitIndex].Notes1ImageName);
+        SplitNote2Image.Source = ImageSource.FromFile(ImagePaths[CurrentSplitIndex].Notes2ImageName);
     }
 
-	void OnSplitInfoClicked(object sender, EventArgs e)
-	{
-		ViewMode = 0;
-
-		UpdateTemplateDetailsViewer();
-	}
-
-    void OnSplitNotes1Clicked(object sender, EventArgs e)
+    void ClearTemplateDetailsViewer()
     {
-		ViewMode = 1;
+        SplitNameEntry.Text = "";
+        SplitNote1TextEditor.Text = "";
+        SplitNote2TextEditor.Text = "";
 
-        UpdateTemplateDetailsViewer();
+        SplitTitleImage.Source = "";
+        SplitNote1Image.Source = "";
+        SplitNote2Image.Source = "";
     }
 
-    void OnSplitNotes2Clicked(object sender, EventArgs e)
-    {
-		ViewMode = 2;
-
-        UpdateTemplateDetailsViewer();
-    }
-
-	void UpdateDetailsText(object sender, TextChangedEventArgs e)
+    void OnTextChanged(object sender, TextChangedEventArgs e)
 	{
         if (!SettingTemplate)
         {
-            switch (ViewMode)
+            switch (((VisualElement)sender).ClassId)
             {
-                case 0:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
-                        {
-                            SplitNames[i] = e.NewTextValue;
-                        }
-                    }
+                case "0":
+                    if (SplitTitles[CurrentSplitIndex] == e.NewTextValue) { return; }
+
+                    SplitsInfo[CurrentSplitIndex].Title = e.NewTextValue;
+                    SplitTitles[CurrentSplitIndex] = e.NewTextValue;
+                    SplitSelector.SelectedItem = SplitTitles[CurrentSplitIndex];
                     break;
-                case 1:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
-                        {
-                            SplitNoteText1[i] = e.NewTextValue;
-                        }
-                    }
+                case "1":
+                    SplitsInfo[CurrentSplitIndex].InfoText1 = e.NewTextValue;
                     break;
-                case 2:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].TextEntryId)
-                        {
-                            SplitNoteText2[i] = e.NewTextValue;
-                        }
-                    }
+                case "2":
+                    SplitsInfo[CurrentSplitIndex].InfoText2 = e.NewTextValue;
                     break;
             }
         }
     }
 
-    void UpdateDetailsImage(object sender, TextChangedEventArgs e)
+    async void OnImageSelectButtonClicked(object sender, EventArgs e)
     {
         if (!SettingTemplate)
         {
-            switch (ViewMode)
+            var Image = await FilePicker.Default.PickAsync(default);
+
+            if (Image != null)
             {
-                case 0:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
-                        {
-                            SplitImages[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
-                case 1:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
-                        {
-                            SplitNoteImage1[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
-                case 2:
-                    for (int i = 0; i < SplitsAmount; i++)
-                    {
-                        if (((Entry)sender).ClassId == TemplateDetailsViewer[i].ImageEntryId)
-                        {
-                            SplitNoteImage2[i] = e.NewTextValue;
-                        }
-                    }
-                    break;
+                // Save selected images filepath so it later can be saved
+                // Then set the image to be shown in editor window
+                switch (((VisualElement)sender).ClassId)
+                {
+                    case "0":
+                        SplitsInfo[CurrentSplitIndex].ImageName = Image.FileName;
+                        ImagePaths[CurrentSplitIndex].TitleImageName = Image.FullPath;
+                        SplitTitleImage.Source = ImageSource.FromFile(Image.FullPath);
+                        break;
+                    case "1":
+                        SplitsInfo[CurrentSplitIndex].InfoImageName1 = Image.FileName;
+                        ImagePaths[CurrentSplitIndex].Notes1ImageName = Image.FullPath;
+                        SplitNote1Image.Source = ImageSource.FromFile(Image.FullPath);
+                        break;
+                    case "2":
+                        SplitsInfo[CurrentSplitIndex].InfoImageName2 = Image.FileName;
+                        ImagePaths[CurrentSplitIndex].Notes2ImageName = Image.FullPath;
+                        SplitNote2Image.Source = ImageSource.FromFile(Image.FullPath);
+                        break;
+                }
             }
         }
     }
 
-    void OnTemplateEditingInfoButtonClicked(object sender, EventArgs e)
+    void OnSelectedIndexChanged(object sender, SelectionChangedEventArgs e)
     {
+        // If we are selecting something
+        if (e.CurrentSelection.Count > 0)
+        {
+            EnableInput = true;
 
-        // Create a popup and pass through all important vars
-        this.ShowPopup(new InfoPopup("template_editing_info.png"));
+            string SelectedItem = (string)e.CurrentSelection[0];
+
+            // Get index that has the selected SplitName
+            // Cant use IndexOf() cause reasons idk
+            for (int i = 0; i < SplitTitles.Count; i++)
+            {
+                if (SplitTitles[i] == SelectedItem)
+                {
+                    CurrentSplitIndex = i;
+                    break;
+                }
+            }
+
+            UpdateTemplateDetailsViewer();
+        }
+    }
+    
+    private void ToggleSidebar(object sender, EventArgs e)
+    {
+        if (SidebarOut)
+        {
+            Sidebar.TranslateTo(150, 0);
+            ToggleSidebarButton.Source = "open_sidebar.png";
+        }
+        else
+        {
+            Sidebar.TranslateTo(0, 0);
+            ToggleSidebarButton.Source = "close_sidebar.png";
+        }
+
+        SidebarOut = !SidebarOut;
     }
 }

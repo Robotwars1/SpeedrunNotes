@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.Messaging;
+
 namespace SpeedrunNotes.Popouts;
 
-public partial class NextSplitPopout : ContentPage
+public partial class NextSplitPopout : BasePopout
 {
     string NextSplitLabelText;
     string NextSplitImageFilePath;
@@ -11,44 +13,20 @@ public partial class NextSplitPopout : ContentPage
 	{
 		InitializeComponent();
 
-        MessagingCenter.Subscribe<MainPage, string>(this, "NextSplitLabel", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<NextSplitLabelMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            NextSplitLabelText = arg;
+            NextSplitLabelText = m.Value;
         });
 
-        MessagingCenter.Subscribe<MainPage, string>(this, "NextSplitImage", (sender, arg) =>
+        WeakReferenceMessenger.Default.Register<NextSplitImageMessage>(this, (r, m) =>
         {
-            // Do something whenever the message is received
-            NextSplitImageFilePath = arg;
+            NextSplitImageFilePath = m.Value;
         });
 
         InitTimer();
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-
-        Window.MinimumWidth = 320;
-        Window.MinimumHeight = 200;
-    }
-
-    public void InitTimer()
-    {
-        // Setup timer to send / recieve message with LiveSplit.Server every second
-        System.Timers.Timer Timer = new(1000);
-        Timer.Elapsed += OnTimedEvent;
-        Timer.AutoReset = true;
-        Timer.Enabled = true;
-    }
-
-    void OnTimedEvent(object sender, EventArgs e)
-    {
-        MainThread.BeginInvokeOnMainThread(UpdateNextSplit);
-    }
-
-    void UpdateNextSplit()
+    public override void UpdateData()
     {
         if (File.Exists(NextSplitImageFilePath))
         {

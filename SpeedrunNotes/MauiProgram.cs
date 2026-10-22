@@ -2,6 +2,7 @@
 using Microsoft.Maui.LifecycleEvents;
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
+using CommunityToolkit.Maui;
 
 namespace SpeedrunNotes;
 
@@ -12,6 +13,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -25,17 +27,19 @@ public static class MauiProgram
             {
                 windows.OnWindowCreated(xamlWindow =>
                 {
-                    var window = xamlWindow as MauiWinUIWindow;
-                    var MainWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                    if (xamlWindow.Title != "SpeedrunNotes")
+                    {
+                        var window = xamlWindow as MauiWinUIWindow;
+                        var MainWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
 
-                    var windowId = Win32Interop.GetWindowIdFromWindow(MainWindowHandle);
-                    var appWindow = AppWindow.GetFromWindowId(windowId);
-                    var presenter = appWindow.Presenter as OverlappedPresenter;
+                        var windowId = Win32Interop.GetWindowIdFromWindow(MainWindowHandle);
+                        var appWindow = AppWindow.GetFromWindowId(windowId);
+                        var presenter = appWindow.Presenter as OverlappedPresenter;
 
-                    //appWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
-                    presenter.IsAlwaysOnTop = true;
+                        //appWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
+                        presenter.IsAlwaysOnTop = true;
+                    }
                 });
-
             });
         });
 #endif
